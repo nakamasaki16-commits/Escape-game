@@ -2,338 +2,749 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>第零観測室</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#070a0f">
+<title>第零観測室 — 完全版</title>
 <style>
 :root{
-  --bg:#0b0e13;--panel:#141923;--panel2:#1b2230;--text:#eef3ff;--muted:#9ba8bd;
-  --accent:#7dd3fc;--danger:#fb7185;--ok:#86efac;--gold:#fde68a;--line:#2c3648;
+  --bg:#070a0f; --panel:#101720; --panel2:#16212d; --line:#2a3a4d;
+  --text:#edf5ff; --muted:#9aacbf; --cyan:#70d6ff; --amber:#ffd166;
+  --green:#70e6a6; --red:#ff6b7a; --ink:#05070a;
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif}
-body{min-height:100vh}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif}
+body{min-height:100svh;overflow-x:hidden}
 button,input{font:inherit}
-#app{max-width:720px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(18px + env(safe-area-inset-bottom))}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 10px}
-h1{font-size:20px;margin:0;letter-spacing:.08em}
-.small{font-size:12px;color:var(--muted)}
-.card{background:linear-gradient(180deg,var(--panel),#10151d);border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 12px 30px rgba(0,0,0,.24)}
-.scene{min-height:210px;display:flex;flex-direction:column;justify-content:space-between}
-.scene-title{font-size:17px;font-weight:700;margin-bottom:8px}
-.scene-text{white-space:pre-line;line-height:1.75;color:#e6ecf7}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
-button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;padding:12px 10px;min-height:46px}
-button:active{transform:scale(.985)}
-button.primary{border-color:#2f6f88;background:#123242;color:#dff7ff}
-button.warn{border-color:#7a3040;background:#361820}
-button:disabled{opacity:.4}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.tab.active{background:#173447;border-color:#366d88}
-.panel-title{font-weight:700;margin-bottom:8px}
-.log{max-height:210px;overflow:auto;font-size:13px;line-height:1.6;color:#cfd8e8}
-.log-entry{padding:7px 0;border-bottom:1px dashed #2a3343}
-.item{padding:9px;border:1px solid var(--line);border-radius:12px;margin:7px 0;background:#111722}
-.item b{display:block}
-.badge{display:inline-block;font-size:11px;border:1px solid var(--line);padding:2px 7px;border-radius:999px;color:var(--muted);margin-left:6px}
-.inputrow{display:flex;gap:8px;margin-top:10px}
-input{flex:1;background:#0c1118;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center;z-index:10}
+button{touch-action:manipulation}
+#app{max-width:760px;margin:auto;min-height:100svh;padding:env(safe-area-inset-top) 10px calc(82px + env(safe-area-inset-bottom))}
+.topbar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;padding:8px 4px}
+.iconbtn{width:44px;height:44px;border-radius:13px;border:1px solid var(--line);background:#111923;color:var(--text);display:grid;place-items:center;font-size:20px}
+.brand{text-align:center}
+.brand b{display:block;font-size:16px;letter-spacing:.12em}
+.brand span{font-size:10px;color:var(--muted)}
+.sceneWrap{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#0b1017;box-shadow:0 18px 55px rgba(0,0,0,.38)}
+#sceneSvg{width:100%;display:block;aspect-ratio:16/11;background:#080c12}
+.sceneShade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 60%,rgba(2,4,7,.65))}
+.roomTag{position:absolute;top:10px;left:10px;background:rgba(4,8,13,.82);border:1px solid #334457;border-radius:999px;padding:6px 9px;font-size:11px}
+.chapterTag{position:absolute;top:10px;right:10px;background:rgba(4,8,13,.82);border:1px solid #334457;border-radius:999px;padding:6px 9px;font-size:11px;color:var(--amber)}
+.hotspot{cursor:pointer}
+.hotspot .hit{fill:rgba(112,214,255,0);stroke:rgba(112,214,255,0);stroke-width:2}
+.hotspot:hover .hit,.hotspot.pulse .hit{stroke:rgba(112,214,255,.65);fill:rgba(112,214,255,.07)}
+.pulse{animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:.75}50%{opacity:1}}
+.navArrows{position:absolute;left:8px;right:8px;bottom:12px;display:flex;justify-content:space-between;pointer-events:none}
+.navArrows button{pointer-events:auto;width:48px;height:48px;border-radius:50%;border:1px solid #3d536b;background:rgba(7,12,18,.84);color:white;font-size:21px}
+.infoCard{margin-top:10px;background:linear-gradient(180deg,#111923,#0e141c);border:1px solid var(--line);border-radius:18px;padding:13px 14px}
+.infoTitle{font-weight:800;font-size:17px;margin-bottom:5px}
+.infoText{font-size:13px;line-height:1.72;color:#d8e2ee;white-space:pre-line}
+.statusRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:10px}
+.status{padding:8px;border:1px solid var(--line);border-radius:11px;background:#0c1219;text-align:center}
+.status b{display:block;font-size:13px}
+.status span{font-size:10px;color:var(--muted)}
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,10,15,.45),rgba(7,10,15,.98) 25%)}
+.bottominner{max-width:740px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.bottomnav button{border:1px solid var(--line);border-radius:14px;background:#101821;color:#cbd6e2;padding:8px 4px;min-height:52px;font-size:10px}
+.bottomnav button i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}
+.bottomnav button.active{border-color:#3c7590;background:#153044;color:white}
+.overlay{position:fixed;z-index:50;inset:0;background:rgba(0,0,0,.74);display:none;align-items:flex-end;justify-content:center}
 .overlay.show{display:flex}
-.sheet{width:min(720px,100%);max-height:82vh;overflow:auto;background:#111721;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
-.sheet h2{margin:0 0 10px;font-size:19px}
-.close{float:right}
-.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;color:var(--gold)}
+.sheet{width:min(760px,100%);max-height:88svh;overflow:auto;background:#0f161f;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.55)}
+.sheet h2{margin:0 0 8px;font-size:19px}
+.sheet p{line-height:1.7;color:#d7e1ec}
+.close{float:right;border:1px solid var(--line);background:#151f2b;color:white;border-radius:11px;padding:8px 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice{width:100%;padding:12px;border:1px solid var(--line);background:#15202c;color:white;border-radius:13px;margin:5px 0;text-align:left}
+.choice.primary{border-color:#397693;background:#153548}
+.choice.danger{border-color:#7a3440;background:#351921}
+.inputrow{display:flex;gap:8px;margin-top:12px}
+input{min-width:0;flex:1;background:#070b10;color:white;border:1px solid #34475b;border-radius:12px;padding:12px}
+.bad{color:var(--red)} .good{color:var(--green)} .warn{color:var(--amber)}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--amber);letter-spacing:.06em}
+.item,.clue,.logEntry{border:1px solid var(--line);border-radius:12px;background:#0b1118;padding:10px;margin:7px 0}
+.item b,.clue b{display:block;margin-bottom:3px}
+.item.selected{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset}
+.muted{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:8px}
+.tabs button{white-space:nowrap;border:1px solid var(--line);background:#111a24;color:#c6d2df;border-radius:999px;padding:8px 11px}
+.tabs button.active{background:#173247;border-color:#40748f;color:white}
+.hintBox{border-left:3px solid var(--amber);padding:8px 10px;background:#161a16;border-radius:8px;margin:8px 0}
+.badge{display:inline-block;border:1px solid #40556c;border-radius:999px;padding:2px 7px;font-size:10px;color:#aebed0}
+.puzzleBoard{background:#060a0e;border:1px solid #314155;border-radius:14px;padding:12px;margin:10px 0}
+.switchrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed #283648}
+.switch{width:58px;height:30px;border-radius:999px;background:#263441;border:0;position:relative}
+.switch:after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;left:3px;top:3px;background:#99aabb;transition:.18s}
+.switch.on{background:#236c55}
+.switch.on:after{left:31px;background:#87efbb}
+.mirrorGrid{display:grid;grid-template-columns:repeat(4,56px);gap:8px;justify-content:center;margin:12px 0}
+.mirror{width:56px;height:56px;border-radius:11px;border:1px solid #3b4b5e;background:#0a1017;color:#bdeaff;font-size:28px}
+.mirror.on{border-color:#69d4ff;background:#102a39}
+.evidence{display:grid;grid-template-columns:1fr;gap:8px}
+.evidence .choice{min-height:62px}
 .center{text-align:center}
-.ending{font-size:22px;font-weight:800;letter-spacing:.06em;margin:12px 0}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.endingTitle{font-size:28px;font-weight:900;letter-spacing:.08em;margin:12px 0}
+.titleScreen{position:fixed;z-index:100;inset:0;background:#05070a;display:flex;align-items:center;justify-content:center;padding:20px}
+.titleCard{width:min(650px,100%);border:1px solid #2a3848;border-radius:24px;overflow:hidden;background:#0b1016;box-shadow:0 30px 90px black}
+.hero{height:300px;position:relative;background:
+ radial-gradient(circle at 50% 46%,rgba(77,157,190,.22),transparent 23%),
+ linear-gradient(180deg,#0c131b,#05070a)}
+.hero svg{width:100%;height:100%}
+.heroText{position:absolute;left:0;right:0;bottom:22px;text-align:center;text-shadow:0 3px 16px black}
+.heroText h1{font-size:30px;letter-spacing:.14em;margin:0}
+.heroText p{margin:6px 0 0;color:#aab8c7;font-size:12px}
+.titleActions{padding:16px}
+.titleActions button{width:100%;padding:13px;margin:5px 0;border:1px solid #33465a;border-radius:13px;background:#13202b;color:white}
+.titleActions button.primary{background:#15384b;border-color:#397996}
 .hidden{display:none!important}
-.notice{color:var(--gold)}
-.good{color:var(--ok)}
-.danger{color:var(--danger)}
-.footer{font-size:11px;color:#7f8aa0;text-align:center;padding:6px 0 18px}
+.toast{position:fixed;z-index:80;left:50%;bottom:90px;transform:translateX(-50%);max-width:88vw;background:#111a23;border:1px solid #3b5067;border-radius:999px;padding:9px 14px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1}
+@media (min-width:620px){
+ .bottomnav{position:sticky;bottom:0;background:transparent;padding:10px 0}
+ #app{padding-bottom:12px}
+}
 </style>
 </head>
 <body>
+
+<div id="titleScreen" class="titleScreen">
+  <div class="titleCard">
+    <div class="hero">
+      <svg viewBox="0 0 800 480" aria-hidden="true">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#18222c"/><stop offset="1" stop-color="#05080b"/></linearGradient>
+          <radialGradient id="glow"><stop stop-color="#7fdcff" stop-opacity=".55"/><stop offset="1" stop-color="#7fdcff" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="800" height="480" fill="url(#g1)"/>
+        <rect x="70" y="85" width="660" height="300" rx="18" fill="#0b1117" stroke="#304355" stroke-width="5"/>
+        <rect x="305" y="112" width="190" height="245" rx="8" fill="#06090c" stroke="#34495c" stroke-width="5"/>
+        <rect x="329" y="145" width="142" height="55" rx="7" fill="#0e2634" stroke="#3e6b84"/>
+        <circle cx="400" cy="172" r="90" fill="url(#glow)" opacity=".45"/>
+        <path d="M111 366 L289 366 L289 326 L155 326 Z" fill="#101820" stroke="#273747"/>
+        <rect x="116" y="317" width="92" height="42" rx="4" fill="#0d202b" stroke="#35617a"/>
+        <path d="M522 135h160v80H522z" fill="#111a22" stroke="#35495d"/>
+        <path d="M540 155h118M540 173h88M540 191h100" stroke="#668499" stroke-width="4" opacity=".45"/>
+        <circle cx="400" cy="250" r="9" fill="#f0b84a"/>
+      </svg>
+      <div class="heroText"><h1>第零観測室</h1><p>THE ZERO OBSERVATION ROOM — COMPLETE EDITION</p></div>
+    </div>
+    <div class="titleActions">
+      <button class="primary" onclick="newGame()">NEW GAME</button>
+      <button id="continueBtn" onclick="continueGame()">CONTINUE</button>
+      <button onclick="showPremise()">遊び方 / あらすじ</button>
+    </div>
+  </div>
+</div>
+
 <div id="app">
-  <header>
-    <div>
-      <h1>第零観測室</h1>
-      <div class="small" id="chapterLabel">CHAPTER 0</div>
-    </div>
-    <button id="resetBtn">最初から</button>
-  </header>
-
-  <div class="card scene">
-    <div>
-      <div class="scene-title" id="sceneTitle"></div>
-      <div class="scene-text" id="sceneText"></div>
-    </div>
-    <div class="actions" id="actions"></div>
+  <div class="topbar">
+    <button class="iconbtn" onclick="openMenu()">☰</button>
+    <div class="brand"><b>第零観測室</b><span id="chapterText">CHAPTER 0</span></div>
+    <button class="iconbtn" onclick="toggleSound()" id="soundBtn">♪</button>
   </div>
 
-  <div class="card">
-    <div class="tabs">
-      <button class="tab active" data-tab="log">ログ</button>
-      <button class="tab" data-tab="items">所持品</button>
-      <button class="tab" data-tab="clues">手掛かり</button>
-      <button class="tab" data-tab="hint">ヒント</button>
+  <div class="sceneWrap">
+    <div id="roomTag" class="roomTag"></div>
+    <div id="chapterTag" class="chapterTag"></div>
+    <div id="sceneSvg"></div>
+    <div class="sceneShade"></div>
+    <div class="navArrows">
+      <button id="leftBtn" onclick="moveDir(-1)">‹</button>
+      <button id="rightBtn" onclick="moveDir(1)">›</button>
     </div>
-    <div id="tabContent" style="margin-top:10px"></div>
   </div>
 
-  <div class="footer">短編脱出×推理ゲーム / オフライン動作</div>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="sheet">
-    <button class="close" onclick="closeSheet()">閉じる</button>
-    <div id="sheetContent"></div>
+  <div class="infoCard">
+    <div id="infoTitle" class="infoTitle"></div>
+    <div id="infoText" class="infoText"></div>
+    <div class="statusRow">
+      <div class="status"><b id="progressStat">0/7</b><span>進行</span></div>
+      <div class="status"><b id="clueStat">0</b><span>手掛かり</span></div>
+      <div class="status"><b id="itemStat">0</b><span>所持品</span></div>
+    </div>
   </div>
 </div>
+
+<div class="bottomnav">
+ <div class="bottominner">
+  <button onclick="openPanel('log')"><i>☷</i>ログ</button>
+  <button onclick="openPanel('items')"><i>▣</i>アイテム</button>
+  <button onclick="openPanel('clues')"><i>⌕</i>手掛かり</button>
+  <button onclick="openPanel('map')"><i>⌂</i>マップ</button>
+  <button onclick="openPanel('hint')"><i>?</i>ヒント</button>
+ </div>
+</div>
+
+<div id="overlay" class="overlay"><div class="sheet"><button class="close" onclick="closeSheet()">閉じる</button><div id="sheetContent"></div></div></div>
+<div id="toast" class="toast"></div>
 
 <script>
-const state = {
-  chapter:0, scene:"room", flags:{}, items:[], clues:[], log:[],
-  hintLevel:0, ending:null
+const DEFAULT = {
+ version:2, chapter:0, room:"observation", view:0, flags:{}, items:[], clues:[], logs:[],
+ selectedItem:null, hint:{}, sound:true, ending:null
+};
+let S = JSON.parse(JSON.stringify(DEFAULT));
+let audioCtx=null;
+
+const ROOMS = {
+ observation:{name:"第零観測室",views:4},
+ corridor:{name:"研究区画・廊下",views:3},
+ power:{name:"電源制御室",views:3},
+ archive:{name:"記録保全室",views:3},
+ optics:{name:"光学実験室",views:3},
+ control:{name:"中央制御室",views:4},
+ gate:{name:"最終隔離扉",views:1}
 };
 
-const addLog=(t)=>{ state.log.push(t); renderTabs(); };
-const addItem=(name,desc)=>{
-  if(!state.items.find(x=>x.name===name)){ state.items.push({name,desc}); addLog("入手："+name); }
-};
-const addClue=(name,desc)=>{
-  if(!state.clues.find(x=>x.name===name)){ state.clues.push({name,desc}); addLog("手掛かり："+name); }
-};
-const has=(name)=>state.items.some(x=>x.name===name)||state.clues.some(x=>x.name===name);
-
-function setScene(title,text,actions,chapter=state.chapter){
-  state.chapter=chapter;
-  document.getElementById("chapterLabel").textContent="CHAPTER "+chapter;
-  document.getElementById("sceneTitle").textContent=title;
-  document.getElementById("sceneText").textContent=text;
-  const box=document.getElementById("actions"); box.innerHTML="";
-  actions.forEach(a=>{
-    const b=document.createElement("button");
-    b.textContent=a.label;
-    if(a.primary)b.classList.add("primary");
-    if(a.warn)b.classList.add("warn");
-    b.onclick=a.fn; box.appendChild(b);
-  });
+function save(){ localStorage.setItem("zeroRoomSaveV2",JSON.stringify(S)); updateUI(); }
+function load(){ const x=localStorage.getItem("zeroRoomSaveV2"); if(x){try{S={...DEFAULT,...JSON.parse(x)};}catch(e){}} }
+function newGame(){S=JSON.parse(JSON.stringify(DEFAULT)); addLog("目を覚ました。記憶が曖昧だ。"); save(); document.getElementById("titleScreen").classList.add("hidden"); render();}
+function continueGame(){load(); document.getElementById("titleScreen").classList.add("hidden"); render();}
+function resetGame(){ if(confirm("セーブデータを消して最初から始めますか？")){localStorage.removeItem("zeroRoomSaveV2");location.reload();}}
+function showPremise(){showSheet(`<h2>第零観測室</h2><p>密閉された観測施設で目を覚ましたあなたは、自分が「被験者07」だと告げられる。しかし、施設内の記録には少しずつ矛盾がある。</p><p>画面内の物をタップして調査し、左右の矢印で視点移動。アイテムは「アイテム」から選択して使います。</p><p class="warn">すべての主要な謎は、その時点で入手可能な証拠だけで一意に解けるよう設計されています。</p>`);}
+function closeSheet(){document.getElementById("overlay").classList.remove("show");}
+function showSheet(html){document.getElementById("sheetContent").innerHTML=html;document.getElementById("overlay").classList.add("show");}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1700);}
+function addLog(t){if(!S.logs.includes(t))S.logs.push(t);}
+function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog("手掛かり「"+name+"」を記録した。");toast("手掛かり追加："+name);save();}}
+function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});addLog(name+"を入手した。");toast("入手："+name);save();}}
+function hasItem(id){return !!S.items.find(x=>x.id===id)}
+function hasClue(id){return !!S.clues.find(x=>x.id===id)}
+function flag(k,v=true){S.flags[k]=v;save();}
+function beep(freq=520,dur=.05){
+ if(!S.sound)return;
+ try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=.035;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}
+}
+function toggleSound(){S.sound=!S.sound;document.getElementById("soundBtn").textContent=S.sound?"♪":"×";save();beep();}
+function updateUI(){
+ document.getElementById("chapterText").textContent="CHAPTER "+S.chapter;
+ document.getElementById("chapterTag").textContent="CH."+S.chapter;
+ document.getElementById("roomTag").textContent=ROOMS[S.room].name;
+ document.getElementById("progressStat").textContent=S.chapter+"/7";
+ document.getElementById("clueStat").textContent=S.clues.length;
+ document.getElementById("itemStat").textContent=S.items.length;
+ document.getElementById("soundBtn").textContent=S.sound?"♪":"×";
+}
+function setInfo(title,text){document.getElementById("infoTitle").textContent=title;document.getElementById("infoText").textContent=text;}
+function moveDir(d){const n=ROOMS[S.room].views;S.view=(S.view+d+n)%n;save();render();}
+function goRoom(r,v=0){if(!canEnter(r)){toast("まだ入れない。");return;}S.room=r;S.view=v;save();render();}
+function canEnter(r){
+ if(r==="observation"||r==="corridor")return true;
+ if(r==="power")return S.chapter>=1;
+ if(r==="archive")return S.chapter>=2;
+ if(r==="optics")return S.chapter>=3;
+ if(r==="control")return S.chapter>=4;
+ if(r==="gate")return S.chapter>=6;
+ return false;
+}
+function h(id,label,x,y,w,h,onclick,pulse=false){
+ return `<g class="hotspot ${pulse?'pulse':''}" onclick="${onclick}"><rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" fill="rgba(210,240,255,.0)" font-size="18">${label}</text></g>`;
+}
+function baseSvg(inner){
+ return `<svg id="sceneArt" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
+ <defs><linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#17212b"/><stop offset="1" stop-color="#080c10"/></linearGradient>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18222b"/><stop offset=".65" stop-color="#0b1016"/><stop offset="1" stop-color="#06090d"/></linearGradient>
+ <radialGradient id="lamp"><stop stop-color="#9de4ff" stop-opacity=".55"/><stop offset="1" stop-color="#9de4ff" stop-opacity="0"/></radialGradient>
+ </defs>${inner}</svg>`;
+}
+function roomShell(extra=""){
+ return `<rect width="800" height="550" fill="url(#wall)"/>
+ <polygon points="0,380 800,350 800,550 0,550" fill="url(#floor)"/>
+ <path d="M0 380L800 350M140 550L220 370M330 550L360 365M515 550L500 362M700 550L640 356" stroke="#263645" stroke-width="2" opacity=".55"/>
+ <rect x="90" y="42" width="620" height="22" rx="10" fill="#182633"/><rect x="280" y="47" width="240" height="12" rx="6" fill="#8edfff" opacity=".45"/>
+ <ellipse cx="400" cy="65" rx="260" ry="120" fill="url(#lamp)" opacity=".18"/>${extra}`;
 }
 
-function showSheet(html){
-  document.getElementById("sheetContent").innerHTML=html;
-  document.getElementById("overlay").classList.add("show");
-}
-function closeSheet(){ document.getElementById("overlay").classList.remove("show"); }
-
-function renderTabs(){
-  const active=document.querySelector(".tab.active")?.dataset.tab||"log";
-  const c=document.getElementById("tabContent");
-  if(active==="log"){
-    c.innerHTML='<div class="log">'+(state.log.length?state.log.map(x=>'<div class="log-entry">'+x+'</div>').join(""):'まだ記録はない。')+'</div>';
-  }else if(active==="items"){
-    c.innerHTML=state.items.length?state.items.map(x=>`<div class="item"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):'所持品はない。';
-  }else if(active==="clues"){
-    c.innerHTML=state.clues.length?state.clues.map(x=>`<div class="item"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):'まだ重要な手掛かりはない。';
+function render(){
+ updateUI();
+ const key=S.room+":"+S.view;
+ let svg="",title="",text="";
+ if(S.room==="observation"){
+  if(S.view===0){
+   svg=baseSvg(roomShell(`
+    <rect x="300" y="115" width="200" height="245" rx="8" fill="#070a0e" stroke="#34495b" stroke-width="5"/>
+    <rect x="325" y="148" width="150" height="58" rx="6" fill="#0e2634" stroke="#3d6680"/>
+    <text x="400" y="182" text-anchor="middle" fill="#9bdcf5" font-size="19">LOCKED</text>
+    <circle cx="465" cy="270" r="7" fill="#d2a540"/>
+    ${h("door","door",295,108,215,262,"inspectDoor()",S.chapter===0)}
+    <rect x="565" y="130" width="100" height="98" rx="8" fill="#101821" stroke="#3b4d60"/>
+    <circle cx="615" cy="177" r="35" fill="#e5e6dd" stroke="#83909d" stroke-width="4"/>
+    <path d="M615 177L615 150M615 177L638 186" stroke="#20252b" stroke-width="4"/>
+    <text x="615" y="220" text-anchor="middle" fill="#9fb0c1" font-size="12">14:37</text>
+    ${h("clock","clock",560,125,110,110,"inspectClock()",true)}
+    <rect x="70" y="250" width="175" height="110" rx="6" fill="#111923" stroke="#314458"/>
+    <rect x="88" y="266" width="115" height="55" rx="4" fill="#102b3a" stroke="#3b6d89"/>
+    <text x="145" y="298" text-anchor="middle" fill="#9ee2ff" font-size="15">15:12:08</text>
+    ${h("terminal","terminal",65,245,190,122,"inspectTerminal()",true)}
+   `));
+   title="観測室・正面"; text="正面扉、壁掛け時計、時刻端末。扉の第一認証が起動している。";
+  }else if(S.view===1){
+   svg=baseSvg(roomShell(`
+    <rect x="80" y="225" width="470" height="160" rx="9" fill="#111923" stroke="#304357"/>
+    <rect x="105" y="195" width="180" height="110" rx="6" fill="#0b1219" stroke="#32485d"/>
+    <path d="M125 225h135M125 245h115M125 265h128" stroke="#8095aa" stroke-width="5" opacity=".45"/>
+    ${h("note","note",100,190,190,120,"inspectSyncNote()",true)}
+    <rect x="405" y="185" width="120" height="105" rx="8" fill="#0d151d" stroke="#42556a"/>
+    <path d="M430 220h70M430 242h70M430 264h45" stroke="#7ea4b9" stroke-width="4" opacity=".5"/>
+    ${h("drawer","drawer",390,175,150,125,"inspectDrawer()")}
+   `));
+   title="観測室・机"; text="机の上に保守ノート。右には鍵付き引き出し。";
+  }else if(S.view===2){
+   svg=baseSvg(roomShell(`
+    <rect x="170" y="155" width="220" height="210" rx="9" fill="#0f171f" stroke="#34495c"/>
+    <rect x="195" y="180" width="170" height="120" rx="6" fill="#071018" stroke="#41657b"/>
+    <text x="280" y="220" text-anchor="middle" fill="#82d9ff" font-size="15">OBS-0</text>
+    <text x="280" y="248" text-anchor="middle" fill="#8ba4b6" font-size="12">RECOVERY REQUIRED</text>
+    ${h("pc","pc",160,145,240,230,"inspectPC()")}
+    <rect x="500" y="130" width="155" height="245" rx="8" fill="#0c1219" stroke="#34495c"/>
+    <circle cx="580" cy="200" r="32" fill="#111e27" stroke="#3b5a6f"/>
+    <path d="M580 200L626 154" stroke="#647889" stroke-width="8"/>
+    <text x="577" y="310" text-anchor="middle" fill="#8fa2b5" font-size="12">CAM-3</text>
+    ${h("cam","cam",490,120,175,270,"inspectCamera()")}
+   `));
+   title="観測室・PC"; text="復旧待ちの端末と、天井へ向いた監視カメラ。";
   }else{
-    c.innerHTML=`<div class="item"><b>現在のヒント</b><span id="hintText">${getHint()}</span></div><button onclick="nextHint()">もう少しヒント</button>`;
+   svg=baseSvg(roomShell(`
+    <rect x="120" y="175" width="560" height="200" rx="12" fill="#101820" stroke="#34485b"/>
+    <text x="400" y="215" text-anchor="middle" fill="#8ea4b7" font-size="14">EMERGENCY EQUIPMENT</text>
+    <rect x="160" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
+    <rect x="285" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
+    <rect x="410" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
+    <rect x="535" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
+    ${h("cab","cab",110,165,580,220,"inspectCabinet()")}
+   `));
+   title="観測室・保安装備"; text="非常用キャビネット。まだ使えそうな物が残っている。";
   }
+ } else if(S.room==="corridor"){
+   if(S.view===0){
+    svg=baseSvg(roomShell(`
+     <path d="M250 120L550 120L680 390L120 390Z" fill="#090e13" stroke="#2e4052" stroke-width="4"/>
+     <rect x="335" y="155" width="130" height="195" rx="6" fill="#080b0e" stroke="#405468"/>
+     <text x="400" y="255" text-anchor="middle" fill="#7694aa" font-size="13">CONTROL</text>
+     ${h("control","control",325,145,150,215,"goRoom('control')")}
+     <rect x="105" y="190" width="115" height="165" fill="#0c1116" stroke="#394b5d"/>
+     <text x="162" y="272" text-anchor="middle" fill="#7694aa" font-size="12">POWER</text>
+     ${h("power","power",95,180,135,185,"goRoom('power')")}
+     <rect x="580" y="190" width="115" height="165" fill="#0c1116" stroke="#394b5d"/>
+     <text x="637" y="272" text-anchor="middle" fill="#7694aa" font-size="12">ARCHIVE</text>
+     ${h("archive","archive",570,180,135,185,"goRoom('archive')")}
+    `));
+    title="研究区画・中央廊下"; text="電源制御室、記録保全室、中央制御室へ分岐している。";
+   }else if(S.view===1){
+    svg=baseSvg(roomShell(`
+      <rect x="145" y="120" width="220" height="245" rx="8" fill="#081018" stroke="#3b5368"/>
+      <text x="255" y="245" text-anchor="middle" fill="#7395aa" font-size="15">OPTICS LAB</text>
+      ${h("optics","optics",135,110,240,265,"goRoom('optics')")}
+      <rect x="500" y="160" width="150" height="160" rx="8" fill="#111921" stroke="#41566b"/>
+      <path d="M525 195h100M525 220h88M525 245h96M525 270h72" stroke="#88a3b7" stroke-width="4" opacity=".4"/>
+      ${h("sign","sign",490,150,170,180,"inspectDirectory()")}
+    `));
+    title="研究区画・東廊下"; text="光学実験室への扉と施設案内板。";
+   }else{
+    svg=baseSvg(roomShell(`
+      <rect x="280" y="135" width="240" height="225" rx="10" fill="#070b0f" stroke="#3a5267" stroke-width="4"/>
+      <text x="400" y="210" text-anchor="middle" fill="#c0d0dc" font-size="15">OBSERVATION 0</text>
+      <text x="400" y="238" text-anchor="middle" fill="#758fa4" font-size="12">AUTHORIZED PERSONNEL ONLY</text>
+      ${h("obs","obs",270,125,260,245,"goRoom('observation')")}
+    `));
+    title="研究区画・西廊下"; text="最初の観測室へ戻る扉。";
+   }
+ } else if(S.room==="power"){
+   if(S.view===0){
+    svg=baseSvg(roomShell(`
+      <rect x="130" y="110" width="540" height="285" rx="10" fill="#0b1219" stroke="#3b5066"/>
+      <text x="400" y="145" text-anchor="middle" fill="#8ca4b8" font-size="15">POWER DISTRIBUTION PANEL</text>
+      <circle cx="220" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="220" y="242" text-anchor="middle" fill="#ffd166">3.0</text>
+      <circle cx="350" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="350" y="242" text-anchor="middle" fill="#ffd166">5.0</text>
+      <circle cx="480" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="480" y="242" text-anchor="middle" fill="#ffd166">7.0</text>
+      <circle cx="610" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="610" y="242" text-anchor="middle" fill="#ffd166">11.0</text>
+      ${h("panel","panel",120,100,560,305,"powerPuzzle()",S.chapter===1)}
+    `));
+    title="電源制御室・配電盤"; text="4系統の補助回路。中央制御室の非常電源を復旧できそうだ。";
+   }else if(S.view===1){
+    svg=baseSvg(roomShell(`
+      <rect x="150" y="160" width="500" height="200" rx="9" fill="#111923" stroke="#394e62"/>
+      <text x="400" y="198" text-anchor="middle" fill="#95adbf" font-size="15">MAINTENANCE RULE</text>
+      <text x="180" y="235" fill="#91a6b8" font-size="14">・Main bus target = 16.0</text>
+      <text x="180" y="270" fill="#91a6b8" font-size="14">・Never enable adjacent high-load lines together</text>
+      <text x="180" y="305" fill="#91a6b8" font-size="14">・Line C is isolated during OBS-0 protocol</text>
+      ${h("rule","rule",140,150,520,220,"inspectPowerRule()",true)}
+    `));
+    title="電源制御室・保守規程"; text="復旧時の安全規程が掲示されている。";
+   }else{
+    svg=baseSvg(roomShell(`
+      <rect x="250" y="155" width="300" height="210" rx="8" fill="#0c141c" stroke="#3a5064"/>
+      <path d="M285 205h230M285 240h190M285 275h210M285 310h160" stroke="#7f9caf" stroke-width="5" opacity=".45"/>
+      ${h("log","log",240,145,320,230,"inspectPowerLog()")}
+    `));
+    title="電源制御室・復旧ログ"; text="過去の復旧記録。系統名と負荷値の対応が残っている。";
+   }
+ } else if(S.room==="archive"){
+   if(S.view===0){
+    svg=baseSvg(roomShell(`
+      <rect x="125" y="100" width="550" height="300" rx="10" fill="#0b131b" stroke="#3b5267"/>
+      <text x="400" y="140" text-anchor="middle" fill="#91aabd" font-size="15">AUDIT TERMINAL</text>
+      <rect x="165" y="170" width="470" height="180" rx="6" fill="#071019" stroke="#325670"/>
+      <path d="M190 205h400M190 235h360M190 265h410M190 295h325" stroke="#6d9bb7" stroke-width="4" opacity=".38"/>
+      ${h("audit","audit",115,90,570,320,"archivePuzzle()",S.chapter===2)}
+    `));
+    title="記録保全室・監査端末"; text="入退室・カメラ・認証サーバの署名付きログを照合できる。";
+   }else if(S.view===1){
+    svg=baseSvg(roomShell(`
+      <rect x="130" y="120" width="220" height="260" rx="8" fill="#101821" stroke="#3b5064"/>
+      <text x="240" y="158" text-anchor="middle" fill="#9bafc0" font-size="13">CAMERA STATUS</text>
+      <text x="160" y="205" fill="#90a7b8" font-size="13">13:58 CAM-3 servo fault</text>
+      <text x="160" y="238" fill="#90a7b8" font-size="13">14:00 fixed upward</text>
+      <text x="160" y="271" fill="#90a7b8" font-size="13">14:01 stream lost</text>
+      ${h("camstat","camstat",120,110,240,280,"inspectCamStatus()",true)}
+      <rect x="450" y="140" width="210" height="200" rx="8" fill="#0f171e" stroke="#3b5064"/>
+      <text x="555" y="180" text-anchor="middle" fill="#9bafc0" font-size="13">BADGE SERVER</text>
+      <text x="480" y="225" fill="#90a7b8" font-size="13">Signed time source</text>
+      <text x="480" y="258" fill="#90a7b8" font-size="13">±0.2 sec</text>
+      ${h("badge","badge",440,130,230,220,"inspectBadgeServer()")}
+    `));
+    title="記録保全室・設備記録"; text="監視カメラ障害と認証サーバの仕様。";
+   }else{
+    svg=baseSvg(roomShell(`
+      <rect x="245" y="120" width="310" height="260" rx="10" fill="#0c141b" stroke="#3b5367"/>
+      <text x="400" y="165" text-anchor="middle" fill="#9eb3c4" font-size="14">ARCHIVE DRAWER A-07</text>
+      <rect x="285" y="205" width="230" height="90" rx="5" fill="#141d25" stroke="#445a6e"/>
+      ${h("archiveDrawer","drawer",235,110,330,280,"inspectArchiveDrawer()")}
+    `));
+    title="記録保全室・保管庫"; text="A-07と刻まれた物理保管庫。";
+   }
+ } else if(S.room==="optics"){
+   if(S.view===0){
+    svg=baseSvg(roomShell(`
+      <rect x="90" y="280" width="620" height="70" rx="8" fill="#101820" stroke="#344a5d"/>
+      <circle cx="160" cy="235" r="12" fill="#ff5d6c"/><path d="M172 235H650" stroke="#ff5d6c" stroke-width="4" opacity=".75"/>
+      <rect x="250" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M255 255L295 215" stroke="#aee8ff" stroke-width="5"/>
+      <rect x="390" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M395 215L435 255" stroke="#aee8ff" stroke-width="5"/>
+      <rect x="525" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M530 255L570 215" stroke="#aee8ff" stroke-width="5"/>
+      ${h("laser","laser",80,180,630,185,"opticsPuzzle()",S.chapter===3)}
+    `));
+    title="光学実験室・遅延ライン"; text="3枚の可動ミラーを持つレーザー遅延系。扉用の光学キー生成器につながっている。";
+   }else if(S.view===1){
+    svg=baseSvg(roomShell(`
+      <rect x="130" y="120" width="540" height="260" rx="9" fill="#0d151d" stroke="#3b5266"/>
+      <text x="400" y="158" text-anchor="middle" fill="#97afc1" font-size="14">PATH CALIBRATION</text>
+      <path d="M180 305L270 215L365 305L455 215L620 305" fill="none" stroke="#6bd8ff" stroke-width="4"/>
+      <circle cx="180" cy="305" r="8" fill="#ff6674"/><circle cx="620" cy="305" r="8" fill="#7deda9"/>
+      <text x="190" y="200" fill="#91a7b8" font-size="13">Shortest valid path uses exactly 2 reflections.</text>
+      <text x="190" y="235" fill="#91a7b8" font-size="13">Security path must use 3 reflections.</text>
+      ${h("calib","calib",120,110,560,280,"inspectOpticsRule()",true)}
+    `));
+    title="光学実験室・校正図"; text="遅延ラインの規則とセキュリティ用の光路条件。";
+   }else{
+    svg=baseSvg(roomShell(`
+      <rect x="280" y="150" width="240" height="200" rx="8" fill="#0b151d" stroke="#3e596d"/>
+      <circle cx="400" cy="245" r="60" fill="#0c202d" stroke="#4b7a93"/>
+      <circle cx="400" cy="245" r="18" fill="#87dcff" opacity=".7"/>
+      ${h("keygen","keygen",270,140,260,220,"inspectKeyGen()")}
+    `));
+    title="光学実験室・キー生成器"; text="正しい遅延光路が成立すると、ワンタイム光学キーを生成する。";
+   }
+ } else if(S.room==="control"){
+   if(S.view===0){
+    svg=baseSvg(roomShell(`
+      <rect x="115" y="110" width="570" height="290" rx="10" fill="#0b131a" stroke="#3b5368"/>
+      <rect x="155" y="145" width="490" height="190" rx="7" fill="#071018" stroke="#32617a"/>
+      <text x="400" y="185" text-anchor="middle" fill="#8edfff" font-size="15">ZERO PROJECT / CONTROL</text>
+      <text x="190" y="225" fill="#82a0b4" font-size="13">Identity state: CONFLICT</text>
+      <text x="190" y="258" fill="#82a0b4" font-size="13">Observer record: 3 candidates</text>
+      <text x="190" y="291" fill="#82a0b4" font-size="13">Final gate: LOCKED</text>
+      ${h("main","main",105,100,590,310,"controlPuzzle()",S.chapter===4)}
+    `));
+    title="中央制御室・主端末"; text="ZERO計画の制御端末。観測者記録の信頼性を判定する必要がある。";
+   }else if(S.view===1){
+    svg=baseSvg(roomShell(`
+      <rect x="150" y="115" width="500" height="275" rx="10" fill="#111921" stroke="#3b5165"/>
+      <text x="400" y="155" text-anchor="middle" fill="#9db2c2" font-size="14">EVIDENCE PRIORITY POLICY</text>
+      <text x="185" y="205" fill="#91a9bb" font-size="13">1. Cryptographically signed machine logs</text>
+      <text x="185" y="240" fill="#91a9bb" font-size="13">2. Independent physical sensor records</text>
+      <text x="185" y="275" fill="#91a9bb" font-size="13">3. Human-authored reports</text>
+      <text x="185" y="310" fill="#91a9bb" font-size="13">4. Reconstructed video / memory</text>
+      ${h("policy","policy",140,105,520,295,"inspectEvidencePolicy()",true)}
+    `));
+    title="中央制御室・証拠規程"; text="施設内で証拠が競合した場合の優先順位。";
+   }else if(S.view===2){
+    svg=baseSvg(roomShell(`
+      <rect x="120" y="125" width="560" height="250" rx="10" fill="#0e161e" stroke="#3b5267"/>
+      <text x="400" y="165" text-anchor="middle" fill="#9caebe" font-size="14">PROJECT ZERO — PURPOSE</text>
+      <text x="155" y="210" fill="#8fa7ba" font-size="13">“Observation does not merely record a subject.</text>
+      <text x="155" y="240" fill="#8fa7ba" font-size="13">It changes what the subject believes to be true.”</text>
+      <text x="155" y="300" fill="#8fa7ba" font-size="13">Memory rewriting subsystem: OBS-0 only.</text>
+      ${h("project","project",110,115,580,270,"inspectProjectFile()")}
+    `));
+    title="中央制御室・計画資料"; text="ZERO計画の目的と、観測室0だけに搭載された記憶処理系。";
+   }else{
+    svg=baseSvg(roomShell(`
+      <rect x="275" y="135" width="250" height="235" rx="12" fill="#080c10" stroke="#415b70" stroke-width="4"/>
+      <circle cx="400" cy="245" r="70" fill="#0c1821" stroke="#42627a"/>
+      <path d="M360 245h80M400 205v80" stroke="#698ba3" stroke-width="5"/>
+      ${h("gatectrl","gatectrl",265,125,270,255,"prepareFinal()",S.chapter>=5)}
+    `));
+    title="中央制御室・隔離扉制御"; text="最後の隔離扉へ進むための認証装置。";
+   }
+ } else if(S.room==="gate"){
+   svg=baseSvg(roomShell(`
+      <rect x="245" y="90" width="310" height="330" rx="14" fill="#06090c" stroke="#425e74" stroke-width="5"/>
+      <circle cx="400" cy="235" r="92" fill="#0b161e" stroke="#38566b" stroke-width="4"/>
+      <circle cx="400" cy="235" r="55" fill="#0e2634" stroke="#4a7892"/>
+      <text x="400" y="242" text-anchor="middle" fill="#a2e4ff" font-size="18">ZERO</text>
+      ${h("final","final",235,80,330,350,"finalDecision()",true)}
+    `));
+   title="最終隔離扉"; text="すべての記録がここに収束する。最後に選ぶのは、暗証番号ではなく『どの事実を信じるか』だ。";
+ }
+ document.getElementById("sceneSvg").innerHTML=svg;
+ setInfo(title,text);
+ document.getElementById("leftBtn").style.visibility=ROOMS[S.room].views>1?"visible":"hidden";
+ document.getElementById("rightBtn").style.visibility=ROOMS[S.room].views>1?"visible":"hidden";
+ save();
 }
-function getHint(){
-  const h=state.hintLevel;
-  if(state.chapter===0){
-    return [
-      "最初の認証文は『この部屋で最初に嘘をついているもの』。物ではなく、情報を疑おう。",
-      "時計、ノート、PC、試験管、カメラのうち、最初からこちらに“時刻”を主張しているものがある。",
-      "時計は14:37で止まっている。止まった時計は時刻を示しているようで、現在時刻を示していない。入力は『時計』。"
-    ][Math.min(h,2)];
-  }
-  if(state.chapter===1){
-    return [
-      "机の4桁は、部屋の中の色と数字の対応が鍵。",
-      "試験管4色と、ノートの余白の記号を対応させる。",
-      "赤=1、青=4、黄=3、緑=7。並び順はノートの文『青→赤→緑→黄』なので4173。"
-    ][Math.min(h,2)];
-  }
-  if(state.chapter===2){
-    return [
-      "監視ログの時刻と、PCの起動履歴を照合する。",
-      "監視ログでは14:37に被験者07が入室。PCは14:42に07のIDで起動されている。",
-      "入室後に本人がPCを起動したなら矛盾はない。問題は、監視カメラの向き。天井を向いているのに『入室映像』がある。"
-    ][Math.min(h,2)];
-  }
-  if(state.chapter===3){
-    return [
-      "廊下の端末には3つの研究記録。誰が嘘をついているかではなく、どの記録だけ“観測できないこと”を断言しているか。",
-      "Aは生体反応、Bはカメラ、Cは記憶ログ。Bの『映像で本人確認済み』だけが、カメラ故障記録と両立しない。",
-      "研究員Bの記録が改竄されている。"
-    ][Math.min(h,2)];
-  }
-  if(state.chapter===4){
-    return [
-      "最終問題は『あなたは誰か』。これまでの証拠を並べよう。",
-      "被験者07の入室映像は偽装。07のIDでPCを起動した人物は部屋の内部にいた。さらに研究員Bの記録が改竄されている。",
-      "あなたは被験者07ではなく、観測実験を止めようとして内部に侵入した研究員。最終選択で真相を公開するとTrue End。"
-    ][Math.min(h,2)];
-  }
-  return "手掛かりを見直そう。";
-}
-function nextHint(){ state.hintLevel++; renderTabs(); }
 
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active"); renderTabs();
-});
-document.getElementById("resetBtn").onclick=()=>{ if(confirm("進行状況を消して最初から始めますか？")) location.reload(); };
-
-function askAnswer(title,prompt,correct,onCorrect,normalize=s=>s.trim()){
-  showSheet(`<h2>${title}</h2><div>${prompt}</div>
-  <div class="inputrow"><input id="ans" autocomplete="off"><button class="primary" id="go">入力</button></div>
-  <div id="msg" class="small" style="margin-top:8px"></div>`);
-  document.getElementById("go").onclick=()=>{
-    const v=normalize(document.getElementById("ans").value);
-    if(correct(v)){ closeSheet(); onCorrect(); }
-    else document.getElementById("msg").innerHTML='<span class="danger">違うようだ。</span>';
-  };
-}
-
-function start(){
-  addLog("目を覚ます。見知らぬ研究施設の一室。");
-  setScene("観測室","窓のない研究室。正面には電子ロックされた鋼鉄扉。\n壁掛け時計は14:37で停止している。\n机、電源の落ちたPC、観測記録ノート、4本の試験管、天井を向いた監視カメラがある。\n\n扉の表示：\n「第一認証：この部屋で最初に嘘をついているものを入力せよ」",[
-    {label:"時計を調べる",fn:inspectClock},
-    {label:"机を調べる",fn:inspectDesk},
-    {label:"ノートを読む",fn:inspectNotebook},
-    {label:"第一認証を入力",fn:firstAuth,primary:true}
-  ],0);
-  renderTabs();
-}
+// CH0
 function inspectClock(){
-  addClue("停止した時計","14:37で止まっている。裏蓋には『同期失敗時は表示を保持』。");
-  showSheet("<h2>壁掛け時計</h2><p>秒針は動かない。裏には小さく『同期失敗時は最終表示を保持』とある。</p><p class='notice'>“現在”を示しているように見えるが、現在時刻とは限らない。</p>");
+ addClue("clock1437","停止した壁掛け時計","表示は14:37。秒針は停止している。背面ラベルは『中央時刻サーバ同期式』。");
+ showSheet(`<h2>壁掛け時計</h2><p>表示は <span class="code">14:37</span>。秒針は完全に停止。</p><p>背面ラベル：<span class="code">TS-4 / CENTRAL SYNC</span></p><p>単独で見れば、故障しているだけかもしれない。</p>`);
 }
-function inspectDesk(){
-  showSheet("<h2>机</h2><p>引き出しには4桁のダイヤル錠。まだ手掛かりが足りなさそうだ。</p>");
+function inspectTerminal(){
+ addClue("signed1512","署名付き現在時刻","端末は中央時刻サーバから15:12:08を取得。署名検証は正常。");
+ showSheet(`<h2>保守端末</h2><p>現在時刻：<span class="code">15:12:08</span></p><p>Time source: CENTRAL-TS<br>Signature: <span class="good">VALID</span><br>Last sync: 0.3 sec ago</p><p>この時刻は中央サーバにより暗号署名されている。</p>`);
 }
-function inspectNotebook(){
-  addClue("ノートの色順","余白に『青→赤→緑→黄』。各色の横に擦れた数字らしき跡。");
-  showSheet("<h2>観測記録</h2><p>本文の大半は黒塗り。余白だけ読める。</p><p class='code'>青 → 赤 → 緑 → 黄</p><p>末尾に『色は内容ではなく順序を示す』。</p>");
+function inspectSyncNote(){
+ addClue("syncnote","時刻同期規程","室内時計TS-4は60秒ごとに中央サーバへ同期。同期不能が3分続けば表示を消灯する仕様。");
+ showSheet(`<h2>時刻設備・保守ノート</h2><p>「TS-4型壁時計は60秒周期で中央時刻サーバと同期する。3分以上同期できない場合、誤認防止のため表示を消灯する。」</p><p class="warn">つまり、点灯したまま14:37を示す正常なTS-4と、署名付き15:12は同時には成立しない。</p>`);
 }
-function firstAuth(){
-  askAnswer("第一認証","『この部屋で最初に嘘をついているもの』",v=>["時計","とけい","clock"].includes(v.toLowerCase()),()=>{
-    state.hintLevel=0; addLog("第一認証：成功。机のロックが有効化された。"); chapter1();
-  });
+function inspectDoor(){
+ if(S.chapter>0){goRoom("corridor");return;}
+ showSheet(`<h2>第一認証</h2><p>「中央時刻サーバが正常であると仮定する。現在時刻を偽って表示している装置を特定せよ。」</p>
+ <button class="choice" onclick="answerCh0('clock')">壁掛け時計</button>
+ <button class="choice" onclick="answerCh0('terminal')">保守端末</button>
+ <button class="choice" onclick="answerCh0('pc')">PC</button>`);
 }
-
-function chapter1(){
-  state.chapter=1;
-  setScene("観測室・第二段階","扉の表示が変わる。\n「第二認証：机に保存された復旧キーを取得せよ」\n\n試験管には赤・青・黄・緑の液体。底面に小さな数字がある。",[
-    {label:"試験管を調べる",fn:inspectTubes},
-    {label:"ノートを読む",fn:inspectNotebook},
-    {label:"机の4桁を入力",fn:deskCode,primary:true},
-    {label:"PCを調べる",fn:pcLocked}
-  ],1);
+function answerCh0(a){
+ if(a!=="clock"){beep(180,.12);toast("認証失敗。証拠が足りない。");return;}
+ if(!(hasClue("signed1512")&&hasClue("syncnote"))){toast("根拠を確認してから答えた方がよさそうだ。");return;}
+ closeSheet();beep(760,.1);S.chapter=1;addLog("第一認証突破。研究区画への扉が開いた。");addItem("maintenance","保守アクセスカード","観測室の引き出しを開ける権限が付与された。");save();render();
 }
-function inspectTubes(){
-  addClue("試験管の数字","赤=1、青=4、黄=3、緑=7。");
-  showSheet("<h2>試験管</h2><p>底面に数字が刻まれている。</p><p class='code'>赤 1　青 4　黄 3　緑 7</p>");
+function inspectDrawer(){
+ if(!hasItem("maintenance")){showSheet("<h2>引き出し</h2><p>電子錠。保守権限が必要。</p>");return;}
+ if(!hasItem("usb"))addItem("usb","復旧USB","OBS-0端末用。監査ログへの限定アクセスキー入り。");
+ showSheet("<h2>引き出し</h2><p>保守カードで解錠した。中には復旧USBが一本。</p>");
 }
-function pcLocked(){ showSheet("<h2>PC</h2><p>電源は入るが『復旧キーを接続してください』と表示される。</p>"); }
-function deskCode(){
-  askAnswer("机のロック","4桁の数字を入力。",v=>v==="4173",()=>{
-    addItem("復旧USB","銀色のUSB。ラベルには『OBS-0 / RECOVERY』。");
-    addLog("机のロック解除。復旧USBを入手。");
-    chapter2();
-  },s=>s.replace(/\D/g,""));
+function inspectPC(){
+ if(!hasItem("usb")){showSheet("<h2>PC</h2><p>「RECOVERY MEDIA REQUIRED」</p>");return;}
+ addClue("pcboot","PC起動履歴","14:42:31にSUBJECT-07資格情報でログイン。時刻サーバ署名は正常。");
+ showSheet("<h2>OBS-0 PC</h2><p>復旧USBで監査領域を読み出した。</p><p class='code'>14:42:31 LOGIN / SUBJECT-07 / SIGNED</p>");
 }
-
-function chapter2(){
-  state.chapter=2; state.hintLevel=0;
-  setScene("PC復旧","復旧USBを挿すとPCが起動した。\n3つのログを閲覧できる。\n\n・入退室ログ\n・PC起動履歴\n・監視カメラ記録\n\n扉表示：\n「第三認証：存在しない観測を特定せよ」",[
-    {label:"入退室ログ",fn:doorLog},
-    {label:"PC起動履歴",fn:bootLog},
-    {label:"監視カメラ記録",fn:camLog},
-    {label:"第三認証",fn:thirdAuth,primary:true}
-  ],2);
+function inspectCamera(){
+ addClue("camup","CAM-3の物理状態","カメラは天井方向で機械的に固着。現在も画角は天井のみ。");
+ showSheet("<h2>監視カメラ CAM-3</h2><p>鏡筒は真上を向いて固着している。手では動かない。</p>");
 }
-function doorLog(){
-  addClue("入退室ログ","14:37 被験者07 入室。退出記録なし。");
-  showSheet("<h2>入退室ログ</h2><p class='code'>14:37　SUBJECT-07　ENTER</p><p>退出記録はない。</p>");
-}
-function bootLog(){
-  addClue("PC起動履歴","14:42 SUBJECT-07のIDでPCが起動。");
-  showSheet("<h2>PC起動履歴</h2><p class='code'>14:42　LOGIN: SUBJECT-07</p><p>USBキーによる復旧前に一度起動された記録がある。</p>");
-}
-function camLog(){
-  addClue("カメラ矛盾","室内カメラは14:00から故障・上向き固定。それなのに14:37の『入室映像』が保存されている。");
-  showSheet("<h2>監視カメラ記録</h2><p>診断ログ：<span class='code'>14:00 CAMERA-3 TILT ERROR / FIXED UPWARD</span></p><p>映像一覧：<span class='code'>14:37 SUBJECT-07 ENTER</span></p><p class='notice'>映像が存在すること自体がおかしい。</p>");
-}
-function thirdAuth(){
-  askAnswer("第三認証","存在しない観測は何？",v=>v.includes("カメラ")||v.includes("監視")||v.includes("映像"),()=>{
-    addLog("第三認証：成功。扉が開いた。");
-    chapter3();
-  });
+function inspectCabinet(){
+ if(!hasItem("flashlight"))addItem("flashlight","小型ライト","非常用。紫外LEDと白色LEDを切替可能。");
+ showSheet("<h2>非常用キャビネット</h2><p>小型ライトを回収した。他は空。</p>");
 }
 
-function chapter3(){
-  state.chapter=3; state.hintLevel=0;
-  setScene("研究区画・廊下","扉の先は短い廊下だった。\n突き当たりの非常口はロックされ、横の端末に3人の研究員の記録がある。\n\nA『被験者07は14:40時点で心拍上昇。実験継続可能。』\nB『14:37の監視映像で被験者07本人を確認。』\nC『14:45、記憶ログの上書きを検出。実験中止を提案。』\n\n端末：『改竄された記録の作成者を選択』",[
-    {label:"研究員A",fn:()=>chooseResearcher("A")},
-    {label:"研究員B",fn:()=>chooseResearcher("B")},
-    {label:"研究員C",fn:()=>chooseResearcher("C")},
-    {label:"廊下を調べる",fn:hallInspect}
-  ],3);
+// CH1
+function inspectPowerRule(){
+ addClue("powerrule","非常電源の安全規程","目標負荷16.0。C系統はOBS-0中は隔離。高負荷(7以上)同士を同時投入禁止。");
+ showSheet("<h2>非常電源・安全規程</h2><p>① Main bus target = <span class='code'>16.0</span><br>② Line C is isolated during OBS-0 protocol<br>③ High-load lines (7.0以上) cannot be enabled together.</p>");
 }
-function hallInspect(){
-  addClue("生体センサは正常","廊下端末の診断では生体センサと記憶ログ装置は正常。室内カメラだけ故障。");
-  showSheet("<h2>設備診断</h2><p>生体センサ：正常<br>記憶ログ装置：正常<br>CAMERA-3：故障</p>");
+function inspectPowerLog(){
+ addClue("powernames","系統負荷対応","A=3.0、B=5.0、C=7.0、D=11.0。");
+ showSheet("<h2>復旧ログ</h2><p class='code'>A 3.0 / B 5.0 / C 7.0 / D 11.0</p><p>前回の保守時に校正済み。</p>");
 }
-function chooseResearcher(x){
-  if(x!=="B"){ showSheet("<h2>認証失敗</h2><p class='danger'>端末：矛盾が解消されない。</p>"); return; }
-  addClue("研究員Bの改竄","故障中のカメラ映像で本人確認したとする記録は成立しない。");
-  addLog("研究員Bの記録を改竄と特定。非常口が半開放。");
-  chapter4();
+function powerPuzzle(){
+ const vals=[3,5,7,11], names=["A","B","C","D"];
+ if(!S.flags.pwr)S.flags.pwr=[false,false,false,false];
+ const p=S.flags.pwr;
+ let rows=names.map((n,i)=>`<div class="switchrow"><div><b>LINE ${n}</b> <span class="muted">${vals[i].toFixed(1)}</span></div><button class="switch ${p[i]?'on':''}" onclick="togglePwr(${i})"></button></div>`).join("");
+ const total=p.reduce((a,v,i)=>a+(v?vals[i]:0),0);
+ showSheet(`<h2>非常電源復旧</h2><p>規程を満たし、主母線を16.0にする。</p><div class="puzzleBoard">${rows}<p>現在値：<span class="code">${total.toFixed(1)}</span></p></div><button class="choice primary" onclick="checkPower()">投入する</button>`);
 }
-
-function chapter4(){
-  state.chapter=4; state.hintLevel=0;
-  setScene("第零観測室・真相","非常口の先に、最後の端末がある。\nそこにはあなた自身の顔写真と、二つのIDが表示されていた。\n\nSUBJECT-07：顔写真なし／記憶上書き対象\nRESEARCHER-B：あなたの顔写真／権限停止済み\n\n復旧USBの隠しログ：\n『Bは観測実験の停止を試み、被験者用IDで第零観測室へ侵入。直後、記憶処理が作動した。』\n\n最後の選択をする。",[
-    {label:"被験者07として脱出する",fn:()=>ending("normal")},
-    {label:"研究員Bとして真相を公開する",fn:()=>ending("true"),primary:true},
-    {label:"実験を再起動する",fn:()=>ending("bad"),warn:true}
-  ],4);
+function togglePwr(i){if(!S.flags.pwr)S.flags.pwr=[false,false,false,false];S.flags.pwr[i]=!S.flags.pwr[i];powerPuzzle();}
+function checkPower(){
+ const p=S.flags.pwr||[], vals=[3,5,7,11],total=p.reduce((a,v,i)=>a+(v?vals[i]:0),0);
+ const ok=Math.abs(total-16)<.01 && !p[2] && !(p[2]&&p[3]);
+ if(!ok){beep(170,.12);toast("安全規程を満たしていない。");return;}
+ closeSheet();S.chapter=Math.max(S.chapter,2);flag("powerRestored");addLog("中央制御系の非常電源を復旧した。");addItem("fusekey","ヒューズ型データキー","配電盤から排出された保守用データキー。");render();
 }
 
+// CH2
+function inspectCamStatus(){
+ addClue("camlog","CAM-3障害ログ","13:58サーボ故障、14:00天井方向で固定、14:01映像ストリーム喪失。");
+ showSheet("<h2>CAM-3設備ログ</h2><p class='code'>13:58 SERVO FAULT<br>14:00 TILT FIXED UPWARD<br>14:01 VIDEO STREAM LOST</p>");
+}
+function inspectBadgeServer(){
+ addClue("badgespec","認証サーバ仕様","入退室ログはサーバ署名付き。時刻誤差±0.2秒。後編集不可。");
+ showSheet("<h2>認証サーバ</h2><p>Badge events are append-only and cryptographically signed.<br>Clock accuracy: ±0.2 sec.</p>");
+}
+function archivePuzzle(){
+ if(!hasItem("usb")){showSheet("<h2>監査端末</h2><p>復旧USBが必要。</p>");return;}
+ showSheet(`<h2>監査ログの矛盾</h2><p>次のうち、設備記録と物理的に両立しないものを選べ。</p>
+ <button class="choice" onclick="answerArchive('A')"><b>A</b> 14:37:02　Badge server：SUBJECT-07 入室</button>
+ <button class="choice" onclick="answerArchive('B')"><b>B</b> 14:37:05　CAM-3：SUBJECT-07の顔を映像認証</button>
+ <button class="choice" onclick="answerArchive('C')"><b>C</b> 14:42:31　PC：SUBJECT-07資格情報でログイン</button>`);
+}
+function answerArchive(a){
+ if(a!=="B"){beep(170,.12);toast("その記録は他の証拠と両立する。");return;}
+ if(!hasClue("camlog")){toast("設備記録を確認した方がいい。");return;}
+ closeSheet();S.chapter=Math.max(S.chapter,3);addClue("forgedvideo","存在しない入室映像","CAM-3停止後の14:37映像認証ログは偽造。");addLog("監査端末が記録Bを改竄データと判定した。");addItem("archiveToken","監査トークン","改竄記録を確定したことで発行された署名トークン。");save();render();
+}
+function inspectArchiveDrawer(){
+ if(!(hasItem("fusekey")&&hasItem("archiveToken"))){showSheet("<h2>A-07保管庫</h2><p>二要素認証：保守データキー＋監査トークン。</p>");return;}
+ addItem("lens","位相プレート","A-07保管庫に封印されていた光学部品。");
+ addClue("Bphoto","研究員Bの写真断片","保管庫の紙資料。顔写真の右半分だけが残る。胸元に『B』のバッジ。");
+ showSheet("<h2>A-07保管庫</h2><p>二要素認証が通った。位相プレートと、破れた職員写真を回収した。</p>");
+}
+
+// CH3
+function inspectOpticsRule(){
+ addClue("opticsrule","セキュリティ光路条件","キー生成には3枚すべてのミラーで反射し、最終光が右側受光器へ到達する必要がある。");
+ showSheet("<h2>光路校正規則</h2><p>通常校正は2反射。セキュリティキーは<span class='warn'>3枚すべて</span>を使用し、右側受光器へ到達させる。</p>");
+}
+function opticsPuzzle(){
+ if(!hasItem("lens")){showSheet("<h2>遅延ライン</h2><p>中央ソケットに位相プレートが欠けている。</p>");return;}
+ if(!S.flags.mirrors)S.flags.mirrors=[0,0,0];
+ const m=S.flags.mirrors;
+ showSheet(`<h2>光学キー生成</h2><p>各ミラーをタップして「／」「＼」を切り替える。3枚すべてで反射し、右側受光器へ導け。</p>
+ <div class="mirrorGrid">
+ <button class="mirror" onclick="rotM(0)">${m[0]?"＼":"／"}</button>
+ <button class="mirror" onclick="rotM(1)">${m[1]?"＼":"／"}</button>
+ <button class="mirror" onclick="rotM(2)">${m[2]?"＼":"／"}</button>
+ </div>
+ <div class="puzzleBoard"><div id="beamDiagram">${beamText()}</div></div>
+ <button class="choice primary" onclick="checkOptics()">照射テスト</button>`);
+}
+function rotM(i){S.flags.mirrors[i]=1-S.flags.mirrors[i];opticsPuzzle();}
+function beamText(){
+ const m=S.flags.mirrors||[0,0,0];
+ const chars=m.map(x=>x?"＼":"／").join("　");
+ return `<div class="center code">LASER → ${chars} → SENSOR</div><p class="muted center">正しい組合せでは、3枚すべてで光路が折り返される。</p>`;
+}
+function checkOptics(){
+ const m=S.flags.mirrors||[];
+ // Solution deliberately unique: / \ /
+ if(m.join("")!=="010"){beep(190,.1);toast("受光器に届かない。");return;}
+ closeSheet();S.chapter=Math.max(S.chapter,4);addItem("opticalKey","ワンタイム光学キー","中央制御端末の暗号領域を15分間だけ解除できる。");addLog("3反射のセキュリティ光路を成立させた。");save();render();
+}
+function inspectKeyGen(){showSheet("<h2>光学キー生成器</h2><p>"+(hasItem("opticalKey")?"緑色に点灯している。キーは生成済み。":"遅延ラインの正しい光路待ち。")+"</p>");}
+
+// CH4
+function inspectEvidencePolicy(){
+ addClue("evidencePolicy","証拠優先順位","署名付き機械ログ > 独立物理センサ > 人間の報告 > 再構成映像・記憶。");
+ showSheet("<h2>証拠の優先順位</h2><p>1. 暗号署名付き機械ログ<br>2. 独立した物理センサ記録<br>3. 人間が記述した報告<br>4. 再構成映像・記憶データ</p>");
+}
+function inspectProjectFile(){
+ if(!hasItem("opticalKey")){showSheet("<h2>ZERO計画資料</h2><p>暗号化。ワンタイム光学キーが必要。</p>");return;}
+ addClue("zeropurpose","ZERO計画の目的","OBS-0だけに記憶上書き系があり、観測対象の自己認識を改変する実験。");
+ showSheet("<h2>ZERO計画 / 機密資料</h2><p>「観測は対象を記録するだけではない。対象が何を真実だと信じるかを変更する。」</p><p>Memory rewrite subsystem: <span class='warn'>OBS-0 ONLY</span></p>");
+}
+function controlPuzzle(){
+ if(!S.flags.powerRestored){showSheet("<h2>主端末</h2><p>非常電源が不足している。</p>");return;}
+ if(!hasItem("opticalKey")){showSheet("<h2>主端末</h2><p>暗号領域の解除に光学キーが必要。</p>");return;}
+ showSheet(`<h2>観測者記録の信頼性</h2><p>どの記録を最も低信頼として隔離すべきか。証拠規程に従え。</p>
+ <button class="choice" onclick="answerControl('A')"><b>A：認証サーバ</b><br>14:37 SUBJECT-07 badge accepted / signed</button>
+ <button class="choice" onclick="answerControl('B')"><b>B：研究員報告</b><br>「映像で07本人を確認した」</button>
+ <button class="choice" onclick="answerControl('C')"><b>C：生体センサ</b><br>14:40 room occupied / heartbeat detected</button>
+ <button class="choice" onclick="answerControl('D')"><b>D：復元記憶</b><br>「私は被験者07である」</button>`);
+}
+function answerControl(a){
+ if(a!=="D"){beep(180,.1);toast("より低い信頼階層が残っている。");return;}
+ if(!(hasClue("evidencePolicy")&&hasClue("zeropurpose"))){toast("証拠規程とZERO計画資料を確認しよう。");return;}
+ closeSheet();S.chapter=Math.max(S.chapter,5);
+ addClue("memoryUntrusted","自己記憶は証拠にならない","OBS-0では記憶上書きが可能。『自分は07だ』という記憶は最低信頼。");
+ addLog("主端末が自己記憶データを隔離。本人性判定が再開された。");
+ addItem("identityShard","身元キー断片","研究員データベース照合に必要な暗号断片。");
+ save();render();
+}
+
+// CH5
+function prepareFinal(){
+ if(S.chapter<5){showSheet("<h2>隔離扉制御</h2><p>本人性判定が終わっていない。</p>");return;}
+ if(!hasItem("identityShard"))return;
+ showSheet(`<h2>身元照合</h2><p>研究員Bの写真断片と、現在の顔認証結果を照合する。</p>
+ <div class="puzzleBoard"><p>顔認証：<span class="code">B = 98.7%</span></p><p>被験者07：顔テンプレート <span class="bad">未登録</span></p></div>
+ <p>ただし、これだけでは「なぜBが07の資格情報を使ったか」は説明できない。</p>
+ <button class="choice primary" onclick="identityReason()">理由を推理する</button>`);
+}
+function identityReason(){
+ showSheet(`<h2>なぜ研究員BはSUBJECT-07で入室した？</h2>
+ <button class="choice" onclick="answerIdentity('a')">自分が07だと思い込んでいたから</button>
+ <button class="choice" onclick="answerIdentity('b')">被験者07を装い、OBS-0へ侵入するため</button>
+ <button class="choice" onclick="answerIdentity('c')">認証サーバが故障していたから</button>`);
+}
+function answerIdentity(a){
+ if(a!=="b"){beep(170,.12);toast("既存の署名ログと矛盾する。");return;}
+ closeSheet();S.chapter=6;
+ addClue("identityB","あなたは研究員B","Bは被験者07資格情報でOBS-0へ侵入。その後、記憶上書きを受けて自身を07と思い込んだ。");
+ addLog("本人性判定：RESEARCHER-B。最終隔離扉が解錠準備に入った。");
+ addItem("finalKey","最終認証キー","監査・光学・本人性の3系統認証を統合した鍵。");
+ save();goRoom("gate",0);
+}
+
+// CH6-7 endings
+function finalDecision(){
+ if(!hasItem("finalKey")){showSheet("<h2>最終隔離扉</h2><p>認証キーが不足。</p>");return;}
+ showSheet(`<h2>最後の選択</h2><p>中央制御系は3つの処理を提示している。</p>
+ <button class="choice primary" onclick="ending('true')"><b>監査ログを外部へ送信し、ZERO計画を停止</b><br><span class="muted">改竄記録、OBS-0記憶処理、研究員Bの侵入記録を公開する。</span></button>
+ <button class="choice" onclick="ending('normal')"><b>身元だけ復旧して施設を退出</b><br><span class="muted">証拠は施設内に残す。</span></button>
+ <button class="choice danger" onclick="ending('bad')"><b>OBS-0を再起動して記憶を初期化</b></button>`);
+}
 function ending(type){
-  state.ending=type;
-  if(type==="true"){
-    showSheet(`<div class="center"><div class="ending good">TRUE END</div>
-    <h2>観測者は誰だったのか</h2>
-    <p>あなたは被験者07ではなかった。</p>
-    <p>第零観測室の実験停止を試みた研究員B。侵入時に被験者用IDを使い、記憶処理によって自分の役割を失っていた。</p>
-    <p>偽造された監視映像は、実験継続を正当化するために過去データから生成されたものだった。</p>
-    <p>あなたは復旧USBのログを外部へ送信し、非常口を開放する。</p><hr>
-    <p class="notice">「見えているものを信用するな。」<br>最初の警告は、部屋ではなく“自分の記憶”についてだった。</p>
-    <button class="primary" onclick="location.reload()">もう一度遊ぶ</button></div>`);
-  }else if(type==="normal"){
-    showSheet(`<div class="center"><div class="ending">NORMAL END</div>
-    <h2>被験者07</h2>
-    <p>あなたはSUBJECT-07のIDを選び、非常口を通過した。</p>
-    <p>施設の外へ出ることには成功したが、復旧ログは削除された。</p>
-    <p>背後で端末が一度だけ点灯する。</p><p class="code">RESEARCHER-B / STATUS: UNRESOLVED</p>
-    <button onclick="location.reload()">もう一度遊ぶ</button></div>`);
-  }else{
-    showSheet(`<div class="center"><div class="ending danger">BAD END</div>
-    <h2>再観測</h2>
-    <p>あなたは実験を再起動した。</p>
-    <p>室内スピーカーから声が流れる。</p>
-    <p>「観測者B、記憶初期化を開始します。」</p>
-    <p>視界が白くなる。</p><hr><p>次に目を覚ました時、時計は14:37を示していた。</p>
-    <button onclick="location.reload()">最初から</button></div>`);
-  }
+ S.chapter=7;S.ending=type;save();beep(type==="true"?880:220,.22);
+ if(type==="true"){
+  showSheet(`<div class="center"><div class="endingTitle good">TRUE END</div><h2>観測者は、観測されるまで存在しない</h2>
+  <p>あなたは研究員Bだった。ZERO計画の危険性に気づき、被験者07の資格情報を使ってOBS-0へ侵入した。</p>
+  <p>施設側は侵入者を“被験者”として処理し、記憶を書き換えた。偽造された監視映像は、その処理が正当だったことにするための後付けだった。</p>
+  <p>しかし署名付き時刻、設備障害、物理保管庫、光学キー——互いに独立した証拠だけは、改竄された物語に完全には従わなかった。</p>
+  <p class="warn">あなたは証拠一式を外部へ送信し、ZERO計画を停止する。</p><hr><p>扉が開く。外の空気は冷たい。</p>
+  <button class="choice primary" onclick="resetGame()">最初から</button></div>`);
+ }else if(type==="normal"){
+  showSheet(`<div class="center"><div class="endingTitle">NORMAL END</div><h2>退出</h2><p>研究員Bとしての身元だけを復旧し、施設を出た。</p><p>翌朝、ZERO計画のサーバは遠隔から初期化された。あなたの手元には、何も証明できるものが残っていない。</p><p class="code">CASE STATUS: UNRESOLVED</p><button class="choice" onclick="resetGame()">最初から</button></div>`);
+ }else{
+  showSheet(`<div class="center"><div class="endingTitle bad">BAD END</div><h2>第零観測室</h2><p>OBS-0を再起動した。</p><p>「観測者B。記憶初期化を開始します。」</p><p>視界が白くなる。</p><hr><p>次に目を覚ました時、壁掛け時計は14:37を示していた。</p><button class="choice danger" onclick="resetGame()">最初から</button></div>`);
+ }
 }
 
-start();
+// miscellaneous
+function inspectDirectory(){showSheet("<h2>施設案内</h2><p>OBS-0：西<br>POWER：中央<br>ARCHIVE：中央<br>OPTICS：東<br>CONTROL：中央奥</p>");}
+function openMenu(){showSheet(`<h2>メニュー</h2><button class="choice" onclick="closeSheet()">ゲームに戻る</button><button class="choice" onclick="showPremise()">遊び方</button><button class="choice danger" onclick="resetGame()">セーブ削除 / 最初から</button><p class="muted">進行状況はこのブラウザのLocalStorageに自動保存されます。</p>`);}
+function openPanel(type){
+ if(type==="items"){
+  let html="<h2>アイテム</h2>"+(S.items.length?S.items.map(x=>`<button class="choice ${S.selectedItem===x.id?'primary':''}" onclick="selectItem('${x.id}')"><b>${x.name}</b><br><span class="muted">${x.desc}</span></button>`).join(""):"<p>まだ何も持っていない。</p>");
+  html+=S.selectedItem?`<p class="good">選択中：${S.items.find(x=>x.id===S.selectedItem)?.name}</p>`:"<p class='muted'>アイテムを選ぶと、必要な場所で自動的に使用されます。</p>";
+  showSheet(html);
+ }else if(type==="clues"){
+  showSheet("<h2>手掛かり</h2>"+(S.clues.length?S.clues.map(x=>`<div class="clue"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):"<p>まだ手掛かりはない。</p>"));
+ }else if(type==="log"){
+  showSheet("<h2>行動ログ</h2>"+(S.logs.length?S.logs.slice().reverse().map(x=>`<div class="logEntry">${x}</div>`).join(""):"<p>ログはない。</p>"));
+ }else if(type==="map"){
+  let rooms=Object.keys(ROOMS).map(r=>`<button class="choice ${S.room===r?'primary':''}" ${canEnter(r)?"":"disabled"} onclick="closeSheet();goRoom('${r}',0)">${ROOMS[r].name}${canEnter(r)?"":" <span class='muted'>LOCKED</span>"}</button>`).join("");
+  showSheet("<h2>施設マップ</h2>"+rooms);
+ }else{
+  const hl=S.hint[S.chapter]||0;
+  showSheet(`<h2>ヒント</h2><div class="hintBox">${hintText(S.chapter,hl)}</div><button class="choice" onclick="moreHint()">もう少しヒント</button>`);
+ }
+}
+function selectItem(id){S.selectedItem=S.selectedItem===id?null:id;save();openPanel("items");}
+function moreHint(){S.hint[S.chapter]=(S.hint[S.chapter]||0)+1;save();openPanel("hint");}
+function hintText(ch,l){
+ const H={
+ 0:["時計だけでは断定できない。『正しい現在時刻』と『時計の正常時の挙動』を別々に確認しよう。","保守端末の署名付き時刻と、机の同期規程を調べる。","正常なTS-4は3分同期できなければ消灯する。15:12なのに14:37で点灯している壁時計は仕様と両立しない。"],
+ 1:["目標値だけでなく、安全規程による禁止条件がある。","Cは使えない。残りA=3、B=5、D=11で16になる組合せを探す。","B+D = 5+11 = 16。"],
+ 2:["映像ログが存在することと、その時刻にカメラが映像を作れたことは別。","CAM-3の設備障害ログを見る。","14:01以降映像ストリームは失われているので、14:37の顔認証映像は成立しない。"],
+ 3:["セキュリティ光路は3枚すべてを使う。","3枚の向きは左右対称になる。","左から ／ ＼ ／。"],
+ 4:["『どれが正しいか』ではなく『最も低信頼か』。施設の証拠規程が鍵。","再構成された記憶は最下位。しかもOBS-0には記憶上書き機能がある。","『私は被験者07』という自己記憶を隔離する。"],
+ 5:["顔認証だけでは侵入理由は説明できない。署名付きbadgeログは正常だった。","研究員Bが意図的に07の資格情報を使ったと考えると、すべてが繋がる。","BはZERO計画を止めるため被験者07を装って侵入し、その後記憶を書き換えられた。"],
+ 6:["ここからは正解というより選択。ただし証拠を外へ残さないと、施設側が物語を再び書き換えられる。","TRUE ENDは証拠公開＋計画停止。"]
+ };
+ const arr=H[ch]||["これまでの手掛かりを整理しよう。"];return arr[Math.min(l,arr.length-1)];
+}
+
+load();
+document.getElementById("continueBtn").disabled=!localStorage.getItem("zeroRoomSaveV2");
+if(localStorage.getItem("zeroRoomSaveV2")) render();
 </script>
 </body>
 </html>
