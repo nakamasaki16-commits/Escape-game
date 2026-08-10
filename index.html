@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>第零観測室</title>
+<style>
+:root{
+  --bg:#0b0e13;--panel:#141923;--panel2:#1b2230;--text:#eef3ff;--muted:#9ba8bd;
+  --accent:#7dd3fc;--danger:#fb7185;--ok:#86efac;--gold:#fde68a;--line:#2c3648;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+#app{max-width:720px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(18px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 10px}
+h1{font-size:20px;margin:0;letter-spacing:.08em}
+.small{font-size:12px;color:var(--muted)}
+.card{background:linear-gradient(180deg,var(--panel),#10151d);border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 12px 30px rgba(0,0,0,.24)}
+.scene{min-height:210px;display:flex;flex-direction:column;justify-content:space-between}
+.scene-title{font-size:17px;font-weight:700;margin-bottom:8px}
+.scene-text{white-space:pre-line;line-height:1.75;color:#e6ecf7}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;padding:12px 10px;min-height:46px}
+button:active{transform:scale(.985)}
+button.primary{border-color:#2f6f88;background:#123242;color:#dff7ff}
+button.warn{border-color:#7a3040;background:#361820}
+button:disabled{opacity:.4}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.tab.active{background:#173447;border-color:#366d88}
+.panel-title{font-weight:700;margin-bottom:8px}
+.log{max-height:210px;overflow:auto;font-size:13px;line-height:1.6;color:#cfd8e8}
+.log-entry{padding:7px 0;border-bottom:1px dashed #2a3343}
+.item{padding:9px;border:1px solid var(--line);border-radius:12px;margin:7px 0;background:#111722}
+.item b{display:block}
+.badge{display:inline-block;font-size:11px;border:1px solid var(--line);padding:2px 7px;border-radius:999px;color:var(--muted);margin-left:6px}
+.inputrow{display:flex;gap:8px;margin-top:10px}
+input{flex:1;background:#0c1118;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.overlay.show{display:flex}
+.sheet{width:min(720px,100%);max-height:82vh;overflow:auto;background:#111721;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 10px;font-size:19px}
+.close{float:right}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;color:var(--gold)}
+.center{text-align:center}
+.ending{font-size:22px;font-weight:800;letter-spacing:.06em;margin:12px 0}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.hidden{display:none!important}
+.notice{color:var(--gold)}
+.good{color:var(--ok)}
+.danger{color:var(--danger)}
+.footer{font-size:11px;color:#7f8aa0;text-align:center;padding:6px 0 18px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div>
+      <h1>第零観測室</h1>
+      <div class="small" id="chapterLabel">CHAPTER 0</div>
+    </div>
+    <button id="resetBtn">最初から</button>
+  </header>
+
+  <div class="card scene">
+    <div>
+      <div class="scene-title" id="sceneTitle"></div>
+      <div class="scene-text" id="sceneText"></div>
+    </div>
+    <div class="actions" id="actions"></div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" data-tab="log">ログ</button>
+      <button class="tab" data-tab="items">所持品</button>
+      <button class="tab" data-tab="clues">手掛かり</button>
+      <button class="tab" data-tab="hint">ヒント</button>
+    </div>
+    <div id="tabContent" style="margin-top:10px"></div>
+  </div>
+
+  <div class="footer">短編脱出×推理ゲーム / オフライン動作</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <button class="close" onclick="closeSheet()">閉じる</button>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+
+<script>
+const state = {
+  chapter:0, scene:"room", flags:{}, items:[], clues:[], log:[],
+  hintLevel:0, ending:null
+};
+
+const addLog=(t)=>{ state.log.push(t); renderTabs(); };
+const addItem=(name,desc)=>{
+  if(!state.items.find(x=>x.name===name)){ state.items.push({name,desc}); addLog("入手："+name); }
+};
+const addClue=(name,desc)=>{
+  if(!state.clues.find(x=>x.name===name)){ state.clues.push({name,desc}); addLog("手掛かり："+name); }
+};
+const has=(name)=>state.items.some(x=>x.name===name)||state.clues.some(x=>x.name===name);
+
+function setScene(title,text,actions,chapter=state.chapter){
+  state.chapter=chapter;
+  document.getElementById("chapterLabel").textContent="CHAPTER "+chapter;
+  document.getElementById("sceneTitle").textContent=title;
+  document.getElementById("sceneText").textContent=text;
+  const box=document.getElementById("actions"); box.innerHTML="";
+  actions.forEach(a=>{
+    const b=document.createElement("button");
+    b.textContent=a.label;
+    if(a.primary)b.classList.add("primary");
+    if(a.warn)b.classList.add("warn");
+    b.onclick=a.fn; box.appendChild(b);
+  });
+}
+
+function showSheet(html){
+  document.getElementById("sheetContent").innerHTML=html;
+  document.getElementById("overlay").classList.add("show");
+}
+function closeSheet(){ document.getElementById("overlay").classList.remove("show"); }
+
+function renderTabs(){
+  const active=document.querySelector(".tab.active")?.dataset.tab||"log";
+  const c=document.getElementById("tabContent");
+  if(active==="log"){
+    c.innerHTML='<div class="log">'+(state.log.length?state.log.map(x=>'<div class="log-entry">'+x+'</div>').join(""):'まだ記録はない。')+'</div>';
+  }else if(active==="items"){
+    c.innerHTML=state.items.length?state.items.map(x=>`<div class="item"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):'所持品はない。';
+  }else if(active==="clues"){
+    c.innerHTML=state.clues.length?state.clues.map(x=>`<div class="item"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):'まだ重要な手掛かりはない。';
+  }else{
+    c.innerHTML=`<div class="item"><b>現在のヒント</b><span id="hintText">${getHint()}</span></div><button onclick="nextHint()">もう少しヒント</button>`;
+  }
+}
+function getHint(){
+  const h=state.hintLevel;
+  if(state.chapter===0){
+    return [
+      "最初の認証文は『この部屋で最初に嘘をついているもの』。物ではなく、情報を疑おう。",
+      "時計、ノート、PC、試験管、カメラのうち、最初からこちらに“時刻”を主張しているものがある。",
+      "時計は14:37で止まっている。止まった時計は時刻を示しているようで、現在時刻を示していない。入力は『時計』。"
+    ][Math.min(h,2)];
+  }
+  if(state.chapter===1){
+    return [
+      "机の4桁は、部屋の中の色と数字の対応が鍵。",
+      "試験管4色と、ノートの余白の記号を対応させる。",
+      "赤=1、青=4、黄=3、緑=7。並び順はノートの文『青→赤→緑→黄』なので4173。"
+    ][Math.min(h,2)];
+  }
+  if(state.chapter===2){
+    return [
+      "監視ログの時刻と、PCの起動履歴を照合する。",
+      "監視ログでは14:37に被験者07が入室。PCは14:42に07のIDで起動されている。",
+      "入室後に本人がPCを起動したなら矛盾はない。問題は、監視カメラの向き。天井を向いているのに『入室映像』がある。"
+    ][Math.min(h,2)];
+  }
+  if(state.chapter===3){
+    return [
+      "廊下の端末には3つの研究記録。誰が嘘をついているかではなく、どの記録だけ“観測できないこと”を断言しているか。",
+      "Aは生体反応、Bはカメラ、Cは記憶ログ。Bの『映像で本人確認済み』だけが、カメラ故障記録と両立しない。",
+      "研究員Bの記録が改竄されている。"
+    ][Math.min(h,2)];
+  }
+  if(state.chapter===4){
+    return [
+      "最終問題は『あなたは誰か』。これまでの証拠を並べよう。",
+      "被験者07の入室映像は偽装。07のIDでPCを起動した人物は部屋の内部にいた。さらに研究員Bの記録が改竄されている。",
+      "あなたは被験者07ではなく、観測実験を止めようとして内部に侵入した研究員。最終選択で真相を公開するとTrue End。"
+    ][Math.min(h,2)];
+  }
+  return "手掛かりを見直そう。";
+}
+function nextHint(){ state.hintLevel++; renderTabs(); }
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); renderTabs();
+});
+document.getElementById("resetBtn").onclick=()=>{ if(confirm("進行状況を消して最初から始めますか？")) location.reload(); };
+
+function askAnswer(title,prompt,correct,onCorrect,normalize=s=>s.trim()){
+  showSheet(`<h2>${title}</h2><div>${prompt}</div>
+  <div class="inputrow"><input id="ans" autocomplete="off"><button class="primary" id="go">入力</button></div>
+  <div id="msg" class="small" style="margin-top:8px"></div>`);
+  document.getElementById("go").onclick=()=>{
+    const v=normalize(document.getElementById("ans").value);
+    if(correct(v)){ closeSheet(); onCorrect(); }
+    else document.getElementById("msg").innerHTML='<span class="danger">違うようだ。</span>';
+  };
+}
+
+function start(){
+  addLog("目を覚ます。見知らぬ研究施設の一室。");
+  setScene("観測室","窓のない研究室。正面には電子ロックされた鋼鉄扉。\n壁掛け時計は14:37で停止している。\n机、電源の落ちたPC、観測記録ノート、4本の試験管、天井を向いた監視カメラがある。\n\n扉の表示：\n「第一認証：この部屋で最初に嘘をついているものを入力せよ」",[
+    {label:"時計を調べる",fn:inspectClock},
+    {label:"机を調べる",fn:inspectDesk},
+    {label:"ノートを読む",fn:inspectNotebook},
+    {label:"第一認証を入力",fn:firstAuth,primary:true}
+  ],0);
+  renderTabs();
+}
+function inspectClock(){
+  addClue("停止した時計","14:37で止まっている。裏蓋には『同期失敗時は表示を保持』。");
+  showSheet("<h2>壁掛け時計</h2><p>秒針は動かない。裏には小さく『同期失敗時は最終表示を保持』とある。</p><p class='notice'>“現在”を示しているように見えるが、現在時刻とは限らない。</p>");
+}
+function inspectDesk(){
+  showSheet("<h2>机</h2><p>引き出しには4桁のダイヤル錠。まだ手掛かりが足りなさそうだ。</p>");
+}
+function inspectNotebook(){
+  addClue("ノートの色順","余白に『青→赤→緑→黄』。各色の横に擦れた数字らしき跡。");
+  showSheet("<h2>観測記録</h2><p>本文の大半は黒塗り。余白だけ読める。</p><p class='code'>青 → 赤 → 緑 → 黄</p><p>末尾に『色は内容ではなく順序を示す』。</p>");
+}
+function firstAuth(){
+  askAnswer("第一認証","『この部屋で最初に嘘をついているもの』",v=>["時計","とけい","clock"].includes(v.toLowerCase()),()=>{
+    state.hintLevel=0; addLog("第一認証：成功。机のロックが有効化された。"); chapter1();
+  });
+}
+
+function chapter1(){
+  state.chapter=1;
+  setScene("観測室・第二段階","扉の表示が変わる。\n「第二認証：机に保存された復旧キーを取得せよ」\n\n試験管には赤・青・黄・緑の液体。底面に小さな数字がある。",[
+    {label:"試験管を調べる",fn:inspectTubes},
+    {label:"ノートを読む",fn:inspectNotebook},
+    {label:"机の4桁を入力",fn:deskCode,primary:true},
+    {label:"PCを調べる",fn:pcLocked}
+  ],1);
+}
+function inspectTubes(){
+  addClue("試験管の数字","赤=1、青=4、黄=3、緑=7。");
+  showSheet("<h2>試験管</h2><p>底面に数字が刻まれている。</p><p class='code'>赤 1　青 4　黄 3　緑 7</p>");
+}
+function pcLocked(){ showSheet("<h2>PC</h2><p>電源は入るが『復旧キーを接続してください』と表示される。</p>"); }
+function deskCode(){
+  askAnswer("机のロック","4桁の数字を入力。",v=>v==="4173",()=>{
+    addItem("復旧USB","銀色のUSB。ラベルには『OBS-0 / RECOVERY』。");
+    addLog("机のロック解除。復旧USBを入手。");
+    chapter2();
+  },s=>s.replace(/\D/g,""));
+}
+
+function chapter2(){
+  state.chapter=2; state.hintLevel=0;
+  setScene("PC復旧","復旧USBを挿すとPCが起動した。\n3つのログを閲覧できる。\n\n・入退室ログ\n・PC起動履歴\n・監視カメラ記録\n\n扉表示：\n「第三認証：存在しない観測を特定せよ」",[
+    {label:"入退室ログ",fn:doorLog},
+    {label:"PC起動履歴",fn:bootLog},
+    {label:"監視カメラ記録",fn:camLog},
+    {label:"第三認証",fn:thirdAuth,primary:true}
+  ],2);
+}
+function doorLog(){
+  addClue("入退室ログ","14:37 被験者07 入室。退出記録なし。");
+  showSheet("<h2>入退室ログ</h2><p class='code'>14:37　SUBJECT-07　ENTER</p><p>退出記録はない。</p>");
+}
+function bootLog(){
+  addClue("PC起動履歴","14:42 SUBJECT-07のIDでPCが起動。");
+  showSheet("<h2>PC起動履歴</h2><p class='code'>14:42　LOGIN: SUBJECT-07</p><p>USBキーによる復旧前に一度起動された記録がある。</p>");
+}
+function camLog(){
+  addClue("カメラ矛盾","室内カメラは14:00から故障・上向き固定。それなのに14:37の『入室映像』が保存されている。");
+  showSheet("<h2>監視カメラ記録</h2><p>診断ログ：<span class='code'>14:00 CAMERA-3 TILT ERROR / FIXED UPWARD</span></p><p>映像一覧：<span class='code'>14:37 SUBJECT-07 ENTER</span></p><p class='notice'>映像が存在すること自体がおかしい。</p>");
+}
+function thirdAuth(){
+  askAnswer("第三認証","存在しない観測は何？",v=>v.includes("カメラ")||v.includes("監視")||v.includes("映像"),()=>{
+    addLog("第三認証：成功。扉が開いた。");
+    chapter3();
+  });
+}
+
+function chapter3(){
+  state.chapter=3; state.hintLevel=0;
+  setScene("研究区画・廊下","扉の先は短い廊下だった。\n突き当たりの非常口はロックされ、横の端末に3人の研究員の記録がある。\n\nA『被験者07は14:40時点で心拍上昇。実験継続可能。』\nB『14:37の監視映像で被験者07本人を確認。』\nC『14:45、記憶ログの上書きを検出。実験中止を提案。』\n\n端末：『改竄された記録の作成者を選択』",[
+    {label:"研究員A",fn:()=>chooseResearcher("A")},
+    {label:"研究員B",fn:()=>chooseResearcher("B")},
+    {label:"研究員C",fn:()=>chooseResearcher("C")},
+    {label:"廊下を調べる",fn:hallInspect}
+  ],3);
+}
+function hallInspect(){
+  addClue("生体センサは正常","廊下端末の診断では生体センサと記憶ログ装置は正常。室内カメラだけ故障。");
+  showSheet("<h2>設備診断</h2><p>生体センサ：正常<br>記憶ログ装置：正常<br>CAMERA-3：故障</p>");
+}
+function chooseResearcher(x){
+  if(x!=="B"){ showSheet("<h2>認証失敗</h2><p class='danger'>端末：矛盾が解消されない。</p>"); return; }
+  addClue("研究員Bの改竄","故障中のカメラ映像で本人確認したとする記録は成立しない。");
+  addLog("研究員Bの記録を改竄と特定。非常口が半開放。");
+  chapter4();
+}
+
+function chapter4(){
+  state.chapter=4; state.hintLevel=0;
+  setScene("第零観測室・真相","非常口の先に、最後の端末がある。\nそこにはあなた自身の顔写真と、二つのIDが表示されていた。\n\nSUBJECT-07：顔写真なし／記憶上書き対象\nRESEARCHER-B：あなたの顔写真／権限停止済み\n\n復旧USBの隠しログ：\n『Bは観測実験の停止を試み、被験者用IDで第零観測室へ侵入。直後、記憶処理が作動した。』\n\n最後の選択をする。",[
+    {label:"被験者07として脱出する",fn:()=>ending("normal")},
+    {label:"研究員Bとして真相を公開する",fn:()=>ending("true"),primary:true},
+    {label:"実験を再起動する",fn:()=>ending("bad"),warn:true}
+  ],4);
+}
+
+function ending(type){
+  state.ending=type;
+  if(type==="true"){
+    showSheet(`<div class="center"><div class="ending good">TRUE END</div>
+    <h2>観測者は誰だったのか</h2>
+    <p>あなたは被験者07ではなかった。</p>
+    <p>第零観測室の実験停止を試みた研究員B。侵入時に被験者用IDを使い、記憶処理によって自分の役割を失っていた。</p>
+    <p>偽造された監視映像は、実験継続を正当化するために過去データから生成されたものだった。</p>
+    <p>あなたは復旧USBのログを外部へ送信し、非常口を開放する。</p><hr>
+    <p class="notice">「見えているものを信用するな。」<br>最初の警告は、部屋ではなく“自分の記憶”についてだった。</p>
+    <button class="primary" onclick="location.reload()">もう一度遊ぶ</button></div>`);
+  }else if(type==="normal"){
+    showSheet(`<div class="center"><div class="ending">NORMAL END</div>
+    <h2>被験者07</h2>
+    <p>あなたはSUBJECT-07のIDを選び、非常口を通過した。</p>
+    <p>施設の外へ出ることには成功したが、復旧ログは削除された。</p>
+    <p>背後で端末が一度だけ点灯する。</p><p class="code">RESEARCHER-B / STATUS: UNRESOLVED</p>
+    <button onclick="location.reload()">もう一度遊ぶ</button></div>`);
+  }else{
+    showSheet(`<div class="center"><div class="ending danger">BAD END</div>
+    <h2>再観測</h2>
+    <p>あなたは実験を再起動した。</p>
+    <p>室内スピーカーから声が流れる。</p>
+    <p>「観測者B、記憶初期化を開始します。」</p>
+    <p>視界が白くなる。</p><hr><p>次に目を覚ました時、時計は14:37を示していた。</p>
+    <button onclick="location.reload()">最初から</button></div>`);
+  }
+}
+
+start();
+</script>
+</body>
+</html>
