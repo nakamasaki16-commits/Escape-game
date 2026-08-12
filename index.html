@@ -1,750 +1,196 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#070a0f">
-<title>第零観測室 — 完全版</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#10141a"><title>学校からの脱出 ― 放課後、誰もいない ―</title><style>
+:root{--bg:#0b0f14;--panel:#131922;--line:#2b3848;--text:#edf4fb;--muted:#9aaabd;--accent:#83d6ff;--gold:#ffd26e;--good:#7be3a8;--bad:#ff7b88}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif}button{font:inherit}#app{max-width:760px;margin:auto;min-height:100svh;padding:env(safe-area-inset-top) 10px calc(86px + env(safe-area-inset-bottom))}.top{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:8px;padding:8px 2px}.top button{height:44px;border:1px solid var(--line);border-radius:13px;background:#121923;color:white}.brand{text-align:center}.brand b{display:block;letter-spacing:.08em}.brand span{font-size:10px;color:var(--muted)}.scene{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#080c10;box-shadow:0 18px 50px rgba(0,0,0,.38)}#scene{width:100%;aspect-ratio:16/11;display:block}.tag{position:absolute;top:9px;background:rgba(7,11,16,.85);border:1px solid #34475b;border-radius:999px;padding:6px 9px;font-size:11px}#where{left:9px}#wall{left:50%;transform:translateX(-50%)}#chapter{right:9px;color:var(--gold)}.nav{position:absolute;left:8px;right:8px;bottom:12px;display:flex;justify-content:space-between}.nav button{width:48px;height:48px;border-radius:50%;border:1px solid #456078;background:rgba(8,12,17,.88);color:white;font-size:22px}.card{margin-top:10px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#141b24,#10161e);padding:13px}.card h2{font-size:17px;margin:0 0 6px}.card p{margin:0;color:#d9e2ec;line-height:1.72;font-size:13px;white-space:pre-line}.minimap{margin-top:10px;border:1px solid var(--line);border-radius:15px;background:#0c1218;padding:10px}.mapgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.mapcell{height:42px;border:1px solid #2d3a49;border-radius:9px;background:#111821;color:#8fa0b1;font-size:9px;display:grid;place-items:center;text-align:center;position:relative;padding:2px}.mapcell.open{color:#dcecff;background:#14202b}.mapcell.here{border-color:#72d6ff;box-shadow:0 0 0 1px #72d6ff inset}.arrow{font-size:15px;color:#7cddff;position:absolute;right:3px;bottom:1px}.bottom{position:fixed;z-index:20;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(11,15,20,.4),rgba(11,15,20,.98) 28%);padding:8px 9px calc(8px + env(safe-area-inset-bottom))}.bottomin{max-width:740px;margin:auto;display:grid;grid-template-columns:repeat(6,1fr);gap:5px}.bottom button{min-height:53px;border:1px solid var(--line);border-radius:13px;background:#111923;color:#cbd6e0;font-size:10px}.bottom i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}.overlay{position:fixed;z-index:50;inset:0;background:rgba(0,0,0,.74);display:none;align-items:flex-end;justify-content:center}.overlay.show{display:flex}.sheet{width:min(760px,100%);max-height:88svh;overflow:auto;background:#101720;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 15px calc(18px + env(safe-area-inset-bottom))}.close{float:right;border:1px solid var(--line);border-radius:10px;background:#17212d;color:white;padding:8px 10px}.sheet h2{margin:0 0 8px}.sheet p{line-height:1.75;color:#d9e3ed}.choice{width:100%;text-align:left;border:1px solid var(--line);border-radius:13px;background:#151f2a;color:white;padding:12px;margin:5px 0}.choice.primary{border-color:#407b98;background:#17384a}.choice.bad{border-color:#70343d;background:#341a20}.choice:disabled{opacity:.38}.item,.clue,.log{border:1px solid var(--line);border-radius:12px;background:#0c1218;padding:10px;margin:7px 0}.item b,.clue b{display:block;margin-bottom:3px}.muted{font-size:12px;color:var(--muted)}.code{font-family:ui-monospace,Menlo,monospace;color:var(--gold)}.good{color:var(--good)}.badtext{color:var(--bad)}.dialog{border-left:3px solid #5da6c7;background:#111c25;border-radius:8px;padding:10px 12px;margin:10px 0;color:#e5eef7;line-height:1.75}.dialog .name{font-size:11px;color:#86cbe8;margin-bottom:4px}.prologue{position:fixed;z-index:100;inset:0;background:#05080b;display:flex;align-items:center;justify-content:center;padding:18px}.prologue.hidden{display:none}.proCard{width:min(650px,100%);border:1px solid #2b3a49;border-radius:23px;background:#0c1218;overflow:hidden;box-shadow:0 30px 80px #000}.hero{height:295px;position:relative;background:linear-gradient(180deg,#17222b,#080b0f)}.hero svg{width:100%;height:100%}.heroText{position:absolute;left:0;right:0;bottom:22px;text-align:center;text-shadow:0 4px 14px #000}.heroText h1{margin:0;font-size:28px;letter-spacing:.12em}.heroText p{margin:6px 0 0;color:#acbbc8;font-size:12px}.proActions{padding:15px}.proActions button{width:100%;padding:13px;border:1px solid #33485b;background:#13202a;color:white;border-radius:13px;margin:5px 0}.titleline{font-weight:900;font-size:25px;text-align:center;margin:10px 0}.hot{cursor:pointer}.hot rect{fill:rgba(114,215,255,0);stroke:rgba(114,215,255,0);stroke-width:2}.label{fill:#e2f4ff;font-size:13px;font-weight:700;paint-order:stroke;stroke:#071018;stroke-width:5px}.toast{position:fixed;z-index:80;left:50%;bottom:90px;transform:translateX(-50%);background:#141d27;border:1px solid #40566d;border-radius:999px;padding:9px 14px;font-size:12px;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1}@media(min-width:620px){.bottom{position:sticky;background:transparent;padding:10px 0}#app{padding-bottom:10px}}
+</style>
 <style>
 :root{
-  --bg:#070a0f; --panel:#101720; --panel2:#16212d; --line:#2a3a4d;
-  --text:#edf5ff; --muted:#9aacbf; --cyan:#70d6ff; --amber:#ffd166;
-  --green:#70e6a6; --red:#ff6b7a; --ink:#05070a;
+  --school-paper:#f7f1e6;
+  --school-paper2:#eee5d5;
+  --school-ink:#342f29;
+  --school-line:#b7a78e;
+  --school-green:#476a55;
+  --school-wood:#8a6747;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif}
-body{min-height:100svh;overflow-x:hidden}
-button,input{font:inherit}
-button{touch-action:manipulation}
-#app{max-width:760px;margin:auto;min-height:100svh;padding:env(safe-area-inset-top) 10px calc(82px + env(safe-area-inset-bottom))}
-.topbar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;padding:8px 4px}
-.iconbtn{width:44px;height:44px;border-radius:13px;border:1px solid var(--line);background:#111923;color:var(--text);display:grid;place-items:center;font-size:20px}
-.brand{text-align:center}
-.brand b{display:block;font-size:16px;letter-spacing:.12em}
-.brand span{font-size:10px;color:var(--muted)}
-.sceneWrap{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#0b1017;box-shadow:0 18px 55px rgba(0,0,0,.38)}
-#sceneSvg{width:100%;display:block;aspect-ratio:16/11;background:#080c12}
-.sceneShade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 60%,rgba(2,4,7,.65))}
-.roomTag{position:absolute;top:10px;left:10px;background:rgba(4,8,13,.82);border:1px solid #334457;border-radius:999px;padding:6px 9px;font-size:11px}
-.chapterTag{position:absolute;top:10px;right:10px;background:rgba(4,8,13,.82);border:1px solid #334457;border-radius:999px;padding:6px 9px;font-size:11px;color:var(--amber)}
-.hotspot{cursor:pointer}
-.hotspot .hit{fill:rgba(112,214,255,0);stroke:rgba(112,214,255,0);stroke-width:2}
-.hotspot:hover .hit,.hotspot.pulse .hit{stroke:rgba(112,214,255,.65);fill:rgba(112,214,255,.07)}
-.pulse{animation:pulse 1.8s infinite}
-@keyframes pulse{0%,100%{opacity:.75}50%{opacity:1}}
-.navArrows{position:absolute;left:8px;right:8px;bottom:12px;display:flex;justify-content:space-between;pointer-events:none}
-.navArrows button{pointer-events:auto;width:48px;height:48px;border-radius:50%;border:1px solid #3d536b;background:rgba(7,12,18,.84);color:white;font-size:21px}
-.infoCard{margin-top:10px;background:linear-gradient(180deg,#111923,#0e141c);border:1px solid var(--line);border-radius:18px;padding:13px 14px}
-.infoTitle{font-weight:800;font-size:17px;margin-bottom:5px}
-.infoText{font-size:13px;line-height:1.72;color:#d8e2ee;white-space:pre-line}
-.statusRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:10px}
-.status{padding:8px;border:1px solid var(--line);border-radius:11px;background:#0c1219;text-align:center}
-.status b{display:block;font-size:13px}
-.status span{font-size:10px;color:var(--muted)}
-.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,10,15,.45),rgba(7,10,15,.98) 25%)}
-.bottominner{max-width:740px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-.bottomnav button{border:1px solid var(--line);border-radius:14px;background:#101821;color:#cbd6e2;padding:8px 4px;min-height:52px;font-size:10px}
-.bottomnav button i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}
-.bottomnav button.active{border-color:#3c7590;background:#153044;color:white}
-.overlay{position:fixed;z-index:50;inset:0;background:rgba(0,0,0,.74);display:none;align-items:flex-end;justify-content:center}
-.overlay.show{display:flex}
-.sheet{width:min(760px,100%);max-height:88svh;overflow:auto;background:#0f161f;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.55)}
-.sheet h2{margin:0 0 8px;font-size:19px}
-.sheet p{line-height:1.7;color:#d7e1ec}
-.close{float:right;border:1px solid var(--line);background:#151f2b;color:white;border-radius:11px;padding:8px 10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice{width:100%;padding:12px;border:1px solid var(--line);background:#15202c;color:white;border-radius:13px;margin:5px 0;text-align:left}
-.choice.primary{border-color:#397693;background:#153548}
-.choice.danger{border-color:#7a3440;background:#351921}
-.inputrow{display:flex;gap:8px;margin-top:12px}
-input{min-width:0;flex:1;background:#070b10;color:white;border:1px solid #34475b;border-radius:12px;padding:12px}
-.bad{color:var(--red)} .good{color:var(--green)} .warn{color:var(--amber)}
-.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--amber);letter-spacing:.06em}
-.item,.clue,.logEntry{border:1px solid var(--line);border-radius:12px;background:#0b1118;padding:10px;margin:7px 0}
-.item b,.clue b{display:block;margin-bottom:3px}
-.item.selected{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset}
-.muted{color:var(--muted);font-size:12px}
-.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:8px}
-.tabs button{white-space:nowrap;border:1px solid var(--line);background:#111a24;color:#c6d2df;border-radius:999px;padding:8px 11px}
-.tabs button.active{background:#173247;border-color:#40748f;color:white}
-.hintBox{border-left:3px solid var(--amber);padding:8px 10px;background:#161a16;border-radius:8px;margin:8px 0}
-.badge{display:inline-block;border:1px solid #40556c;border-radius:999px;padding:2px 7px;font-size:10px;color:#aebed0}
-.puzzleBoard{background:#060a0e;border:1px solid #314155;border-radius:14px;padding:12px;margin:10px 0}
-.switchrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed #283648}
-.switch{width:58px;height:30px;border-radius:999px;background:#263441;border:0;position:relative}
-.switch:after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;left:3px;top:3px;background:#99aabb;transition:.18s}
-.switch.on{background:#236c55}
-.switch.on:after{left:31px;background:#87efbb}
-.mirrorGrid{display:grid;grid-template-columns:repeat(4,56px);gap:8px;justify-content:center;margin:12px 0}
-.mirror{width:56px;height:56px;border-radius:11px;border:1px solid #3b4b5e;background:#0a1017;color:#bdeaff;font-size:28px}
-.mirror.on{border-color:#69d4ff;background:#102a39}
-.evidence{display:grid;grid-template-columns:1fr;gap:8px}
-.evidence .choice{min-height:62px}
-.center{text-align:center}
-.endingTitle{font-size:28px;font-weight:900;letter-spacing:.08em;margin:12px 0}
-.titleScreen{position:fixed;z-index:100;inset:0;background:#05070a;display:flex;align-items:center;justify-content:center;padding:20px}
-.titleCard{width:min(650px,100%);border:1px solid #2a3848;border-radius:24px;overflow:hidden;background:#0b1016;box-shadow:0 30px 90px black}
-.hero{height:300px;position:relative;background:
- radial-gradient(circle at 50% 46%,rgba(77,157,190,.22),transparent 23%),
- linear-gradient(180deg,#0c131b,#05070a)}
-.hero svg{width:100%;height:100%}
-.heroText{position:absolute;left:0;right:0;bottom:22px;text-align:center;text-shadow:0 3px 16px black}
-.heroText h1{font-size:30px;letter-spacing:.14em;margin:0}
-.heroText p{margin:6px 0 0;color:#aab8c7;font-size:12px}
-.titleActions{padding:16px}
-.titleActions button{width:100%;padding:13px;margin:5px 0;border:1px solid #33465a;border-radius:13px;background:#13202b;color:white}
-.titleActions button.primary{background:#15384b;border-color:#397996}
-.hidden{display:none!important}
-.toast{position:fixed;z-index:80;left:50%;bottom:90px;transform:translateX(-50%);max-width:88vw;background:#111a23;border:1px solid #3b5067;border-radius:999px;padding:9px 14px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s}
-.toast.show{opacity:1}
-@media (min-width:620px){
- .bottomnav{position:sticky;bottom:0;background:transparent;padding:10px 0}
- #app{padding-bottom:12px}
+html,body{background:#d4d0c6!important;color:var(--school-ink)!important}
+body{background-image:linear-gradient(#cbd5d9 0 58%,#b5b1a7 58%)!important}
+header{background:#f7f2e8!important;border-bottom:1px solid #b8aa93!important}
+header button,.bi button{background:#f8f2e6!important;border:1px solid #aa9a82!important;color:#352f29!important;border-radius:9px!important}
+.brand b{font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif}
+.scene{border:6px solid #705844!important;border-radius:7px!important;background:#e5dccd!important;box-shadow:0 5px 16px #0003!important}
+.tag{background:#fff8e9ea!important;color:#42382f!important;border:1px solid #a18f75!important;border-radius:7px!important}
+.turn button{background:#fff8e9ef!important;color:#4d4034!important;border:2px solid #8f765d!important}
+.card,.mapbox{background:#f8f2e7!important;border:1px solid #b7a68e!important;border-radius:7px!important}
+.card p{color:#514a40!important}
+.mc{background:#e8e0d2!important;border-color:#c5b8a5!important}.mc.on{background:#fcf6eb!important;color:#494138!important}.mc.here{background:#f0d6cf!important;border-color:#b66c62!important}
+.bottom{background:linear-gradient(transparent,#d4d0c6 30%)!important}
+.sheet{background:#f7f1e5!important;color:#332d27!important;border-color:#aa987e!important;border-radius:14px 14px 0 0!important;background-image:repeating-linear-gradient(transparent 0 31px,#d4d8ce 32px)!important}
+.sheet p{color:#4c443b!important}
+.choice,.x{background:#fff9ed!important;color:#342f29!important;border:1px solid #aa997f!important;border-radius:8px!important}
+.choice.primary{background:#dfe9dc!important;border-color:#7b957c!important}.choice.bad{background:#eedbd7!important;border-color:#b2746b!important}
+.box{background:#fff9eddd!important;border-color:#b8a991!important;border-radius:7px!important}
+.dialog{background:#efe8dbee!important;border-left:4px solid #73917b!important;border-radius:5px!important}
+.code{color:#885047!important}.muted{color:#776e61!important}
+.start{background:#63747c!important}.startcard{background:#f2e9db!important;border:8px solid #6d5743!important;border-radius:7px!important}
+.sa button{background:#fff8eb!important;color:#342f29!important;border:1px solid #a9967d!important;border-radius:8px!important}
+.boardrow select{background:#fff9ed!important;color:#332d27!important;border-color:#aa997f!important;border-radius:7px!important}
+.label{fill:#fff7e8!important;stroke:#584535!important}
+</style>
+
+<style id="notebook-layout-v2">
+@media (min-width: 820px){
+  #app{max-width:1440px!important;padding:14px 18px 22px!important;display:grid!important;
+    grid-template-columns:minmax(240px,310px) minmax(500px,1fr) minmax(220px,280px)!important;
+    grid-template-rows:auto auto auto!important;gap:14px!important;align-items:start!important}
+  header{grid-column:1/-1!important;position:sticky!important;top:0!important;z-index:15!important;border-radius:10px!important;
+    box-shadow:0 2px 8px #0001!important}
+  .scene{grid-column:2!important;grid-row:2!important;margin:0!important}
+  .card{grid-column:1!important;grid-row:2!important;margin:0!important;min-height:520px!important;position:relative!important;
+    padding:28px 20px 20px 34px!important;background:
+    linear-gradient(90deg,transparent 0 23px,#dc9d9d 24px,#dc9d9d 25px,transparent 26px),
+    repeating-linear-gradient(#fbf7ec 0 31px,#cbd6d2 32px)!important;
+    box-shadow:0 4px 14px #0002!important}
+  .card:before{content:"調査ノート";display:block;font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+    font-weight:800;font-size:20px;margin-bottom:18px;padding-bottom:7px;border-bottom:2px solid #71604e;letter-spacing:.08em}
+  .card h2{font-size:18px!important;margin:0 0 12px!important}.card p{font-size:14px!important;line-height:2.25!important}
+  .mapbox{grid-column:3!important;grid-row:2!important;margin:0!important;min-height:245px!important;padding:15px!important;
+    background:#f7f1e4!important;box-shadow:0 3px 10px #0001!important}
+  .mapbox:before{content:"校内案内";display:block;font-weight:800;margin-bottom:10px;border-bottom:2px solid #a99a82;padding-bottom:7px}
+  .bottom{grid-column:2/4!important;grid-row:3!important;position:sticky!important;bottom:10px!important;padding:0!important;
+    background:none!important;z-index:25!important}
+  .bi{max-width:none!important;background:#e9dfcddd!important;padding:8px!important;border:1px solid #ad9b81!important;
+    border-radius:13px!important;box-shadow:0 5px 18px #0002!important}
+  .bi button{min-height:62px!important}
+  .mapbox:after{content:"持ち物・証拠・ヒントは下のノートメニューから確認できます。";display:block;margin-top:16px;
+    padding:12px;border:1px dashed #aa997f;border-radius:7px;background:#fff9ed;color:#665d52;font-size:12px;line-height:1.7}
+}
+@media (max-width:819px){
+  #app{display:block!important;max-width:780px!important}
+  header{position:sticky;top:0;z-index:15}
+  .scene{margin-top:8px!important}
+  .card{position:relative!important;padding-left:24px!important;background:
+    linear-gradient(90deg,transparent 0 15px,#dda2a2 16px,#dda2a2 17px,transparent 18px),
+    repeating-linear-gradient(#f9f4e9 0 30px,#d0d9d5 31px)!important}
+  .card:before{content:"調査メモ";display:block;font-weight:800;font-size:13px;margin-bottom:6px;color:#65594c}
 }
 </style>
-</head>
-<body>
-
-<div id="titleScreen" class="titleScreen">
-  <div class="titleCard">
-    <div class="hero">
-      <svg viewBox="0 0 800 480" aria-hidden="true">
-        <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#18222c"/><stop offset="1" stop-color="#05080b"/></linearGradient>
-          <radialGradient id="glow"><stop stop-color="#7fdcff" stop-opacity=".55"/><stop offset="1" stop-color="#7fdcff" stop-opacity="0"/></radialGradient>
-        </defs>
-        <rect width="800" height="480" fill="url(#g1)"/>
-        <rect x="70" y="85" width="660" height="300" rx="18" fill="#0b1117" stroke="#304355" stroke-width="5"/>
-        <rect x="305" y="112" width="190" height="245" rx="8" fill="#06090c" stroke="#34495c" stroke-width="5"/>
-        <rect x="329" y="145" width="142" height="55" rx="7" fill="#0e2634" stroke="#3e6b84"/>
-        <circle cx="400" cy="172" r="90" fill="url(#glow)" opacity=".45"/>
-        <path d="M111 366 L289 366 L289 326 L155 326 Z" fill="#101820" stroke="#273747"/>
-        <rect x="116" y="317" width="92" height="42" rx="4" fill="#0d202b" stroke="#35617a"/>
-        <path d="M522 135h160v80H522z" fill="#111a22" stroke="#35495d"/>
-        <path d="M540 155h118M540 173h88M540 191h100" stroke="#668499" stroke-width="4" opacity=".45"/>
-        <circle cx="400" cy="250" r="9" fill="#f0b84a"/>
-      </svg>
-      <div class="heroText"><h1>第零観測室</h1><p>THE ZERO OBSERVATION ROOM — COMPLETE EDITION</p></div>
-    </div>
-    <div class="titleActions">
-      <button class="primary" onclick="newGame()">NEW GAME</button>
-      <button id="continueBtn" onclick="continueGame()">CONTINUE</button>
-      <button onclick="showPremise()">遊び方 / あらすじ</button>
-    </div>
-  </div>
-</div>
-
-<div id="app">
-  <div class="topbar">
-    <button class="iconbtn" onclick="openMenu()">☰</button>
-    <div class="brand"><b>第零観測室</b><span id="chapterText">CHAPTER 0</span></div>
-    <button class="iconbtn" onclick="toggleSound()" id="soundBtn">♪</button>
-  </div>
-
-  <div class="sceneWrap">
-    <div id="roomTag" class="roomTag"></div>
-    <div id="chapterTag" class="chapterTag"></div>
-    <div id="sceneSvg"></div>
-    <div class="sceneShade"></div>
-    <div class="navArrows">
-      <button id="leftBtn" onclick="moveDir(-1)">‹</button>
-      <button id="rightBtn" onclick="moveDir(1)">›</button>
-    </div>
-  </div>
-
-  <div class="infoCard">
-    <div id="infoTitle" class="infoTitle"></div>
-    <div id="infoText" class="infoText"></div>
-    <div class="statusRow">
-      <div class="status"><b id="progressStat">0/7</b><span>進行</span></div>
-      <div class="status"><b id="clueStat">0</b><span>手掛かり</span></div>
-      <div class="status"><b id="itemStat">0</b><span>所持品</span></div>
-    </div>
-  </div>
-</div>
-
-<div class="bottomnav">
- <div class="bottominner">
-  <button onclick="openPanel('log')"><i>☷</i>ログ</button>
-  <button onclick="openPanel('items')"><i>▣</i>アイテム</button>
-  <button onclick="openPanel('clues')"><i>⌕</i>手掛かり</button>
-  <button onclick="openPanel('map')"><i>⌂</i>マップ</button>
-  <button onclick="openPanel('hint')"><i>?</i>ヒント</button>
- </div>
-</div>
-
-<div id="overlay" class="overlay"><div class="sheet"><button class="close" onclick="closeSheet()">閉じる</button><div id="sheetContent"></div></div></div>
-<div id="toast" class="toast"></div>
-
+</head><body>
+<div id="prologue" class="prologue"><div class="proCard"><div class="hero"><svg viewBox="0 0 800 460"><rect width="800" height="460" fill="#101820"/><rect x="80" y="70" width="640" height="300" rx="10" fill="#17212a" stroke="#324657" stroke-width="5"/><rect x="120" y="110" width="260" height="130" rx="5" fill="#0d151c" stroke="#3b566a"/><path d="M150 145h200M150 178h165M150 211h190" stroke="#93b1c2" stroke-width="5" opacity=".35"/><rect x="490" y="110" width="150" height="180" fill="#0e151b" stroke="#364b5d"/><circle cx="565" cy="158" r="45" fill="#e6e1d4" stroke="#79838d" stroke-width="4"/><path d="M565 158V128M565 158l25 10" stroke="#23282d" stroke-width="4"/><rect x="0" y="370" width="800" height="90" fill="#080b0f"/></svg><div class="heroText"><h1>学校からの脱出</h1><p>― 放課後、誰もいない ―</p></div></div><div class="proActions"><button onclick="startGame()">NEW GAME</button><button id="cont" onclick="continueGame()">CONTINUE</button><button onclick="showIntro()">あらすじ / 遊び方</button></div></div></div>
+<div id="app"><div class="top"><button onclick="menu()">☰</button><div class="brand"><b>学校からの脱出</b><span id="chapTxt">CHAPTER 0</span></div><button onclick="panel('hint')">?</button></div><div class="scene"><div id="where" class="tag"></div><div id="wall" class="tag"></div><div id="chapter" class="tag"></div><div id="scene"></div><div class="nav"><button onclick="turn(-1)">‹</button><button onclick="turn(1)">›</button></div></div><div class="card"><h2 id="title"></h2><p id="desc"></p></div><div class="minimap"><div class="muted" style="margin-bottom:6px">校内マップ</div><div id="map" class="mapgrid"></div></div></div>
+<div class="bottom"><div class="bottomin"><button onclick="panel('log')"><i>☷</i>ログ</button><button onclick="panel('items')"><i>▣</i>持ち物</button><button onclick="panel('clues')"><i>⌕</i>手掛かり</button><button onclick="reasoningBoard()"><i>◇</i>推理</button><button onclick="panel('map')"><i>⌂</i>移動</button><button onclick="panel('hint')"><i>?</i>ヒント</button></div></div>
+<div id="overlay" class="overlay"><div class="sheet"><button class="close" onclick="closeSheet()">閉じる</button><div id="sheet"></div></div></div><div id="toast" class="toast"></div>
 <script>
-const DEFAULT = {
- version:2, chapter:0, room:"observation", view:0, flags:{}, items:[], clues:[], logs:[],
- selectedItem:null, hint:{}, sound:true, ending:null
-};
-let S = JSON.parse(JSON.stringify(DEFAULT));
-let audioCtx=null;
-
-const ROOMS = {
- observation:{name:"第零観測室",views:4},
- corridor:{name:"研究区画・廊下",views:3},
- power:{name:"電源制御室",views:3},
- archive:{name:"記録保全室",views:3},
- optics:{name:"光学実験室",views:3},
- control:{name:"中央制御室",views:4},
- gate:{name:"最終隔離扉",views:1}
-};
-
-function save(){ localStorage.setItem("zeroRoomSaveV2",JSON.stringify(S)); updateUI(); }
-function load(){ const x=localStorage.getItem("zeroRoomSaveV2"); if(x){try{S={...DEFAULT,...JSON.parse(x)};}catch(e){}} }
-function newGame(){S=JSON.parse(JSON.stringify(DEFAULT)); addLog("目を覚ました。記憶が曖昧だ。"); save(); document.getElementById("titleScreen").classList.add("hidden"); render();}
-function continueGame(){load(); document.getElementById("titleScreen").classList.add("hidden"); render();}
-function resetGame(){ if(confirm("セーブデータを消して最初から始めますか？")){localStorage.removeItem("zeroRoomSaveV2");location.reload();}}
-function showPremise(){showSheet(`<h2>第零観測室</h2><p>密閉された観測施設で目を覚ましたあなたは、自分が「被験者07」だと告げられる。しかし、施設内の記録には少しずつ矛盾がある。</p><p>画面内の物をタップして調査し、左右の矢印で視点移動。アイテムは「アイテム」から選択して使います。</p><p class="warn">すべての主要な謎は、その時点で入手可能な証拠だけで一意に解けるよう設計されています。</p>`);}
-function closeSheet(){document.getElementById("overlay").classList.remove("show");}
-function showSheet(html){document.getElementById("sheetContent").innerHTML=html;document.getElementById("overlay").classList.add("show");}
-function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1700);}
-function addLog(t){if(!S.logs.includes(t))S.logs.push(t);}
-function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog("手掛かり「"+name+"」を記録した。");toast("手掛かり追加："+name);save();}}
-function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});addLog(name+"を入手した。");toast("入手："+name);save();}}
-function hasItem(id){return !!S.items.find(x=>x.id===id)}
-function hasClue(id){return !!S.clues.find(x=>x.id===id)}
-function flag(k,v=true){S.flags[k]=v;save();}
-function beep(freq=520,dur=.05){
- if(!S.sound)return;
- try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;g.gain.value=.035;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}
-}
-function toggleSound(){S.sound=!S.sound;document.getElementById("soundBtn").textContent=S.sound?"♪":"×";save();beep();}
-function updateUI(){
- document.getElementById("chapterText").textContent="CHAPTER "+S.chapter;
- document.getElementById("chapterTag").textContent="CH."+S.chapter;
- document.getElementById("roomTag").textContent=ROOMS[S.room].name;
- document.getElementById("progressStat").textContent=S.chapter+"/7";
- document.getElementById("clueStat").textContent=S.clues.length;
- document.getElementById("itemStat").textContent=S.items.length;
- document.getElementById("soundBtn").textContent=S.sound?"♪":"×";
-}
-function setInfo(title,text){document.getElementById("infoTitle").textContent=title;document.getElementById("infoText").textContent=text;}
-function moveDir(d){const n=ROOMS[S.room].views;S.view=(S.view+d+n)%n;save();render();}
-function goRoom(r,v=0){if(!canEnter(r)){toast("まだ入れない。");return;}S.room=r;S.view=v;save();render();}
-function canEnter(r){
- if(r==="observation"||r==="corridor")return true;
- if(r==="power")return S.chapter>=1;
- if(r==="archive")return S.chapter>=2;
- if(r==="optics")return S.chapter>=3;
- if(r==="control")return S.chapter>=4;
- if(r==="gate")return S.chapter>=6;
- return false;
-}
-function h(id,label,x,y,w,h,onclick,pulse=false){
- return `<g class="hotspot ${pulse?'pulse':''}" onclick="${onclick}"><rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" fill="rgba(210,240,255,.0)" font-size="18">${label}</text></g>`;
-}
-function baseSvg(inner){
- return `<svg id="sceneArt" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
- <defs><linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#17212b"/><stop offset="1" stop-color="#080c10"/></linearGradient>
- <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18222b"/><stop offset=".65" stop-color="#0b1016"/><stop offset="1" stop-color="#06090d"/></linearGradient>
- <radialGradient id="lamp"><stop stop-color="#9de4ff" stop-opacity=".55"/><stop offset="1" stop-color="#9de4ff" stop-opacity="0"/></radialGradient>
- </defs>${inner}</svg>`;
-}
-function roomShell(extra=""){
- return `<rect width="800" height="550" fill="url(#wall)"/>
- <polygon points="0,380 800,350 800,550 0,550" fill="url(#floor)"/>
- <path d="M0 380L800 350M140 550L220 370M330 550L360 365M515 550L500 362M700 550L640 356" stroke="#263645" stroke-width="2" opacity=".55"/>
- <rect x="90" y="42" width="620" height="22" rx="10" fill="#182633"/><rect x="280" y="47" width="240" height="12" rx="6" fill="#8edfff" opacity=".45"/>
- <ellipse cx="400" cy="65" rx="260" ry="120" fill="url(#lamp)" opacity=".18"/>${extra}`;
-}
-
-function render(){
- updateUI();
- const key=S.room+":"+S.view;
- let svg="",title="",text="";
- if(S.room==="observation"){
-  if(S.view===0){
-   svg=baseSvg(roomShell(`
-    <rect x="300" y="115" width="200" height="245" rx="8" fill="#070a0e" stroke="#34495b" stroke-width="5"/>
-    <rect x="325" y="148" width="150" height="58" rx="6" fill="#0e2634" stroke="#3d6680"/>
-    <text x="400" y="182" text-anchor="middle" fill="#9bdcf5" font-size="19">LOCKED</text>
-    <circle cx="465" cy="270" r="7" fill="#d2a540"/>
-    ${h("door","door",295,108,215,262,"inspectDoor()",S.chapter===0)}
-    <rect x="565" y="130" width="100" height="98" rx="8" fill="#101821" stroke="#3b4d60"/>
-    <circle cx="615" cy="177" r="35" fill="#e5e6dd" stroke="#83909d" stroke-width="4"/>
-    <path d="M615 177L615 150M615 177L638 186" stroke="#20252b" stroke-width="4"/>
-    <text x="615" y="220" text-anchor="middle" fill="#9fb0c1" font-size="12">14:37</text>
-    ${h("clock","clock",560,125,110,110,"inspectClock()",true)}
-    <rect x="70" y="250" width="175" height="110" rx="6" fill="#111923" stroke="#314458"/>
-    <rect x="88" y="266" width="115" height="55" rx="4" fill="#102b3a" stroke="#3b6d89"/>
-    <text x="145" y="298" text-anchor="middle" fill="#9ee2ff" font-size="15">15:12:08</text>
-    ${h("terminal","terminal",65,245,190,122,"inspectTerminal()",true)}
-   `));
-   title="観測室・正面"; text="正面扉、壁掛け時計、時刻端末。扉の第一認証が起動している。";
-  }else if(S.view===1){
-   svg=baseSvg(roomShell(`
-    <rect x="80" y="225" width="470" height="160" rx="9" fill="#111923" stroke="#304357"/>
-    <rect x="105" y="195" width="180" height="110" rx="6" fill="#0b1219" stroke="#32485d"/>
-    <path d="M125 225h135M125 245h115M125 265h128" stroke="#8095aa" stroke-width="5" opacity=".45"/>
-    ${h("note","note",100,190,190,120,"inspectSyncNote()",true)}
-    <rect x="405" y="185" width="120" height="105" rx="8" fill="#0d151d" stroke="#42556a"/>
-    <path d="M430 220h70M430 242h70M430 264h45" stroke="#7ea4b9" stroke-width="4" opacity=".5"/>
-    ${h("drawer","drawer",390,175,150,125,"inspectDrawer()")}
-   `));
-   title="観測室・机"; text="机の上に保守ノート。右には鍵付き引き出し。";
-  }else if(S.view===2){
-   svg=baseSvg(roomShell(`
-    <rect x="170" y="155" width="220" height="210" rx="9" fill="#0f171f" stroke="#34495c"/>
-    <rect x="195" y="180" width="170" height="120" rx="6" fill="#071018" stroke="#41657b"/>
-    <text x="280" y="220" text-anchor="middle" fill="#82d9ff" font-size="15">OBS-0</text>
-    <text x="280" y="248" text-anchor="middle" fill="#8ba4b6" font-size="12">RECOVERY REQUIRED</text>
-    ${h("pc","pc",160,145,240,230,"inspectPC()")}
-    <rect x="500" y="130" width="155" height="245" rx="8" fill="#0c1219" stroke="#34495c"/>
-    <circle cx="580" cy="200" r="32" fill="#111e27" stroke="#3b5a6f"/>
-    <path d="M580 200L626 154" stroke="#647889" stroke-width="8"/>
-    <text x="577" y="310" text-anchor="middle" fill="#8fa2b5" font-size="12">CAM-3</text>
-    ${h("cam","cam",490,120,175,270,"inspectCamera()")}
-   `));
-   title="観測室・PC"; text="復旧待ちの端末と、天井へ向いた監視カメラ。";
+const BASE={chapter:0,room:'classroom',view:0,flags:{},items:[],clues:[],logs:[],hint:{},ending:null};let S=JSON.parse(JSON.stringify(BASE));
+const rooms={classroom:{name:'2年3組',views:4,pos:[2,4]},hall:{name:'2階廊下',views:4,pos:[2,3]},staff:{name:'職員室',views:4,pos:[1,3]},science:{name:'理科室',views:4,pos:[3,3]},broadcast:{name:'放送室',views:4,pos:[2,2]},old:{name:'旧校舎階段',views:4,pos:[2,1]},rooftop:{name:'屋上前',views:2,pos:[2,0]}};
+function sv(){localStorage.setItem('afterschoolSave',JSON.stringify(S));ui()}function ld(){let x=localStorage.getItem('afterschoolSave');if(x)try{S={...BASE,...JSON.parse(x)}}catch(e){}}
+function startGame(){S=JSON.parse(JSON.stringify(BASE));localStorage.removeItem('afterschoolSave');document.getElementById('prologue').classList.add('hidden');introSequence()}function continueGame(){ld();document.getElementById('prologue').classList.add('hidden');render()}
+function showIntro(){sheet(`<h2>あらすじ</h2><p>放課後の教室で目を覚ましたあなた。完全下校時刻はとうに過ぎ、校舎には人の気配がない。なぜ自分だけがここにいるのか——身近な記録を辿って学校から脱出する。</p><p>スマホ、黒板、鍵当番表、放送記録——身近なものを調べながら、なぜ自分だけが学校に残っているのかを追う。</p><p class="muted">左右で4面の壁を見回し、気になる物をタップ。重要な謎はその時点で得られる証拠だけで解けます。</p>`)}
+function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。蛍光灯は半分消え、窓の外はもう暗い。</p><div class="dialog"><div class="name">自分</div>「……寝てた？」</div><p>スマホを手に取る。時刻は18:42。通知はない。</p><div class="dialog"><div class="name">自分</div>「みんな、帰ったのか……？」</div><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。圏外。バッテリー31%。');addLog('18:42、2年3組の教室で目を覚ました。');sv();render()">起き上がる</button>`)}
+function closeSheet(){document.getElementById('overlay').classList.remove('show')}function sheet(h){document.getElementById('sheet').innerHTML=h;document.getElementById('overlay').classList.add('show')}function toast(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}function addLog(t){if(!S.logs.includes(t))S.logs.push(t)}function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});toast('入手：'+name)}}function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog('手掛かり「'+name+'」');toast('手掛かり追加：'+name)}}function hasClue(id){return !!S.clues.find(x=>x.id===id)}function hasItem(id){return !!S.items.find(x=>x.id===id)}function turn(d){S.view=(S.view+d+rooms[S.room].views)%rooms[S.room].views;sv();render()}function can(r){if(r==='classroom'||r==='hall')return true;if(r==='staff')return S.chapter>=1;if(r==='science')return S.chapter>=2&&hasItem('staffKey');if(r==='broadcast')return S.chapter>=3&&hasItem('keyTag');if(r==='old')return S.chapter>=4;if(r==='rooftop')return S.chapter>=5;return false}function go(r){if(!can(r)){toast('まだ入れない。');return}S.room=r;S.view=0;sv();render()}
+function ui(){document.getElementById('chapTxt').textContent='CHAPTER '+S.chapter;document.getElementById('chapter').textContent='CH.'+S.chapter;document.getElementById('where').textContent=rooms[S.room].name;document.getElementById('wall').textContent='壁 '+(S.view+1)+'/'+rooms[S.room].views;renderMap()}
+function renderMap(){let cells=[];for(let y=0;y<5;y++)for(let x=0;x<5;x++){let r=Object.keys(rooms).find(k=>rooms[k].pos[0]===x&&rooms[k].pos[1]===y);if(!r){cells.push('<div class="mapcell"></div>');continue}let unlocked=can(r),here=S.room===r;cells.push(`<div class="mapcell ${unlocked?'open':''} ${here?'here':''}">${unlocked?rooms[r].name:'？'}${here?'<span class="arrow">▲</span>':''}</div>`)}document.getElementById('map').innerHTML=cells.join('')}
+function hot(x,y,w,h,fn){return `<g class="hot" onclick="${fn}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/></g>`}function lab(t,x,y){return `<text class="label" x="${x}" y="${y}" text-anchor="middle">${t}</text>`}function shell(inner){
+  let r=S.room,v=S.view,b="";
+  if(r==="classroom"){
+    b=`<rect width="800" height="550" fill="#e8e0d3"/>
+    <rect y="390" width="800" height="160" fill="#9a7654"/>
+    <path d="M0 430h800M0 480h800M0 530h800" stroke="#7b5c41" stroke-width="3" opacity=".55"/>
+    <rect x="548" y="92" width="205" height="238" fill="#758a95" stroke="#f0e8da" stroke-width="8"/>
+    <path d="M650 92v238M548 211h205" stroke="#e1dbcf" stroke-width="5"/>
+    <path d="M565 315l58-44 46 25 72-63" fill="none" stroke="#3f5054" stroke-width="8" opacity=".5"/>
+    <rect x="42" y="62" width="715" height="16" fill="#fff9ee"/>
+    <path d="M40 372h720" stroke="#7d6d5b" stroke-width="5"/>`;
+  }else if(r==="hall"){
+    b=`<rect width="800" height="550" fill="#e7e2d8"/>
+    <polygon points="0,550 800,550 602,305 198,305" fill="#b8ad9a"/>
+    <path d="M198 305L0 550M602 305l198 245" stroke="#8d8170" stroke-width="4"/>
+    <rect x="0" y="72" width="158" height="290" fill="#738791" stroke="#e7e2d8" stroke-width="8"/>
+    <path d="M79 72v290M0 217h158" stroke="#ded9cf" stroke-width="5"/>
+    <rect x="648" y="95" width="120" height="258" fill="#d8cfc0" stroke="#a99b87" stroke-width="5"/>
+    <rect x="347" y="64" width="106" height="14" rx="7" fill="#fffdf3"/>`;
+  }else if(r==="staff"){
+    b=`<rect width="800" height="550" fill="#e0ddd4"/>
+    <rect y="405" width="800" height="145" fill="#aaa69d"/>
+    <rect x="42" y="88" width="716" height="278" fill="#efebe2"/>
+    <rect x="73" y="298" width="654" height="82" fill="#987454"/>
+    <path d="M120 298v-100M350 298v-108M590 298v-94" stroke="#655345" stroke-width="12"/>
+    <rect x="302" y="55" width="196" height="15" rx="7" fill="#fffdf5"/>
+    <rect x="650" y="110" width="82" height="150" fill="#d7d0c4" stroke="#a99c88" stroke-width="4"/>`;
+  }else if(r==="science"){
+    b=`<rect width="800" height="550" fill="#dcd9d0"/>
+    <rect y="405" width="800" height="145" fill="#8d8a84"/>
+    <rect x="35" y="90" width="730" height="132" fill="#edf0e8" stroke="#aaa79f" stroke-width="4"/>
+    <path d="M105 90v132M180 90v132M620 90v132M695 90v132" stroke="#b7b4ad" stroke-width="5"/>
+    <rect x="58" y="320" width="684" height="86" fill="#3b3f3c"/>
+    <path d="M105 406v125M695 406v125" stroke="#514e48" stroke-width="18"/>
+    <path d="M220 320v-38q0-25 24-25t24 25v38" fill="none" stroke="#8c918d" stroke-width="7"/>`;
+  }else if(r==="broadcast"){
+    b=`<rect width="800" height="550" fill="#cec7ba"/>
+    <rect y="405" width="800" height="145" fill="#786b5e"/>
+    <rect x="52" y="78" width="305" height="224" fill="#77858c" stroke="#665e54" stroke-width="9"/>
+    <rect x="397" y="84" width="345" height="248" fill="#ded6c9" stroke="#9a8d79" stroke-width="5"/>
+    <path d="M423 130h294M423 176h294M423 222h294M423 268h294" stroke="#b5a994" stroke-width="4"/>
+    <rect x="128" y="344" width="544" height="72" fill="#504940"/>
+    <circle cx="220" cy="380" r="12" fill="#8e9da3"/><circle cx="265" cy="380" r="12" fill="#8e9da3"/>`;
+  }else if(r==="old"){
+    b=`<rect width="800" height="550" fill="#8c857a"/>
+    <rect y="405" width="800" height="145" fill="#51463b"/>
+    <path d="M0 120h800M0 250h800" stroke="#746c62" stroke-width="8"/>
+    <path d="M88 0v405M245 0v405M565 0v405M722 0v405" stroke="#675f54" stroke-width="10"/>
+    <rect x="64" y="80" width="192" height="255" fill="#344147" stroke="#706960" stroke-width="8"/>
+    <path d="M160 80v255M64 205h192" stroke="#777168" stroke-width="5"/>
+    <path d="M520 82l100 50-86 59 111 55-96 72" fill="none" stroke="#62594e" stroke-width="5"/>
+    <path d="M300 405l35-405M470 405l-20-405" stroke="#776c5f" stroke-width="6" opacity=".5"/>`;
   }else{
-   svg=baseSvg(roomShell(`
-    <rect x="120" y="175" width="560" height="200" rx="12" fill="#101820" stroke="#34485b"/>
-    <text x="400" y="215" text-anchor="middle" fill="#8ea4b7" font-size="14">EMERGENCY EQUIPMENT</text>
-    <rect x="160" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
-    <rect x="285" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
-    <rect x="410" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
-    <rect x="535" y="240" width="90" height="85" rx="7" fill="#141d24" stroke="#46586b"/>
-    ${h("cab","cab",110,165,580,220,"inspectCabinet()")}
-   `));
-   title="観測室・保安装備"; text="非常用キャビネット。まだ使えそうな物が残っている。";
+    b=`<rect width="800" height="550" fill="#39434c"/>
+    <rect y="405" width="800" height="145" fill="#777879"/>
+    <rect x="52" y="58" width="696" height="342" fill="#d6d2c9" stroke="#a39d91" stroke-width="6"/>
+    <rect x="568" y="98" width="128" height="182" fill="#17242c" stroke="#8d8c86" stroke-width="7"/>
+    <circle cx="635" cy="145" r="4" fill="#dbe3e6"/>
+    <rect x="90" y="335" width="620" height="11" fill="#aaa59a"/>`;
   }
- } else if(S.room==="corridor"){
-   if(S.view===0){
-    svg=baseSvg(roomShell(`
-     <path d="M250 120L550 120L680 390L120 390Z" fill="#090e13" stroke="#2e4052" stroke-width="4"/>
-     <rect x="335" y="155" width="130" height="195" rx="6" fill="#080b0e" stroke="#405468"/>
-     <text x="400" y="255" text-anchor="middle" fill="#7694aa" font-size="13">CONTROL</text>
-     ${h("control","control",325,145,150,215,"goRoom('control')")}
-     <rect x="105" y="190" width="115" height="165" fill="#0c1116" stroke="#394b5d"/>
-     <text x="162" y="272" text-anchor="middle" fill="#7694aa" font-size="12">POWER</text>
-     ${h("power","power",95,180,135,185,"goRoom('power')")}
-     <rect x="580" y="190" width="115" height="165" fill="#0c1116" stroke="#394b5d"/>
-     <text x="637" y="272" text-anchor="middle" fill="#7694aa" font-size="12">ARCHIVE</text>
-     ${h("archive","archive",570,180,135,185,"goRoom('archive')")}
-    `));
-    title="研究区画・中央廊下"; text="電源制御室、記録保全室、中央制御室へ分岐している。";
-   }else if(S.view===1){
-    svg=baseSvg(roomShell(`
-      <rect x="145" y="120" width="220" height="245" rx="8" fill="#081018" stroke="#3b5368"/>
-      <text x="255" y="245" text-anchor="middle" fill="#7395aa" font-size="15">OPTICS LAB</text>
-      ${h("optics","optics",135,110,240,265,"goRoom('optics')")}
-      <rect x="500" y="160" width="150" height="160" rx="8" fill="#111921" stroke="#41566b"/>
-      <path d="M525 195h100M525 220h88M525 245h96M525 270h72" stroke="#88a3b7" stroke-width="4" opacity=".4"/>
-      ${h("sign","sign",490,150,170,180,"inspectDirectory()")}
-    `));
-    title="研究区画・東廊下"; text="光学実験室への扉と施設案内板。";
-   }else{
-    svg=baseSvg(roomShell(`
-      <rect x="280" y="135" width="240" height="225" rx="10" fill="#070b0f" stroke="#3a5267" stroke-width="4"/>
-      <text x="400" y="210" text-anchor="middle" fill="#c0d0dc" font-size="15">OBSERVATION 0</text>
-      <text x="400" y="238" text-anchor="middle" fill="#758fa4" font-size="12">AUTHORIZED PERSONNEL ONLY</text>
-      ${h("obs","obs",270,125,260,245,"goRoom('observation')")}
-    `));
-    title="研究区画・西廊下"; text="最初の観測室へ戻る扉。";
-   }
- } else if(S.room==="power"){
-   if(S.view===0){
-    svg=baseSvg(roomShell(`
-      <rect x="130" y="110" width="540" height="285" rx="10" fill="#0b1219" stroke="#3b5066"/>
-      <text x="400" y="145" text-anchor="middle" fill="#8ca4b8" font-size="15">POWER DISTRIBUTION PANEL</text>
-      <circle cx="220" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="220" y="242" text-anchor="middle" fill="#ffd166">3.0</text>
-      <circle cx="350" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="350" y="242" text-anchor="middle" fill="#ffd166">5.0</text>
-      <circle cx="480" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="480" y="242" text-anchor="middle" fill="#ffd166">7.0</text>
-      <circle cx="610" cy="235" r="35" fill="#111d26" stroke="#4a6276"/><text x="610" y="242" text-anchor="middle" fill="#ffd166">11.0</text>
-      ${h("panel","panel",120,100,560,305,"powerPuzzle()",S.chapter===1)}
-    `));
-    title="電源制御室・配電盤"; text="4系統の補助回路。中央制御室の非常電源を復旧できそうだ。";
-   }else if(S.view===1){
-    svg=baseSvg(roomShell(`
-      <rect x="150" y="160" width="500" height="200" rx="9" fill="#111923" stroke="#394e62"/>
-      <text x="400" y="198" text-anchor="middle" fill="#95adbf" font-size="15">MAINTENANCE RULE</text>
-      <text x="180" y="235" fill="#91a6b8" font-size="14">・Main bus target = 16.0</text>
-      <text x="180" y="270" fill="#91a6b8" font-size="14">・Never enable adjacent high-load lines together</text>
-      <text x="180" y="305" fill="#91a6b8" font-size="14">・Line C is isolated during OBS-0 protocol</text>
-      ${h("rule","rule",140,150,520,220,"inspectPowerRule()",true)}
-    `));
-    title="電源制御室・保守規程"; text="復旧時の安全規程が掲示されている。";
-   }else{
-    svg=baseSvg(roomShell(`
-      <rect x="250" y="155" width="300" height="210" rx="8" fill="#0c141c" stroke="#3a5064"/>
-      <path d="M285 205h230M285 240h190M285 275h210M285 310h160" stroke="#7f9caf" stroke-width="5" opacity=".45"/>
-      ${h("log","log",240,145,320,230,"inspectPowerLog()")}
-    `));
-    title="電源制御室・復旧ログ"; text="過去の復旧記録。系統名と負荷値の対応が残っている。";
-   }
- } else if(S.room==="archive"){
-   if(S.view===0){
-    svg=baseSvg(roomShell(`
-      <rect x="125" y="100" width="550" height="300" rx="10" fill="#0b131b" stroke="#3b5267"/>
-      <text x="400" y="140" text-anchor="middle" fill="#91aabd" font-size="15">AUDIT TERMINAL</text>
-      <rect x="165" y="170" width="470" height="180" rx="6" fill="#071019" stroke="#325670"/>
-      <path d="M190 205h400M190 235h360M190 265h410M190 295h325" stroke="#6d9bb7" stroke-width="4" opacity=".38"/>
-      ${h("audit","audit",115,90,570,320,"archivePuzzle()",S.chapter===2)}
-    `));
-    title="記録保全室・監査端末"; text="入退室・カメラ・認証サーバの署名付きログを照合できる。";
-   }else if(S.view===1){
-    svg=baseSvg(roomShell(`
-      <rect x="130" y="120" width="220" height="260" rx="8" fill="#101821" stroke="#3b5064"/>
-      <text x="240" y="158" text-anchor="middle" fill="#9bafc0" font-size="13">CAMERA STATUS</text>
-      <text x="160" y="205" fill="#90a7b8" font-size="13">13:58 CAM-3 servo fault</text>
-      <text x="160" y="238" fill="#90a7b8" font-size="13">14:00 fixed upward</text>
-      <text x="160" y="271" fill="#90a7b8" font-size="13">14:01 stream lost</text>
-      ${h("camstat","camstat",120,110,240,280,"inspectCamStatus()",true)}
-      <rect x="450" y="140" width="210" height="200" rx="8" fill="#0f171e" stroke="#3b5064"/>
-      <text x="555" y="180" text-anchor="middle" fill="#9bafc0" font-size="13">BADGE SERVER</text>
-      <text x="480" y="225" fill="#90a7b8" font-size="13">Signed time source</text>
-      <text x="480" y="258" fill="#90a7b8" font-size="13">±0.2 sec</text>
-      ${h("badge","badge",440,130,230,220,"inspectBadgeServer()")}
-    `));
-    title="記録保全室・設備記録"; text="監視カメラ障害と認証サーバの仕様。";
-   }else{
-    svg=baseSvg(roomShell(`
-      <rect x="245" y="120" width="310" height="260" rx="10" fill="#0c141b" stroke="#3b5367"/>
-      <text x="400" y="165" text-anchor="middle" fill="#9eb3c4" font-size="14">ARCHIVE DRAWER A-07</text>
-      <rect x="285" y="205" width="230" height="90" rx="5" fill="#141d25" stroke="#445a6e"/>
-      ${h("archiveDrawer","drawer",235,110,330,280,"inspectArchiveDrawer()")}
-    `));
-    title="記録保全室・保管庫"; text="A-07と刻まれた物理保管庫。";
-   }
- } else if(S.room==="optics"){
-   if(S.view===0){
-    svg=baseSvg(roomShell(`
-      <rect x="90" y="280" width="620" height="70" rx="8" fill="#101820" stroke="#344a5d"/>
-      <circle cx="160" cy="235" r="12" fill="#ff5d6c"/><path d="M172 235H650" stroke="#ff5d6c" stroke-width="4" opacity=".75"/>
-      <rect x="250" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M255 255L295 215" stroke="#aee8ff" stroke-width="5"/>
-      <rect x="390" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M395 215L435 255" stroke="#aee8ff" stroke-width="5"/>
-      <rect x="525" y="195" width="50" height="80" rx="4" fill="#19232d" stroke="#4c6578"/><path d="M530 255L570 215" stroke="#aee8ff" stroke-width="5"/>
-      ${h("laser","laser",80,180,630,185,"opticsPuzzle()",S.chapter===3)}
-    `));
-    title="光学実験室・遅延ライン"; text="3枚の可動ミラーを持つレーザー遅延系。扉用の光学キー生成器につながっている。";
-   }else if(S.view===1){
-    svg=baseSvg(roomShell(`
-      <rect x="130" y="120" width="540" height="260" rx="9" fill="#0d151d" stroke="#3b5266"/>
-      <text x="400" y="158" text-anchor="middle" fill="#97afc1" font-size="14">PATH CALIBRATION</text>
-      <path d="M180 305L270 215L365 305L455 215L620 305" fill="none" stroke="#6bd8ff" stroke-width="4"/>
-      <circle cx="180" cy="305" r="8" fill="#ff6674"/><circle cx="620" cy="305" r="8" fill="#7deda9"/>
-      <text x="190" y="200" fill="#91a7b8" font-size="13">Shortest valid path uses exactly 2 reflections.</text>
-      <text x="190" y="235" fill="#91a7b8" font-size="13">Security path must use 3 reflections.</text>
-      ${h("calib","calib",120,110,560,280,"inspectOpticsRule()",true)}
-    `));
-    title="光学実験室・校正図"; text="遅延ラインの規則とセキュリティ用の光路条件。";
-   }else{
-    svg=baseSvg(roomShell(`
-      <rect x="280" y="150" width="240" height="200" rx="8" fill="#0b151d" stroke="#3e596d"/>
-      <circle cx="400" cy="245" r="60" fill="#0c202d" stroke="#4b7a93"/>
-      <circle cx="400" cy="245" r="18" fill="#87dcff" opacity=".7"/>
-      ${h("keygen","keygen",270,140,260,220,"inspectKeyGen()")}
-    `));
-    title="光学実験室・キー生成器"; text="正しい遅延光路が成立すると、ワンタイム光学キーを生成する。";
-   }
- } else if(S.room==="control"){
-   if(S.view===0){
-    svg=baseSvg(roomShell(`
-      <rect x="115" y="110" width="570" height="290" rx="10" fill="#0b131a" stroke="#3b5368"/>
-      <rect x="155" y="145" width="490" height="190" rx="7" fill="#071018" stroke="#32617a"/>
-      <text x="400" y="185" text-anchor="middle" fill="#8edfff" font-size="15">ZERO PROJECT / CONTROL</text>
-      <text x="190" y="225" fill="#82a0b4" font-size="13">Identity state: CONFLICT</text>
-      <text x="190" y="258" fill="#82a0b4" font-size="13">Observer record: 3 candidates</text>
-      <text x="190" y="291" fill="#82a0b4" font-size="13">Final gate: LOCKED</text>
-      ${h("main","main",105,100,590,310,"controlPuzzle()",S.chapter===4)}
-    `));
-    title="中央制御室・主端末"; text="ZERO計画の制御端末。観測者記録の信頼性を判定する必要がある。";
-   }else if(S.view===1){
-    svg=baseSvg(roomShell(`
-      <rect x="150" y="115" width="500" height="275" rx="10" fill="#111921" stroke="#3b5165"/>
-      <text x="400" y="155" text-anchor="middle" fill="#9db2c2" font-size="14">EVIDENCE PRIORITY POLICY</text>
-      <text x="185" y="205" fill="#91a9bb" font-size="13">1. Cryptographically signed machine logs</text>
-      <text x="185" y="240" fill="#91a9bb" font-size="13">2. Independent physical sensor records</text>
-      <text x="185" y="275" fill="#91a9bb" font-size="13">3. Human-authored reports</text>
-      <text x="185" y="310" fill="#91a9bb" font-size="13">4. Reconstructed video / memory</text>
-      ${h("policy","policy",140,105,520,295,"inspectEvidencePolicy()",true)}
-    `));
-    title="中央制御室・証拠規程"; text="施設内で証拠が競合した場合の優先順位。";
-   }else if(S.view===2){
-    svg=baseSvg(roomShell(`
-      <rect x="120" y="125" width="560" height="250" rx="10" fill="#0e161e" stroke="#3b5267"/>
-      <text x="400" y="165" text-anchor="middle" fill="#9caebe" font-size="14">PROJECT ZERO — PURPOSE</text>
-      <text x="155" y="210" fill="#8fa7ba" font-size="13">“Observation does not merely record a subject.</text>
-      <text x="155" y="240" fill="#8fa7ba" font-size="13">It changes what the subject believes to be true.”</text>
-      <text x="155" y="300" fill="#8fa7ba" font-size="13">Memory rewriting subsystem: OBS-0 only.</text>
-      ${h("project","project",110,115,580,270,"inspectProjectFile()")}
-    `));
-    title="中央制御室・計画資料"; text="ZERO計画の目的と、観測室0だけに搭載された記憶処理系。";
-   }else{
-    svg=baseSvg(roomShell(`
-      <rect x="275" y="135" width="250" height="235" rx="12" fill="#080c10" stroke="#415b70" stroke-width="4"/>
-      <circle cx="400" cy="245" r="70" fill="#0c1821" stroke="#42627a"/>
-      <path d="M360 245h80M400 205v80" stroke="#698ba3" stroke-width="5"/>
-      ${h("gatectrl","gatectrl",265,125,270,255,"prepareFinal()",S.chapter>=5)}
-    `));
-    title="中央制御室・隔離扉制御"; text="最後の隔離扉へ進むための認証装置。";
-   }
- } else if(S.room==="gate"){
-   svg=baseSvg(roomShell(`
-      <rect x="245" y="90" width="310" height="330" rx="14" fill="#06090c" stroke="#425e74" stroke-width="5"/>
-      <circle cx="400" cy="235" r="92" fill="#0b161e" stroke="#38566b" stroke-width="4"/>
-      <circle cx="400" cy="235" r="55" fill="#0e2634" stroke="#4a7892"/>
-      <text x="400" y="242" text-anchor="middle" fill="#a2e4ff" font-size="18">ZERO</text>
-      ${h("final","final",235,80,330,350,"finalDecision()",true)}
-    `));
-   title="最終隔離扉"; text="すべての記録がここに収束する。最後に選ぶのは、暗証番号ではなく『どの事実を信じるか』だ。";
- }
- document.getElementById("sceneSvg").innerHTML=svg;
- setInfo(title,text);
- document.getElementById("leftBtn").style.visibility=ROOMS[S.room].views>1?"visible":"hidden";
- document.getElementById("rightBtn").style.visibility=ROOMS[S.room].views>1?"visible":"hidden";
- save();
+  return `<svg viewBox="0 0 800 550">${b}${inner}</svg>`
 }
-
-// CH0
-function inspectClock(){
- addClue("clock1437","停止した壁掛け時計","表示は14:37。秒針は停止している。背面ラベルは『中央時刻サーバ同期式』。");
- showSheet(`<h2>壁掛け時計</h2><p>表示は <span class="code">14:37</span>。秒針は完全に停止。</p><p>背面ラベル：<span class="code">TS-4 / CENTRAL SYNC</span></p><p>単独で見れば、故障しているだけかもしれない。</p>`);
-}
-function inspectTerminal(){
- addClue("signed1512","署名付き現在時刻","端末は中央時刻サーバから15:12:08を取得。署名検証は正常。");
- showSheet(`<h2>保守端末</h2><p>現在時刻：<span class="code">15:12:08</span></p><p>Time source: CENTRAL-TS<br>Signature: <span class="good">VALID</span><br>Last sync: 0.3 sec ago</p><p>この時刻は中央サーバにより暗号署名されている。</p>`);
-}
-function inspectSyncNote(){
- addClue("syncnote","時刻同期規程","室内時計TS-4は60秒ごとに中央サーバへ同期。同期不能が3分続けば表示を消灯する仕様。");
- showSheet(`<h2>時刻設備・保守ノート</h2><p>「TS-4型壁時計は60秒周期で中央時刻サーバと同期する。3分以上同期できない場合、誤認防止のため表示を消灯する。」</p><p class="warn">つまり、点灯したまま14:37を示す正常なTS-4と、署名付き15:12は同時には成立しない。</p>`);
-}
-function inspectDoor(){
- if(S.chapter>0){goRoom("corridor");return;}
- showSheet(`<h2>第一認証</h2><p>「中央時刻サーバが正常であると仮定する。現在時刻を偽って表示している装置を特定せよ。」</p>
- <button class="choice" onclick="answerCh0('clock')">壁掛け時計</button>
- <button class="choice" onclick="answerCh0('terminal')">保守端末</button>
- <button class="choice" onclick="answerCh0('pc')">PC</button>`);
-}
-function answerCh0(a){
- if(a!=="clock"){beep(180,.12);toast("認証失敗。証拠が足りない。");return;}
- if(!(hasClue("signed1512")&&hasClue("syncnote"))){toast("根拠を確認してから答えた方がよさそうだ。");return;}
- closeSheet();beep(760,.1);S.chapter=1;addLog("第一認証突破。研究区画への扉が開いた。");addItem("maintenance","保守アクセスカード","観測室の引き出しを開ける権限が付与された。");save();render();
-}
-function inspectDrawer(){
- if(!hasItem("maintenance")){showSheet("<h2>引き出し</h2><p>電子錠。保守権限が必要。</p>");return;}
- if(!hasItem("usb"))addItem("usb","復旧USB","OBS-0端末用。監査ログへの限定アクセスキー入り。");
- showSheet("<h2>引き出し</h2><p>保守カードで解錠した。中には復旧USBが一本。</p>");
-}
-function inspectPC(){
- if(!hasItem("usb")){showSheet("<h2>PC</h2><p>「RECOVERY MEDIA REQUIRED」</p>");return;}
- addClue("pcboot","PC起動履歴","14:42:31にSUBJECT-07資格情報でログイン。時刻サーバ署名は正常。");
- showSheet("<h2>OBS-0 PC</h2><p>復旧USBで監査領域を読み出した。</p><p class='code'>14:42:31 LOGIN / SUBJECT-07 / SIGNED</p>");
-}
-function inspectCamera(){
- addClue("camup","CAM-3の物理状態","カメラは天井方向で機械的に固着。現在も画角は天井のみ。");
- showSheet("<h2>監視カメラ CAM-3</h2><p>鏡筒は真上を向いて固着している。手では動かない。</p>");
-}
-function inspectCabinet(){
- if(!hasItem("flashlight"))addItem("flashlight","小型ライト","非常用。紫外LEDと白色LEDを切替可能。");
- showSheet("<h2>非常用キャビネット</h2><p>小型ライトを回収した。他は空。</p>");
-}
-
-// CH1
-function inspectPowerRule(){
- addClue("powerrule","非常電源の安全規程","目標負荷16.0。C系統はOBS-0中は隔離。高負荷(7以上)同士を同時投入禁止。");
- showSheet("<h2>非常電源・安全規程</h2><p>① Main bus target = <span class='code'>16.0</span><br>② Line C is isolated during OBS-0 protocol<br>③ High-load lines (7.0以上) cannot be enabled together.</p>");
-}
-function inspectPowerLog(){
- addClue("powernames","系統負荷対応","A=3.0、B=5.0、C=7.0、D=11.0。");
- showSheet("<h2>復旧ログ</h2><p class='code'>A 3.0 / B 5.0 / C 7.0 / D 11.0</p><p>前回の保守時に校正済み。</p>");
-}
-function powerPuzzle(){
- const vals=[3,5,7,11], names=["A","B","C","D"];
- if(!S.flags.pwr)S.flags.pwr=[false,false,false,false];
- const p=S.flags.pwr;
- let rows=names.map((n,i)=>`<div class="switchrow"><div><b>LINE ${n}</b> <span class="muted">${vals[i].toFixed(1)}</span></div><button class="switch ${p[i]?'on':''}" onclick="togglePwr(${i})"></button></div>`).join("");
- const total=p.reduce((a,v,i)=>a+(v?vals[i]:0),0);
- showSheet(`<h2>非常電源復旧</h2><p>規程を満たし、主母線を16.0にする。</p><div class="puzzleBoard">${rows}<p>現在値：<span class="code">${total.toFixed(1)}</span></p></div><button class="choice primary" onclick="checkPower()">投入する</button>`);
-}
-function togglePwr(i){if(!S.flags.pwr)S.flags.pwr=[false,false,false,false];S.flags.pwr[i]=!S.flags.pwr[i];powerPuzzle();}
-function checkPower(){
- const p=S.flags.pwr||[], vals=[3,5,7,11],total=p.reduce((a,v,i)=>a+(v?vals[i]:0),0);
- const ok=Math.abs(total-16)<.01 && !p[2] && !(p[2]&&p[3]);
- if(!ok){beep(170,.12);toast("安全規程を満たしていない。");return;}
- closeSheet();S.chapter=Math.max(S.chapter,2);flag("powerRestored");addLog("中央制御系の非常電源を復旧した。");addItem("fusekey","ヒューズ型データキー","配電盤から排出された保守用データキー。");render();
-}
-
-// CH2
-function inspectCamStatus(){
- addClue("camlog","CAM-3障害ログ","13:58サーボ故障、14:00天井方向で固定、14:01映像ストリーム喪失。");
- showSheet("<h2>CAM-3設備ログ</h2><p class='code'>13:58 SERVO FAULT<br>14:00 TILT FIXED UPWARD<br>14:01 VIDEO STREAM LOST</p>");
-}
-function inspectBadgeServer(){
- addClue("badgespec","認証サーバ仕様","入退室ログはサーバ署名付き。時刻誤差±0.2秒。後編集不可。");
- showSheet("<h2>認証サーバ</h2><p>Badge events are append-only and cryptographically signed.<br>Clock accuracy: ±0.2 sec.</p>");
-}
-function archivePuzzle(){
- if(!hasItem("usb")){showSheet("<h2>監査端末</h2><p>復旧USBが必要。</p>");return;}
- showSheet(`<h2>監査ログの矛盾</h2><p>次のうち、設備記録と物理的に両立しないものを選べ。</p>
- <button class="choice" onclick="answerArchive('A')"><b>A</b> 14:37:02　Badge server：SUBJECT-07 入室</button>
- <button class="choice" onclick="answerArchive('B')"><b>B</b> 14:37:05　CAM-3：SUBJECT-07の顔を映像認証</button>
- <button class="choice" onclick="answerArchive('C')"><b>C</b> 14:42:31　PC：SUBJECT-07資格情報でログイン</button>`);
-}
-function answerArchive(a){
- if(a!=="B"){beep(170,.12);toast("その記録は他の証拠と両立する。");return;}
- if(!hasClue("camlog")){toast("設備記録を確認した方がいい。");return;}
- closeSheet();S.chapter=Math.max(S.chapter,3);addClue("forgedvideo","存在しない入室映像","CAM-3停止後の14:37映像認証ログは偽造。");addLog("監査端末が記録Bを改竄データと判定した。");addItem("archiveToken","監査トークン","改竄記録を確定したことで発行された署名トークン。");save();render();
-}
-function inspectArchiveDrawer(){
- if(!(hasItem("fusekey")&&hasItem("archiveToken"))){showSheet("<h2>A-07保管庫</h2><p>二要素認証：保守データキー＋監査トークン。</p>");return;}
- addItem("lens","位相プレート","A-07保管庫に封印されていた光学部品。");
- addClue("Bphoto","研究員Bの写真断片","保管庫の紙資料。顔写真の右半分だけが残る。胸元に『B』のバッジ。");
- showSheet("<h2>A-07保管庫</h2><p>二要素認証が通った。位相プレートと、破れた職員写真を回収した。</p>");
-}
-
-// CH3
-function inspectOpticsRule(){
- addClue("opticsrule","セキュリティ光路条件","キー生成には3枚すべてのミラーで反射し、最終光が右側受光器へ到達する必要がある。");
- showSheet("<h2>光路校正規則</h2><p>通常校正は2反射。セキュリティキーは<span class='warn'>3枚すべて</span>を使用し、右側受光器へ到達させる。</p>");
-}
-function opticsPuzzle(){
- if(!hasItem("lens")){showSheet("<h2>遅延ライン</h2><p>中央ソケットに位相プレートが欠けている。</p>");return;}
- if(!S.flags.mirrors)S.flags.mirrors=[0,0,0];
- const m=S.flags.mirrors;
- showSheet(`<h2>光学キー生成</h2><p>各ミラーをタップして「／」「＼」を切り替える。3枚すべてで反射し、右側受光器へ導け。</p>
- <div class="mirrorGrid">
- <button class="mirror" onclick="rotM(0)">${m[0]?"＼":"／"}</button>
- <button class="mirror" onclick="rotM(1)">${m[1]?"＼":"／"}</button>
- <button class="mirror" onclick="rotM(2)">${m[2]?"＼":"／"}</button>
- </div>
- <div class="puzzleBoard"><div id="beamDiagram">${beamText()}</div></div>
- <button class="choice primary" onclick="checkOptics()">照射テスト</button>`);
-}
-function rotM(i){S.flags.mirrors[i]=1-S.flags.mirrors[i];opticsPuzzle();}
-function beamText(){
- const m=S.flags.mirrors||[0,0,0];
- const chars=m.map(x=>x?"＼":"／").join("　");
- return `<div class="center code">LASER → ${chars} → SENSOR</div><p class="muted center">正しい組合せでは、3枚すべてで光路が折り返される。</p>`;
-}
-function checkOptics(){
- const m=S.flags.mirrors||[];
- // Solution deliberately unique: / \ /
- if(m.join("")!=="010"){beep(190,.1);toast("受光器に届かない。");return;}
- closeSheet();S.chapter=Math.max(S.chapter,4);addItem("opticalKey","ワンタイム光学キー","中央制御端末の暗号領域を15分間だけ解除できる。");addLog("3反射のセキュリティ光路を成立させた。");save();render();
-}
-function inspectKeyGen(){showSheet("<h2>光学キー生成器</h2><p>"+(hasItem("opticalKey")?"緑色に点灯している。キーは生成済み。":"遅延ラインの正しい光路待ち。")+"</p>");}
-
-// CH4
-function inspectEvidencePolicy(){
- addClue("evidencePolicy","証拠優先順位","署名付き機械ログ > 独立物理センサ > 人間の報告 > 再構成映像・記憶。");
- showSheet("<h2>証拠の優先順位</h2><p>1. 暗号署名付き機械ログ<br>2. 独立した物理センサ記録<br>3. 人間が記述した報告<br>4. 再構成映像・記憶データ</p>");
-}
-function inspectProjectFile(){
- if(!hasItem("opticalKey")){showSheet("<h2>ZERO計画資料</h2><p>暗号化。ワンタイム光学キーが必要。</p>");return;}
- addClue("zeropurpose","ZERO計画の目的","OBS-0だけに記憶上書き系があり、観測対象の自己認識を改変する実験。");
- showSheet("<h2>ZERO計画 / 機密資料</h2><p>「観測は対象を記録するだけではない。対象が何を真実だと信じるかを変更する。」</p><p>Memory rewrite subsystem: <span class='warn'>OBS-0 ONLY</span></p>");
-}
-function controlPuzzle(){
- if(!S.flags.powerRestored){showSheet("<h2>主端末</h2><p>非常電源が不足している。</p>");return;}
- if(!hasItem("opticalKey")){showSheet("<h2>主端末</h2><p>暗号領域の解除に光学キーが必要。</p>");return;}
- showSheet(`<h2>観測者記録の信頼性</h2><p>どの記録を最も低信頼として隔離すべきか。証拠規程に従え。</p>
- <button class="choice" onclick="answerControl('A')"><b>A：認証サーバ</b><br>14:37 SUBJECT-07 badge accepted / signed</button>
- <button class="choice" onclick="answerControl('B')"><b>B：研究員報告</b><br>「映像で07本人を確認した」</button>
- <button class="choice" onclick="answerControl('C')"><b>C：生体センサ</b><br>14:40 room occupied / heartbeat detected</button>
- <button class="choice" onclick="answerControl('D')"><b>D：復元記憶</b><br>「私は被験者07である」</button>`);
-}
-function answerControl(a){
- if(a!=="D"){beep(180,.1);toast("より低い信頼階層が残っている。");return;}
- if(!(hasClue("evidencePolicy")&&hasClue("zeropurpose"))){toast("証拠規程とZERO計画資料を確認しよう。");return;}
- closeSheet();S.chapter=Math.max(S.chapter,5);
- addClue("memoryUntrusted","自己記憶は証拠にならない","OBS-0では記憶上書きが可能。『自分は07だ』という記憶は最低信頼。");
- addLog("主端末が自己記憶データを隔離。本人性判定が再開された。");
- addItem("identityShard","身元キー断片","研究員データベース照合に必要な暗号断片。");
- save();render();
-}
-
-// CH5
-function prepareFinal(){
- if(S.chapter<5){showSheet("<h2>隔離扉制御</h2><p>本人性判定が終わっていない。</p>");return;}
- if(!hasItem("identityShard"))return;
- showSheet(`<h2>身元照合</h2><p>研究員Bの写真断片と、現在の顔認証結果を照合する。</p>
- <div class="puzzleBoard"><p>顔認証：<span class="code">B = 98.7%</span></p><p>被験者07：顔テンプレート <span class="bad">未登録</span></p></div>
- <p>ただし、これだけでは「なぜBが07の資格情報を使ったか」は説明できない。</p>
- <button class="choice primary" onclick="identityReason()">理由を推理する</button>`);
-}
-function identityReason(){
- showSheet(`<h2>なぜ研究員BはSUBJECT-07で入室した？</h2>
- <button class="choice" onclick="answerIdentity('a')">自分が07だと思い込んでいたから</button>
- <button class="choice" onclick="answerIdentity('b')">被験者07を装い、OBS-0へ侵入するため</button>
- <button class="choice" onclick="answerIdentity('c')">認証サーバが故障していたから</button>`);
-}
-function answerIdentity(a){
- if(a!=="b"){beep(170,.12);toast("既存の署名ログと矛盾する。");return;}
- closeSheet();S.chapter=6;
- addClue("identityB","あなたは研究員B","Bは被験者07資格情報でOBS-0へ侵入。その後、記憶上書きを受けて自身を07と思い込んだ。");
- addLog("本人性判定：RESEARCHER-B。最終隔離扉が解錠準備に入った。");
- addItem("finalKey","最終認証キー","監査・光学・本人性の3系統認証を統合した鍵。");
- save();goRoom("gate",0);
-}
-
-// CH6-7 endings
-function finalDecision(){
- if(!hasItem("finalKey")){showSheet("<h2>最終隔離扉</h2><p>認証キーが不足。</p>");return;}
- showSheet(`<h2>最後の選択</h2><p>中央制御系は3つの処理を提示している。</p>
- <button class="choice primary" onclick="ending('true')"><b>監査ログを外部へ送信し、ZERO計画を停止</b><br><span class="muted">改竄記録、OBS-0記憶処理、研究員Bの侵入記録を公開する。</span></button>
- <button class="choice" onclick="ending('normal')"><b>身元だけ復旧して施設を退出</b><br><span class="muted">証拠は施設内に残す。</span></button>
- <button class="choice danger" onclick="ending('bad')"><b>OBS-0を再起動して記憶を初期化</b></button>`);
-}
-function ending(type){
- S.chapter=7;S.ending=type;save();beep(type==="true"?880:220,.22);
- if(type==="true"){
-  showSheet(`<div class="center"><div class="endingTitle good">TRUE END</div><h2>観測者は、観測されるまで存在しない</h2>
-  <p>あなたは研究員Bだった。ZERO計画の危険性に気づき、被験者07の資格情報を使ってOBS-0へ侵入した。</p>
-  <p>施設側は侵入者を“被験者”として処理し、記憶を書き換えた。偽造された監視映像は、その処理が正当だったことにするための後付けだった。</p>
-  <p>しかし署名付き時刻、設備障害、物理保管庫、光学キー——互いに独立した証拠だけは、改竄された物語に完全には従わなかった。</p>
-  <p class="warn">あなたは証拠一式を外部へ送信し、ZERO計画を停止する。</p><hr><p>扉が開く。外の空気は冷たい。</p>
-  <button class="choice primary" onclick="resetGame()">最初から</button></div>`);
- }else if(type==="normal"){
-  showSheet(`<div class="center"><div class="endingTitle">NORMAL END</div><h2>退出</h2><p>研究員Bとしての身元だけを復旧し、施設を出た。</p><p>翌朝、ZERO計画のサーバは遠隔から初期化された。あなたの手元には、何も証明できるものが残っていない。</p><p class="code">CASE STATUS: UNRESOLVED</p><button class="choice" onclick="resetGame()">最初から</button></div>`);
- }else{
-  showSheet(`<div class="center"><div class="endingTitle bad">BAD END</div><h2>第零観測室</h2><p>OBS-0を再起動した。</p><p>「観測者B。記憶初期化を開始します。」</p><p>視界が白くなる。</p><hr><p>次に目を覚ました時、壁掛け時計は14:37を示していた。</p><button class="choice danger" onclick="resetGame()">最初から</button></div>`);
- }
-}
-
-// miscellaneous
-function inspectDirectory(){showSheet("<h2>施設案内</h2><p>OBS-0：西<br>POWER：中央<br>ARCHIVE：中央<br>OPTICS：東<br>CONTROL：中央奥</p>");}
-function openMenu(){showSheet(`<h2>メニュー</h2><button class="choice" onclick="closeSheet()">ゲームに戻る</button><button class="choice" onclick="showPremise()">遊び方</button><button class="choice danger" onclick="resetGame()">セーブ削除 / 最初から</button><p class="muted">進行状況はこのブラウザのLocalStorageに自動保存されます。</p>`);}
-function openPanel(type){
- if(type==="items"){
-  let html="<h2>アイテム</h2>"+(S.items.length?S.items.map(x=>`<button class="choice ${S.selectedItem===x.id?'primary':''}" onclick="selectItem('${x.id}')"><b>${x.name}</b><br><span class="muted">${x.desc}</span></button>`).join(""):"<p>まだ何も持っていない。</p>");
-  html+=S.selectedItem?`<p class="good">選択中：${S.items.find(x=>x.id===S.selectedItem)?.name}</p>`:"<p class='muted'>アイテムを選ぶと、必要な場所で自動的に使用されます。</p>";
-  showSheet(html);
- }else if(type==="clues"){
-  showSheet("<h2>手掛かり</h2>"+(S.clues.length?S.clues.map(x=>`<div class="clue"><b>${x.name}</b><span>${x.desc}</span></div>`).join(""):"<p>まだ手掛かりはない。</p>"));
- }else if(type==="log"){
-  showSheet("<h2>行動ログ</h2>"+(S.logs.length?S.logs.slice().reverse().map(x=>`<div class="logEntry">${x}</div>`).join(""):"<p>ログはない。</p>"));
- }else if(type==="map"){
-  let rooms=Object.keys(ROOMS).map(r=>`<button class="choice ${S.room===r?'primary':''}" ${canEnter(r)?"":"disabled"} onclick="closeSheet();goRoom('${r}',0)">${ROOMS[r].name}${canEnter(r)?"":" <span class='muted'>LOCKED</span>"}</button>`).join("");
-  showSheet("<h2>施設マップ</h2>"+rooms);
- }else{
-  const hl=S.hint[S.chapter]||0;
-  showSheet(`<h2>ヒント</h2><div class="hintBox">${hintText(S.chapter,hl)}</div><button class="choice" onclick="moreHint()">もう少しヒント</button>`);
- }
-}
-function selectItem(id){S.selectedItem=S.selectedItem===id?null:id;save();openPanel("items");}
-function moreHint(){S.hint[S.chapter]=(S.hint[S.chapter]||0)+1;save();openPanel("hint");}
-function hintText(ch,l){
- const H={
- 0:["時計だけでは断定できない。『正しい現在時刻』と『時計の正常時の挙動』を別々に確認しよう。","保守端末の署名付き時刻と、机の同期規程を調べる。","正常なTS-4は3分同期できなければ消灯する。15:12なのに14:37で点灯している壁時計は仕様と両立しない。"],
- 1:["目標値だけでなく、安全規程による禁止条件がある。","Cは使えない。残りA=3、B=5、D=11で16になる組合せを探す。","B+D = 5+11 = 16。"],
- 2:["映像ログが存在することと、その時刻にカメラが映像を作れたことは別。","CAM-3の設備障害ログを見る。","14:01以降映像ストリームは失われているので、14:37の顔認証映像は成立しない。"],
- 3:["セキュリティ光路は3枚すべてを使う。","3枚の向きは左右対称になる。","左から ／ ＼ ／。"],
- 4:["『どれが正しいか』ではなく『最も低信頼か』。施設の証拠規程が鍵。","再構成された記憶は最下位。しかもOBS-0には記憶上書き機能がある。","『私は被験者07』という自己記憶を隔離する。"],
- 5:["顔認証だけでは侵入理由は説明できない。署名付きbadgeログは正常だった。","研究員Bが意図的に07の資格情報を使ったと考えると、すべてが繋がる。","BはZERO計画を止めるため被験者07を装って侵入し、その後記憶を書き換えられた。"],
- 6:["ここからは正解というより選択。ただし証拠を外へ残さないと、施設側が物語を再び書き換えられる。","TRUE ENDは証拠公開＋計画停止。"]
- };
- const arr=H[ch]||["これまでの手掛かりを整理しよう。"];return arr[Math.min(l,arr.length-1)];
-}
-
-load();
-document.getElementById("continueBtn").disabled=!localStorage.getItem("zeroRoomSaveV2");
-if(localStorage.getItem("zeroRoomSaveV2")) render();
+function render(){ui();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#16221d" stroke="#53675b" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#151c23" stroke="#435666"/><rect x="115" y="165" width="150" height="90" fill="#0d1821" stroke="#355a70"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#181d22" stroke="#4c5965"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#0f1922" stroke="#42576b"/><rect x="160" y="115" width="480" height="210" fill="#0b1218"/><circle cx="250" cy="205" r="55" fill="#1f2a33"/><circle cx="400" cy="205" r="55" fill="#1f2a33"/><circle cx="550" cy="205" r="55" fill="#1f2a33"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#13191f" stroke="#495a68" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#171e24" stroke="#455665"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#10161c" stroke="#435564"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#10161c" stroke="#435564"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#18212a" stroke="#465b6c"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#10161c" stroke="#435564"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#171e24" stroke="#435564"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#10161c" stroke="#435564"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#151c23" stroke="#435666"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#355a70"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#141b22" stroke="#455867"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#455867"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#0b1218" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#455867"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#111820" stroke="#455867"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#10161c" stroke="#435564"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#455867"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#10161c" stroke="#435564" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#435564"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
+function blackboard(){addClue('schedule','黒板の予定','17:30 体育館：バスケ部、18:00完全下校。');sheet(`<h2>黒板</h2><p>今日の予定が残っている。</p><p class="code">17:30　体育館：バスケ部<br>18:00　完全下校</p><div class="dialog"><div class="name">自分</div>「18時……もう、とっくに過ぎてる。」</div>`)}function clock(){addClue('clock','教室の壁時計','17:18で止まっている。秒針は動かない。');sheet(`<h2>壁時計</h2><p>17:18で止まっている。</p><div class="dialog"><div class="name">自分</div>「電池切れかな。」</div>`)}function teacherDesk(){sheet(`<h2>教卓PC</h2><p>学校アカウントのログイン画面。画面右下には<span class="code">18:43</span>。</p><div class="dialog"><div class="name">自分</div>「18:43……。」</div>`)}function lockers(){addItem('keyTag','小さな鍵','ロッカーの隙間に落ちていた。札に「放送」。');sheet('<h2>ロッカー</h2><p>いくつか開いている。床に小さな鍵が落ちていた。</p>')}function classPhoto(){addClue('photo','文化祭のクラス写真','去年の文化祭。あなたの姿はあるが、写真の端に一人だけ顔が破れている生徒がいる。');sheet(`<h2>クラス写真</h2><p>去年の文化祭。みんな笑っている。</p><div class="dialog"><div class="name">自分</div>「……この破れ方、わざと？」</div>`)}function umbrella(){sheet('<h2>傘立て</h2><p>傘が一本だけ残っている。名札は剥がされている。</p>')}function classDoor(){if(S.chapter===0){sheet(`<h2>教室の扉</h2><p>内側からは開く。</p><p>ただし廊下側の防火扉が閉じているらしく、校舎の出口までは行けない。</p><button class="choice primary" onclick="ch0()">廊下へ出る</button>`)}else go('hall')}function ch0(){if(!hasClue('schedule')){toast('まだ状況が分からない。');return}closeSheet();S.chapter=1;addLog('教室を出て2階廊下へ。完全下校時刻は過ぎている。');sv();go('hall')}
+function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委員と理科部が共同展示「声と光の迷路」を準備していた。');sheet('<h2>掲示板</h2><p>文化祭準備の紙。</p><p>放送委員 × 理科部<br>共同展示「声と光の迷路」</p>')}function lostFound(){sheet('<h2>落とし物箱</h2><p>水筒、ハンカチ、片方だけの上履き。特に使えそうな物はない。</p>')}function staffPC(){addClue('login','職員PCのログ','18:06、校内放送システムに「2-3」の端末から接続。');sheet(`<h2>職員PC</h2><p>画面には直前のシステムログ。</p><p class="code">18:06　Broadcast system login<br>Source: CLASSROOM 2-3</p><div class="dialog"><div class="name">自分</div>「18:06……。」</div>`)}function keyBoard(){if(!S.items.find(x=>x.id==='staffKey'))addItem('staffKey','特別教室キー','鍵棚に「理科室」の予備キーが残っていた。');sheet('<h2>鍵棚</h2><p>理科室の予備キーを取った。</p>')}function attendance(){addClue('attendance','今日の出席簿','あなたの名前は「欠席」。理由欄は空白。');sheet(`<h2>出席簿</h2><p>今日の日付。</p><p>自分の名前の横に——<span class="badtext">欠席</span>。</p><div class="dialog"><div class="name">自分</div>「……は？」</div><p class="muted">理由欄は空白。</p>${S.chapter===1?'<button class="choice primary" onclick="advanceCh2()">出席簿を閉じる</button>':''}`);if(S.chapter===1){addLog('出席簿では自分は今日欠席扱い。');sv()}}function advanceCh2(){closeSheet();S.chapter=2;sv();sheet(`<h2>CHAPTER 2　今日、俺は欠席している</h2><p>教室で目を覚ました。けれど学校の記録では、自分は今日ここへ来ていない。</p><div class="dialog"><div class="name">自分</div>「……もう少し調べよう。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
+function scienceMemo(){addClue('mirrorHint','文化祭準備メモ','鏡3枚セット。順番は「左・右・左」。');sheet(`<h2>文化祭準備メモ</h2><p>「声と光の迷路」用。</p><p class="code">鏡：左 → 右 → 左</p>`)}function scienceCabinet(){addItem('uvPen','UVペン','準備棚に残っていた文化祭用の紫外線ペン。');sheet('<h2>準備室棚</h2><p>文化祭用のUVペンが一本残っている。</p>')}function laserPuzzle(){if(!hasClue('mirrorHint')){sheet('<h2>光学実験台</h2><p>鏡3枚の向きを変えられる。どこかに手順があるはず。</p>');return}sheet(`<h2>光学実験</h2><p>文化祭展示の再現用。メモ通りに鏡を並べる。</p><button class="choice" onclick="laserAns('LRL')">左 → 右 → 左</button><button class="choice" onclick="laserAns('RLR')">右 → 左 → 右</button><button class="choice" onclick="laserAns('LLR')">左 → 左 → 右</button>`)}function laserAns(a){if(a!=='LRL'){toast('受光器が反応しない。');return}closeSheet();addItem('cassette','小型ICレコーダー','受光器の隠しケースから出てきた。ラベルは「文化祭前日」。');S.chapter=3;addLog('理科室の展示装置から古い録音機を発見。');sv();sheet(`<h2>CHAPTER 3　文化祭前日の録音</h2><p>理科室の展示装置から、去年の日付が書かれた録音機が出てきた。</p><div class="dialog"><div class="name">自分</div>「放送室なら再生できるかも。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
+function broadcastSchedule(){addClue('broadcastDuty','放送委員当番表','文化祭前日17:40〜18:10の担当欄だけ、名前が黒く塗り潰されている。');sheet('<h2>放送当番表</h2><p>文化祭前日の担当欄。</p><p class="code">17:40–18:10　██████</p>')}function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。何か持ち出された跡がある。</p>');return}addClue('voice','文化祭前日の録音','18:04「まだ一人、2年3組に残ってる」／18:05「誰？」「……名前が出てこない」');sheet(`<h2>古い録音</h2><p class="code">18:04</p><p>『先生、まだ一人、2年3組に残ってます。』</p><p class="code">18:05</p><p>『誰？』<br>『……名前が出てこない。』</p><div class="dialog"><div class="name">自分</div>「……。」</div>`)}function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>新しい録音しか残っていない。古いデータは別媒体に移されている。</p>');return}addClue('todayAudio','今日の18:06録音','18:06、2年3組のマイクが30秒だけON。人の声はなく、机を引く音だけ。');sheet(`<h2>今日の放送ログ</h2><p class="code">18:06　MIC: CLASSROOM 2-3</p><p>机を引くような音。人の声はない。</p><div class="dialog"><div class="name">自分</div>「……18:06。」</div>`);if(S.chapter===3){S.chapter=4;sv();setTimeout(()=>sheet(`<h2>CHAPTER 4　去年と今日</h2><p>去年の録音と、今日の18:06。二つの記録が同じ教室を指している。</p><div class="dialog"><div class="name">自分</div>「……まだ足りない。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`),50)}}
+function timeCapsuleNote(){addClue('capsule','卒業制作の掲示','「忘れたくないことを一つだけ、旧校舎ロッカーへ」。去年の文化祭企画。');sheet('<h2>古い掲示</h2><p>「忘れたくないことを一つだけ、旧校舎ロッカーへ。」</p>')}function oldStairs(){sheet('<h2>旧校舎階段</h2><p>足跡が一組だけ、新しい。</p><div class="dialog"><div class="name">自分</div>「……見覚えのある模様だ。」</div>')}function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に薄い線。普通の光では読めない。</p>');return}addClue('letter','UVで浮かんだ手紙','「もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。」');sheet(`<h2>UVで浮かぶ文字</h2><p>ロッカーの内側に文字が浮かぶ。</p><p>『もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。』</p><div class="dialog"><div class="name">自分</div>「……“また”？」</div>`)}function roofDoor(){if(!hasClue('letter')){sheet('<h2>屋上前の扉</h2><p>開かない。ロッカーを調べる必要がありそうだ。</p>');return}S.chapter=5;addLog('旧校舎ロッカーの手紙を読んだ。屋上前へ。');sv();go('rooftop')}
+function networkTerminal(){addClue('network','校内ネットワーク端末','去年の文化祭前日の記録一式を外部へ送信可能。校内から削除することもできる。');sheet('<h2>ネットワーク端末</h2><p>去年の記録はまだ校内サーバに残っている。</p><p>外部送信／削除、どちらも可能。</p>')}function finalChoice(){sheet(`<h2>最後の選択</h2><p>手紙、録音、出席簿、今日のログ。全部をここで終わらせることも、外へ残すこともできる。</p><button class="choice primary" ${hasClue('network')?'':'disabled'} onclick="endGame('true')">記録を外部へ送信して、先生に連絡する</button><p class="muted">${hasClue('network')?'':'※外部送信手段をまだ確認していない。'}</p><button class="choice" onclick="endGame('normal')">自分だけ校舎を出る</button><button class="choice bad" onclick="endGame('bad')">去年の記録を全部削除する</button>`)}function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>屋上前の端末から記録を送信した。</p><p>数分後、スマホに圏外表示が消える。</p><div class="dialog"><div class="name">担任</div>『今どこにいる？　学校か？』</div><div class="dialog"><div class="name">自分</div>「……先生。去年のこと、聞きたいです。」</div><p>自分が何を忘れたのかは、まだ全部分からない。</p><p>でも、記録を消さずに残すことはできた。</p><hr><p class="muted">翌週。旧校舎のロッカーは撤去された。<br>学校は去年の件について、生徒と保護者への説明を始めた。<br><br>帰り道、スマホに友人からメッセージが届く。<br>『明日、普通に来るよな？』<br><br>あなたは少しだけ迷ってから、『行く』と返した。</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>非常口から外へ出た。</p><p>翌朝、学校は何事もなかったように始まる。</p><p>出席簿の自分の欄だけが、いつの間にか『出席』に直されていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>去年の記録を削除した。</p><p class="code">DELETE COMPLETE</p><p>翌日、教室で目を覚ます。</p><p>壁時計は17:18で止まっている。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}function reset(){localStorage.removeItem('afterschoolSave');location.reload()}
+function panel(type){if(type==='items')sheet('<h2>持ち物</h2>'+(S.items.length?S.items.map(x=>`<div class="item"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>何もない。</p>'));else if(type==='clues')sheet('<h2>手掛かり</h2>'+(S.clues.length?S.clues.map(x=>`<div class="clue"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>まだない。</p>'));else if(type==='log')sheet('<h2>行動ログ</h2>'+(S.logs.length?S.logs.slice().reverse().map(x=>`<div class="log">${x}</div>`).join(''):'<p>まだない。</p>'));else if(type==='map')sheet('<h2>移動</h2>'+Object.keys(rooms).map(r=>`<button class="choice" ${can(r)?'':'disabled'} onclick="closeSheet();go('${r}')">${can(r)?rooms[r].name:'未確認区画'}</button>`).join(''));else{let l=S.hint[S.chapter]||0;sheet(`<h2>ヒント</h2><p>${hint(S.chapter,l)}</p><button class="choice" onclick="moreHint()">もう少しヒント</button>`)}}function moreHint(){S.hint[S.chapter]=(S.hint[S.chapter]||0)+1;sv();panel('hint')}function hint(ch,l){let H={0:['まず現在時刻と、学校の予定を確認しよう。','黒板の完全下校時刻を見る。'],1:['職員室には今日の記録がある。','出席簿とPCログを確認しよう。'],2:['理科室の展示装置には手順が残されている。','文化祭準備メモを見る。'],3:['放送室には去年の記録が残っている。','古い録音機を使う。'],4:['旧校舎のロッカーは普通の光では読めない。','理科室で拾ったUVペンを使う。'],5:['最後は謎ではなく選択。記録を残すか消すか。']};let a=H[ch]||['手掛かりを見直そう。'];return a[Math.min(l,a.length-1)]}function menu(){sheet(`<h2>メニュー</h2><button class="choice" onclick="closeSheet()">戻る</button><button class="choice" onclick="showIntro()">遊び方</button><button class="choice bad" onclick="reset()">セーブ削除</button>`)}
+ld();document.getElementById('cont').disabled=!localStorage.getItem('afterschoolSave');if(localStorage.getItem('afterschoolSave'))render();
+</script><script>
+// === COMPLETE STORY / REASONING PATCH ===
+S.board=S.board||{};
+function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。窓の外はもう暗い。</p><p>スマホは18:42。圏外。ただ、一件だけ開いたままの匿名メッセージがある。</p><p class="code">17:18。2年3組。</p><div class="dialog"><div class="name">自分</div>「これを見て、学校に来た。……そこまでは覚えてる。」</div><p>去年の文化祭前日。自分は学校で事故に遭い、事故前後の記憶を失った。医師からそう聞かされている。</p><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。匿名メッセージ『17:18。2年3組。』。');addLog('匿名メッセージに呼ばれ、放課後の2年3組へ来た。');sv();render()">起き上がる</button>`)}
+function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に透明な線。普通の光では読めない。</p>');return}addClue('letter','事故直後の自分のメモ','「17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。」筆跡は自分のもの。');addClue('warning','事故前の危険通知','事故12日前、施設担当から文化祭担当の榊先生へ「旧校舎踊り場腐食・使用停止継続」の通知。受領印あり。');sheet(`<h2>UVで浮かぶ文字</h2><p>『17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。』</p><div class="dialog"><div class="name">自分</div>「……俺の字だ。」</div><hr><p>ロッカーの底には、事故12日前の施設通知のコピー。</p><p class="code">旧校舎踊り場：腐食<br>使用停止を継続すること<br>受領：榊</p>`)}
+function oldStairs(){addClue('repair','事故翌日の階段補修','旧校舎の踊り場だけ新しい部材。ラベルの日付は去年の事故翌日。');sheet('<h2>旧校舎階段</h2><p>踊り場の一部だけ補修材が新しい。</p><p class="code">施工：事故翌日</p>')}
+function broadcastSchedule(){addClue('broadcastDuty','去年の放送当番表','紙版では17:00–17:30「水野 悠」。サーバ版では水野の行だけ欠落。');addClue('keylog','旧校舎の鍵貸出記録','文化祭前日16:10、旧校舎の鍵を「榊」名義で貸出。事故後の電子版では該当行が削除。');sheet(`<h2>放送当番表</h2><p>紙版：<span class="code">17:00–17:30　水野 悠</span></p><p>電子版では、その一行だけ存在しない。</p><hr><p>同じファイル束に旧校舎の鍵貸出記録。</p><p class="code">16:10　貸出：榊</p>`)}
+function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。別の場所に予備媒体があるらしい。</p>');return}addClue('voice','17:18の復元録音','水野「旧校舎の階段、やっぱ危ないって榊先生に言った方がいい」→衝撃音→主人公「水野！」→救助要請。');sheet(`<h2>復元された録音</h2><p class="code">17:18</p><p>水野『旧校舎の階段、やっぱ危ないって榊先生に言った方がいい』</p><p>――大きな衝撃音。</p><p>『水野！』</p><p>その声は自分の声だった。</p><p>続いて、放送室から先生を呼ぶ声。</p>`)}
+function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>欠損ファイルがある。予備録音を先に確認したい。</p>');return}addClue('altered','改竄された放送記録','17:18の救助要請はサーバ版から削除されている。一方、予備レコーダーには残っていた。');sheet(`<h2>サーバ版との比較</h2><p>予備レコーダーにはある17:18の救助要請が、サーバ版には存在しない。</p><div class="dialog"><div class="name">自分</div>「消された……。」</div>`);if(S.chapter===3){S.chapter=4;sv()}}
+function roofDoor(){if(!hasClue('letter')||!hasClue('warning')||!hasClue('voice')){sheet('<h2>屋上前の扉</h2><p>まだ事件全体を説明できない。旧校舎と放送室の証拠を見直そう。</p>');return}reasoningBoard()}
+function reasoningBoard(){if(S.chapter<4){sheet('<h2>推理ボード</h2><p>まだ事件全体を組み立てるには証拠が足りない。</p>');return}S.board=S.board||{};const rows=[['place','事故場所',['','旧校舎','放送室','2年3組']],['first','第一発見者',['','主人公','水野','榊先生']],['cause','事故原因',['','老朽化した階段','展示装置','停電']],['knew','危険を事前に認識',['','榊先生','主人公','水野']],['alter','記録を改竄',['','榊先生','主人公','施設担当']],['purpose','改竄の目的',['','管理責任の隠蔽','文化祭の成功','主人公を守る']],['memory','記憶喪失の理由',['','事故時の頭部外傷','薬物','超常現象']]];let h='<h2>推理ボード</h2><p>去年17:18に起きたことを再構成する。</p>';for(const [k,l,o] of rows){h+=`<div style="display:grid;grid-template-columns:105px 1fr;gap:8px;align-items:center;margin:7px 0"><span>${l}</span><select onchange="S.board.${k}=this.value;sv()" style="width:100%;padding:10px;background:#0d151d;color:white;border:1px solid #2b3848;border-radius:9px">${o.map(v=>`<option ${S.board[k]===v?'selected':''}>${v}</option>`).join('')}</select></div>`}h+='<button class="choice primary" onclick="judgeReasoning()">推理する</button><p class="muted">間違えてもゲームオーバーにはならない。</p>';sheet(h)}
+function judgeReasoning(){const a={place:'旧校舎',first:'主人公',cause:'老朽化した階段',knew:'榊先生',alter:'榊先生',purpose:'管理責任の隠蔽',memory:'事故時の頭部外傷'};let n=Object.keys(a).filter(k=>S.board[k]!==a[k]).length;if(n){sheet(`<h2>推理不成立</h2><p>${n}項目が、集めた証拠と矛盾している。</p><button class="choice" onclick="reasoningBoard()">戻る</button>`);return}S.chapter=5;addLog('推理成立：去年の事故と記録改竄を再構成した。');sv();sheet(`<h2 class="good">推理成立</h2><p>去年17:18、水野は旧校舎の老朽化した階段で事故に遭った。</p><p>榊先生は事故前から危険を知らされながら、文化祭準備で旧校舎を使わせていた。</p><p>主人公は事故を発見して救助を要請。その後、自身も負傷し、事故前後の記憶を失った。</p><p>榊先生は管理責任を避けるため、鍵記録・展示当番・放送記録を改竄した。</p><p>事故直後の主人公は、記憶が失われる前に証拠を複数の場所へ残していた。</p><hr><p><b>ただし、一つだけ説明できない。</b></p><p>今日16:52、誰が『17:18。2年3組。』を送ったのか。</p><button class="choice primary" onclick="closeSheet();S.chapter=5;sv();go('rooftop')">管理端末を調べる</button>`)}
+function networkTerminal(){addClue('network','匿名メッセージ送信ログ','今日16:52、MIZUNO.Yから「17:18。2年3組。」。ただし水野の学校アカウントは去年10月に削除済み。');sheet(`<h2>管理端末</h2><p class="code">16:52 SEND<br>FROM: MIZUNO.Y<br>17:18。2年3組。</p><p class="badtext">ACCOUNT DELETED : LAST OCTOBER</p><div class="dialog"><div class="name">自分</div>「……水野？」</div>`)}
+function finalChoice(){if(!hasClue('network')){sheet('<h2>最後の扉</h2><p>管理端末に、まだ確認していないログがある。</p>');return}sheet(`<h2>最後の選択</h2><p>事件は説明できた。だが、今日のメッセージだけは説明できない。</p><button class="choice primary" onclick="endGame('true')">証拠一式を外部へ送信する</button><button class="choice" onclick="endGame('normal')">コピーだけ持って学校を出る</button><button class="choice bad" onclick="endGame('bad')">記録を削除する</button>`)}
+function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>証拠を外部へ送信した。</p><p>数日後。旧校舎の使用許可と事故後の記録改竄について、正式な調査が始まった。</p><p>水野は事故後、長期入院を経て転校していた。</p><p>普通の朝。2年3組。壁時計は何事もなく動いている。</p><div class="dialog"><div class="name">自分</div>「全部は戻らなくてもいい。残ってるものから確かめればいい。」</div><p>スマホが一度だけ震える。</p><p class="code">FROM: MIZUNO.Y<br>『思い出した？』</p><p class="muted">その学校アカウントは、去年削除されている。</p><div class="titleline">学校からの脱出</div><p style="text-align:center">― END ―</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>コピーを持って学校を出た。</p><p>翌朝、榊先生の机だけが空いていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>記録を削除した。</p><p>翌朝、教室の壁時計は17:18で止まっていた。</p><p>自分がそうしたのかどうか、思い出せない。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}
 </script>
-</body>
-</html>
+<script id="layout-enhancer-v2">
+document.addEventListener("DOMContentLoaded",()=>{
+  const h=document.querySelector("header");
+  if(h && !document.getElementById("deskQuick")){
+    const q=document.createElement("div");
+    q.id="deskQuick";
+    q.innerHTML=`<button onclick="inventory()">持ち物</button><button onclick="evidence()">証拠</button><button onclick="hint()">ヒント</button>`;
+    h.appendChild(q);
+  }
+});
+</script>
+<style>
+#deskQuick{display:none}
+@media(min-width:820px){
+ header{grid-template-columns:46px 1fr 46px auto!important}
+ #deskQuick{display:flex;gap:6px}
+ #deskQuick button{height:38px!important;padding:0 12px!important;font-size:12px!important}
+}
+</style>
+</body></html>
