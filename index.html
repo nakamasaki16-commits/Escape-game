@@ -72,7 +72,20 @@ header button,.bi button{background:#f8f2e6!important;border:1px solid #aa9a82!i
   .card:before{content:"調査メモ";display:block;font-weight:800;font-size:13px;margin-bottom:6px;color:#65594c}
 }
 </style>
-</head><body>
+<style id="readability-fix">
+html,body{color:#211d19!important}.brand b{color:#211d19!important}.brand small{color:#51483e!important;font-weight:700!important}
+.tag{background:#fffaf0f7!important;color:#211d19!important;border-color:#75634f!important;font-weight:800!important;text-shadow:none!important;box-shadow:0 1px 4px #0002!important}.ch{color:#743f38!important}
+.card h2,.sheet h2{color:#211d19!important}.card p,.sheet p{color:#302a24!important}.muted{color:#5d5449!important}.code{color:#6f302b!important;font-weight:700!important}
+.dialog{color:#28231e!important;background:#fffaf0f2!important}.dialog small{color:#315e45!important;font-weight:800!important}
+button,.choice,.x{color:#241f1a!important}.bi button,.choice{font-weight:700!important}
+.herot{background:linear-gradient(transparent,#171a1deF)!important;padding:90px 18px 22px!important;bottom:0!important;color:#fff!important;text-shadow:0 2px 6px #000!important}
+.herot h1{color:#fff!important;font-weight:900!important;text-shadow:0 3px 9px #000!important}.herot p{color:#fff4df!important;font-weight:800!important;text-shadow:0 2px 7px #000!important}
+.startcard{color:#211d19!important}.sa button{color:#211d19!important;font-weight:800!important;background:#fffaf0!important}
+.label{fill:#fffdf5!important;stroke:#30271f!important;stroke-width:7px!important;paint-order:stroke!important;font-weight:900!important}
+.mc{color:#655c50!important}.mc.on{color:#29231e!important;font-weight:700!important}
+.toast{background:#fffaf0!important;color:#211d19!important;border-color:#75634f!important;font-weight:800!important}
+.boardrow select{color:#211d19!important;font-weight:700!important}.ok{color:#2f6244!important;font-weight:800!important}.ng{color:#8b302d!important;font-weight:800!important}
+</style></head><body>
 <div id="prologue" class="prologue"><div class="proCard"><div class="hero"><svg viewBox="0 0 800 460"><rect width="800" height="460" fill="#101820"/><rect x="80" y="70" width="640" height="300" rx="10" fill="#17212a" stroke="#324657" stroke-width="5"/><rect x="120" y="110" width="260" height="130" rx="5" fill="#0d151c" stroke="#3b566a"/><path d="M150 145h200M150 178h165M150 211h190" stroke="#93b1c2" stroke-width="5" opacity=".35"/><rect x="490" y="110" width="150" height="180" fill="#0e151b" stroke="#364b5d"/><circle cx="565" cy="158" r="45" fill="#e6e1d4" stroke="#79838d" stroke-width="4"/><path d="M565 158V128M565 158l25 10" stroke="#23282d" stroke-width="4"/><rect x="0" y="370" width="800" height="90" fill="#080b0f"/></svg><div class="heroText"><h1>学校からの脱出</h1><p>― 放課後、誰もいない ―</p></div></div><div class="proActions"><button onclick="startGame()">NEW GAME</button><button id="cont" onclick="continueGame()">CONTINUE</button><button onclick="showIntro()">あらすじ / 遊び方</button></div></div></div>
 <div id="app"><div class="top"><button onclick="menu()">☰</button><div class="brand"><b>学校からの脱出</b><span id="chapTxt">CHAPTER 0</span></div><button onclick="panel('hint')">?</button></div><div class="scene"><div id="where" class="tag"></div><div id="wall" class="tag"></div><div id="chapter" class="tag"></div><div id="scene"></div><div class="nav"><button onclick="turn(-1)">‹</button><button onclick="turn(1)">›</button></div></div><div class="card"><h2 id="title"></h2><p id="desc"></p></div><div class="minimap"><div class="muted" style="margin-bottom:6px">校内マップ</div><div id="map" class="mapgrid"></div></div></div>
 <div class="bottom"><div class="bottomin"><button onclick="panel('log')"><i>☷</i>ログ</button><button onclick="panel('items')"><i>▣</i>持ち物</button><button onclick="panel('clues')"><i>⌕</i>手掛かり</button><button onclick="reasoningBoard()"><i>◇</i>推理</button><button onclick="panel('map')"><i>⌂</i>移動</button><button onclick="panel('hint')"><i>?</i>ヒント</button></div></div>
