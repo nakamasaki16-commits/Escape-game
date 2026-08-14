@@ -166,8 +166,8 @@ button,.choice,.x{color:#241f1a!important}.bi button,.choice{font-weight:700!imp
 <script>
 const BASE={chapter:0,room:'classroom',view:0,flags:{},items:[],clues:[],logs:[],hint:{},ending:null};let S=JSON.parse(JSON.stringify(BASE));
 const rooms={classroom:{name:'2年3組',views:4,pos:[2,4]},hall:{name:'2階廊下',views:4,pos:[2,3]},staff:{name:'職員室',views:4,pos:[1,3]},science:{name:'理科室',views:4,pos:[3,3]},broadcast:{name:'放送室',views:4,pos:[2,2]},old:{name:'旧校舎階段',views:4,pos:[2,1]},rooftop:{name:'屋上前',views:2,pos:[2,0]}};
-function sv(){localStorage.setItem('afterschoolSave',JSON.stringify(S));ui()}function ld(){let x=localStorage.getItem('afterschoolSave');if(x)try{S={...BASE,...JSON.parse(x)}}catch(e){}}
-function startGame(){S=JSON.parse(JSON.stringify(BASE));localStorage.removeItem('afterschoolSave');document.getElementById('prologue').classList.add('hidden');introSequence()}function continueGame(){ld();document.getElementById('prologue').classList.add('hidden');render()}
+function sv(){localStorage.setItem('schoolEscapePremiumStableV2',JSON.stringify(S));ui()}function ld(){let x=localStorage.getItem('schoolEscapePremiumStableV2');if(x)try{S={...BASE,...JSON.parse(x)}}catch(e){}}
+function startGame(){S=JSON.parse(JSON.stringify(BASE));localStorage.removeItem('schoolEscapePremiumStableV2');document.getElementById('prologue').classList.add('hidden');introSequence()}function continueGame(){ld();document.getElementById('prologue').classList.add('hidden');render()}
 function showIntro(){sheet(`<h2>あらすじ</h2><p>放課後の教室で目を覚ましたあなた。完全下校時刻はとうに過ぎ、校舎には人の気配がない。なぜ自分だけがここにいるのか——身近な記録を辿って学校から脱出する。</p><p>スマホ、黒板、鍵当番表、放送記録——身近なものを調べながら、なぜ自分だけが学校に残っているのかを追う。</p><p class="muted">左右で4面の壁を見回し、気になる物をタップ。重要な謎はその時点で得られる証拠だけで解けます。</p>`)}
 function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。蛍光灯は半分消え、窓の外はもう暗い。</p><div class="dialog"><div class="name">自分</div>「……寝てた？」</div><p>スマホを手に取る。時刻は18:42。通知はない。</p><div class="dialog"><div class="name">自分</div>「みんな、帰ったのか……？」</div><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。圏外。バッテリー31%。');addLog('18:42、2年3組の教室で目を覚ました。');sv();render()">起き上がる</button>`)}
 function closeSheet(){document.getElementById('overlay').classList.remove('show')}function sheet(h){document.getElementById('sheet').innerHTML=h;document.getElementById('overlay').classList.add('show')}function toast(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}function addLog(t){if(!S.logs.includes(t))S.logs.push(t)}function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});toast('入手：'+name)}}function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog('手掛かり「'+name+'」');toast('手掛かり追加：'+name)}}function hasClue(id){return !!S.clues.find(x=>x.id===id)}function hasItem(id){return !!S.items.find(x=>x.id===id)}function turn(d){S.view=(S.view+d+rooms[S.room].views)%rooms[S.room].views;sv();render()}function can(r){if(r==='classroom'||r==='hall')return true;if(r==='staff')return S.chapter>=1;if(r==='science')return S.chapter>=2&&hasItem('staffKey');if(r==='broadcast')return S.chapter>=3&&hasItem('keyTag');if(r==='old')return S.chapter>=4;if(r==='rooftop')return S.chapter>=5;return false}function go(r){if(!can(r)){toast('まだ入れない。');return}S.room=r;S.view=0;sv();render()}
@@ -232,15 +232,77 @@ function updateObjective(){
   if(e) e.textContent=currentObjective();
 }
 
-function render(){ui();updateObjective();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#16221d" stroke="#53675b" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#151c23" stroke="#435666"/><rect x="115" y="165" width="150" height="90" fill="#0d1821" stroke="#355a70"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#181d22" stroke="#4c5965"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#0f1922" stroke="#42576b"/><rect x="160" y="115" width="480" height="210" fill="#0b1218"/><circle cx="250" cy="205" r="55" fill="#1f2a33"/><circle cx="400" cy="205" r="55" fill="#1f2a33"/><circle cx="550" cy="205" r="55" fill="#1f2a33"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#13191f" stroke="#495a68" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#171e24" stroke="#455665"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#10161c" stroke="#435564"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#10161c" stroke="#435564"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#18212a" stroke="#465b6c"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#10161c" stroke="#435564"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#171e24" stroke="#435564"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#10161c" stroke="#435564"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#151c23" stroke="#435666"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#355a70"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#141b22" stroke="#455867"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#455867"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#0b1218" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#455867"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#111820" stroke="#455867"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#10161c" stroke="#435564"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#455867"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#10161c" stroke="#435564" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#435564"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
+function shell(inner){
+  let r=S.room,v=S.view,b="";
+  if(r==="classroom"){
+    b=`<rect width="800" height="550" fill="#e8e0d3"/>
+    <rect y="390" width="800" height="160" fill="#9a7654"/>
+    <path d="M0 430h800M0 480h800M0 530h800" stroke="#7b5c41" stroke-width="3" opacity=".55"/>
+    <rect x="548" y="92" width="205" height="238" fill="#758a95" stroke="#f0e8da" stroke-width="8"/>
+    <path d="M650 92v238M548 211h205" stroke="#e1dbcf" stroke-width="5"/>
+    <path d="M565 315l58-44 46 25 72-63" fill="none" stroke="#3f5054" stroke-width="8" opacity=".5"/>
+    <rect x="42" y="62" width="715" height="16" fill="#fff9ee"/>
+    <path d="M40 372h720" stroke="#7d6d5b" stroke-width="5"/>`;
+  }else if(r==="hall"){
+    b=`<rect width="800" height="550" fill="#e7e2d8"/>
+    <polygon points="0,550 800,550 602,305 198,305" fill="#b8ad9a"/>
+    <path d="M198 305L0 550M602 305l198 245" stroke="#8d8170" stroke-width="4"/>
+    <rect x="0" y="72" width="158" height="290" fill="#738791" stroke="#e7e2d8" stroke-width="8"/>
+    <path d="M79 72v290M0 217h158" stroke="#ded9cf" stroke-width="5"/>
+    <rect x="648" y="95" width="120" height="258" fill="#d8cfc0" stroke="#a99b87" stroke-width="5"/>
+    <rect x="347" y="64" width="106" height="14" rx="7" fill="#fffdf3"/>`;
+  }else if(r==="staff"){
+    b=`<rect width="800" height="550" fill="#e0ddd4"/>
+    <rect y="405" width="800" height="145" fill="#aaa69d"/>
+    <rect x="42" y="88" width="716" height="278" fill="#efebe2"/>
+    <rect x="73" y="298" width="654" height="82" fill="#987454"/>
+    <path d="M120 298v-100M350 298v-108M590 298v-94" stroke="#655345" stroke-width="12"/>
+    <rect x="302" y="55" width="196" height="15" rx="7" fill="#fffdf5"/>
+    <rect x="650" y="110" width="82" height="150" fill="#d7d0c4" stroke="#a99c88" stroke-width="4"/>`;
+  }else if(r==="science"){
+    b=`<rect width="800" height="550" fill="#dcd9d0"/>
+    <rect y="405" width="800" height="145" fill="#8d8a84"/>
+    <rect x="35" y="90" width="730" height="132" fill="#edf0e8" stroke="#aaa79f" stroke-width="4"/>
+    <path d="M105 90v132M180 90v132M620 90v132M695 90v132" stroke="#b7b4ad" stroke-width="5"/>
+    <rect x="58" y="320" width="684" height="86" fill="#3b3f3c"/>
+    <path d="M105 406v125M695 406v125" stroke="#514e48" stroke-width="18"/>
+    <path d="M220 320v-38q0-25 24-25t24 25v38" fill="none" stroke="#8c918d" stroke-width="7"/>`;
+  }else if(r==="broadcast"){
+    b=`<rect width="800" height="550" fill="#cec7ba"/>
+    <rect y="405" width="800" height="145" fill="#786b5e"/>
+    <rect x="52" y="78" width="305" height="224" fill="#77858c" stroke="#665e54" stroke-width="9"/>
+    <rect x="397" y="84" width="345" height="248" fill="#ded6c9" stroke="#9a8d79" stroke-width="5"/>
+    <path d="M423 130h294M423 176h294M423 222h294M423 268h294" stroke="#b5a994" stroke-width="4"/>
+    <rect x="128" y="344" width="544" height="72" fill="#504940"/>
+    <circle cx="220" cy="380" r="12" fill="#8e9da3"/><circle cx="265" cy="380" r="12" fill="#8e9da3"/>`;
+  }else if(r==="old"){
+    b=`<rect width="800" height="550" fill="#8c857a"/>
+    <rect y="405" width="800" height="145" fill="#51463b"/>
+    <path d="M0 120h800M0 250h800" stroke="#746c62" stroke-width="8"/>
+    <path d="M88 0v405M245 0v405M565 0v405M722 0v405" stroke="#675f54" stroke-width="10"/>
+    <rect x="64" y="80" width="192" height="255" fill="#344147" stroke="#706960" stroke-width="8"/>
+    <path d="M160 80v255M64 205h192" stroke="#777168" stroke-width="5"/>
+    <path d="M520 82l100 50-86 59 111 55-96 72" fill="none" stroke="#62594e" stroke-width="5"/>
+    <path d="M300 405l35-405M470 405l-20-405" stroke="#776c5f" stroke-width="6" opacity=".5"/>`;
+  }else{
+    b=`<rect width="800" height="550" fill="#39434c"/>
+    <rect y="405" width="800" height="145" fill="#777879"/>
+    <rect x="52" y="58" width="696" height="342" fill="#d6d2c9" stroke="#a39d91" stroke-width="6"/>
+    <rect x="568" y="98" width="128" height="182" fill="#17242c" stroke="#8d8c86" stroke-width="7"/>
+    <circle cx="635" cy="145" r="4" fill="#dbe3e6"/>
+    <rect x="90" y="335" width="620" height="11" fill="#aaa59a"/>`;
+  }
+  return `<svg viewBox="0 0 800 550">${b}${inner}</svg>`
+}
+function render(){ui();updateObjective();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#365947" stroke="#675b49" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#c5b399" stroke="#75624f"/><rect x="115" y="165" width="150" height="90" fill="#3f484a" stroke="#6f7673"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#9c7d5e" stroke="#6e5b49"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#d8cbb8" stroke="#81705d"/><rect x="160" y="115" width="480" height="210" fill="#776a5d"/><circle cx="250" cy="205" r="55" fill="#8f7e6c"/><circle cx="400" cy="205" r="55" fill="#8f7e6c"/><circle cx="550" cy="205" r="55" fill="#8f7e6c"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#806a55" stroke="#5f5042" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#9a8063" stroke="#695746"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#806a55" stroke="#5f5042"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#806a55" stroke="#5f5042"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#c0ad91" stroke="#796752"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#806a55" stroke="#5f5042"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#9a8063" stroke="#5f5042"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#806a55" stroke="#5f5042"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#c5b399" stroke="#75624f"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#6f7673"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#bda98c" stroke="#77634f"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#77634f"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#776a5d" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#77634f"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#806a55" stroke="#77634f"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#806a55" stroke="#5f5042"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#77634f"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#806a55" stroke="#5f5042" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#5f5042"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
 function blackboard(){addClue('schedule','黒板の予定','17:30 体育館：バスケ部、18:00完全下校。');sheet(`<h2>黒板</h2><p>今日の予定が残っている。</p><p class="code">17:30　体育館：バスケ部<br>18:00　完全下校</p><div class="dialog"><div class="name">自分</div>「18時……もう、とっくに過ぎてる。」</div>`)}function clock(){addClue('clock','教室の壁時計','17:18で止まっている。秒針は動かない。');sheet(`<h2>壁時計</h2><p>17:18で止まっている。</p><div class="dialog"><div class="name">自分</div>「電池切れかな。」</div>`)}function teacherDesk(){sheet(`<h2>教卓PC</h2><p>学校アカウントのログイン画面。画面右下には<span class="code">18:43</span>。</p><div class="dialog"><div class="name">自分</div>「18:43……。」</div>`)}function lockers(){addItem('keyTag','小さな鍵','ロッカーの隙間に落ちていた。札に「放送」。');sheet('<h2>ロッカー</h2><p>いくつか開いている。床に小さな鍵が落ちていた。</p>')}function classPhoto(){addClue('photo','文化祭のクラス写真','去年の文化祭。あなたの姿はあるが、写真の端に一人だけ顔が破れている生徒がいる。');sheet(`<h2>クラス写真</h2><p>去年の文化祭。みんな笑っている。</p><div class="dialog"><div class="name">自分</div>「……この破れ方、わざと？」</div>`)}function umbrella(){sheet('<h2>傘立て</h2><p>傘が一本だけ残っている。名札は剥がされている。</p>')}function classDoor(){if(S.chapter===0){sheet(`<h2>教室の扉</h2><p>内側からは開く。</p><p>ただし廊下側の防火扉が閉じているらしく、校舎の出口までは行けない。</p><button class="choice primary" onclick="ch0()">廊下へ出る</button>`)}else go('hall')}function ch0(){if(!hasClue('schedule')){toast('まだ状況が分からない。');return}closeSheet();S.chapter=1;addLog('教室を出て2階廊下へ。完全下校時刻は過ぎている。');sv();go('hall')}
 function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委員と理科部が共同展示「声と光の迷路」を準備していた。');sheet('<h2>掲示板</h2><p>文化祭準備の紙。</p><p>放送委員 × 理科部<br>共同展示「声と光の迷路」</p>')}function lostFound(){sheet('<h2>落とし物箱</h2><p>水筒、ハンカチ、片方だけの上履き。特に使えそうな物はない。</p>')}function staffPC(){addClue('login','職員PCのログ','18:06、校内放送システムに「2-3」の端末から接続。');sheet(`<h2>職員PC</h2><p>画面には直前のシステムログ。</p><p class="code">18:06　Broadcast system login<br>Source: CLASSROOM 2-3</p><div class="dialog"><div class="name">自分</div>「18:06……。」</div>`)}function keyBoard(){if(!S.items.find(x=>x.id==='staffKey'))addItem('staffKey','特別教室キー','鍵棚に「理科室」の予備キーが残っていた。');sheet('<h2>鍵棚</h2><p>理科室の予備キーを取った。</p>')}function attendance(){addClue('attendance','今日の出席簿','あなたの名前は「欠席」。理由欄は空白。');sheet(`<h2>出席簿</h2><p>今日の日付。</p><p>自分の名前の横に——<span class="badtext"><span class="important">欠席</span></span>。</p><div class="dialog"><div class="name">自分</div>「……は？」</div><p class="muted">理由欄は空白。</p>${S.chapter===1?'<button class="choice primary" onclick="advanceCh2()">出席簿を閉じる</button>':''}`);if(S.chapter===1){addLog('出席簿では自分は今日欠席扱い。');sv()}}function advanceCh2(){closeSheet();S.chapter=2;sv();sheet(`<h2>CHAPTER 2　今日、俺は欠席している</h2><p>教室で目を覚ました。けれど学校の記録では、自分は今日ここへ来ていない。</p><div class="dialog"><div class="name">自分</div>「……もう少し調べよう。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
 function scienceMemo(){addClue('mirrorHint','文化祭準備メモ','鏡3枚セット。順番は「左・右・左」。');sheet(`<h2>文化祭準備メモ</h2><p>「声と光の迷路」用。</p><p class="code">鏡：左 → 右 → 左</p>`)}function scienceCabinet(){addItem('uvPen','UVペン','準備棚に残っていた文化祭用の紫外線ペン。');sheet('<h2>準備室棚</h2><p>文化祭用のUVペンが一本残っている。</p>')}function laserPuzzle(){if(!hasClue('mirrorHint')){sheet('<h2>光学実験台</h2><p>鏡3枚の向きを変えられる。どこかに手順があるはず。</p>');return}sheet(`<h2>光学実験</h2><p>文化祭展示の再現用。メモ通りに鏡を並べる。</p><button class="choice" onclick="laserAns('LRL')">左 → 右 → 左</button><button class="choice" onclick="laserAns('RLR')">右 → 左 → 右</button><button class="choice" onclick="laserAns('LLR')">左 → 左 → 右</button>`)}function laserAns(a){if(a!=='LRL'){toast('受光器が反応しない。');return}closeSheet();addItem('cassette','小型ICレコーダー','受光器の隠しケースから出てきた。ラベルは「文化祭前日」。');S.chapter=3;addLog('理科室の展示装置から古い録音機を発見。');sv();sheet(`<h2>CHAPTER 3　文化祭前日の録音</h2><p>理科室の展示装置から、去年の日付が書かれた録音機が出てきた。</p><div class="dialog"><div class="name">自分</div>「放送室なら再生できるかも。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
 function broadcastSchedule(){addClue('broadcastDuty','放送委員当番表','文化祭前日17:40〜18:10の担当欄だけ、名前が黒く塗り潰されている。');sheet('<h2>放送当番表</h2><p>文化祭前日の担当欄。</p><p class="code">17:40–18:10　██████</p>')}function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。何か持ち出された跡がある。</p>');return}addClue('voice','文化祭前日の録音','18:04「まだ一人、2年3組に残ってる」／18:05「誰？」「……名前が出てこない」');sheet(`<h2>古い録音</h2><p class="code">18:04</p><p>『先生、まだ一人、2年3組に残ってます。』</p><p class="code">18:05</p><p>『誰？』<br>『……名前が出てこない。』</p><div class="dialog"><div class="name">自分</div>「……。」</div>`)}function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>新しい録音しか残っていない。古いデータは別媒体に移されている。</p>');return}addClue('todayAudio','今日の18:06録音','18:06、2年3組のマイクが30秒だけON。人の声はなく、机を引く音だけ。');sheet(`<h2>今日の放送ログ</h2><p class="code">18:06　MIC: CLASSROOM 2-3</p><p>机を引くような音。人の声はない。</p><div class="dialog"><div class="name">自分</div>「……18:06。」</div>`);if(S.chapter===3){S.chapter=4;sv();setTimeout(()=>sheet(`<h2>CHAPTER 4　去年と今日</h2><p>去年の録音と、今日の18:06。二つの記録が同じ教室を指している。</p><div class="dialog"><div class="name">自分</div>「……まだ足りない。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`),50)}}
 function timeCapsuleNote(){addClue('capsule','卒業制作の掲示','「忘れたくないことを一つだけ、旧校舎ロッカーへ」。去年の文化祭企画。');sheet('<h2>古い掲示</h2><p>「忘れたくないことを一つだけ、旧校舎ロッカーへ。」</p>')}function oldStairs(){sheet('<h2>旧校舎階段</h2><p>足跡が一組だけ、新しい。</p><div class="dialog"><div class="name">自分</div>「……見覚えのある模様だ。」</div>')}function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に薄い線。普通の光では読めない。</p>');return}addClue('letter','UVで浮かんだ手紙','「もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。」');sheet(`<h2>UVで浮かぶ文字</h2><p>ロッカーの内側に文字が浮かぶ。</p><p>『もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。』</p><div class="dialog"><div class="name">自分</div>「……“また”？」</div>`)}function roofDoor(){if(!hasClue('letter')){sheet('<h2>屋上前の扉</h2><p>開かない。ロッカーを調べる必要がありそうだ。</p>');return}S.chapter=5;addLog('旧校舎ロッカーの手紙を読んだ。屋上前へ。');sv();go('rooftop')}
-function networkTerminal(){addClue('network','校内ネットワーク端末','去年の文化祭前日の記録一式を外部へ送信可能。校内から削除することもできる。');sheet('<h2>ネットワーク端末</h2><p>去年の記録はまだ校内サーバに残っている。</p><p>外部送信／削除、どちらも可能。</p>')}function finalChoice(){sheet(`<h2>最後の選択</h2><p>手紙、録音、出席簿、今日のログ。全部をここで終わらせることも、外へ残すこともできる。</p><button class="choice primary" ${hasClue('network')?'':'disabled'} onclick="endGame('true')">記録を外部へ送信して、先生に連絡する</button><p class="muted">${hasClue('network')?'':'※外部送信手段をまだ確認していない。'}</p><button class="choice" onclick="endGame('normal')">自分だけ校舎を出る</button><button class="choice bad" onclick="endGame('bad')">去年の記録を全部削除する</button>`)}function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>屋上前の端末から記録を送信した。</p><p>数分後、スマホに圏外表示が消える。</p><div class="dialog"><div class="name">担任</div>『今どこにいる？　学校か？』</div><div class="dialog"><div class="name">自分</div>「……先生。去年のこと、聞きたいです。」</div><p>自分が何を忘れたのかは、まだ全部分からない。</p><p>でも、記録を消さずに残すことはできた。</p><hr><p class="muted">翌週。旧校舎のロッカーは撤去された。<br>学校は去年の件について、生徒と保護者への説明を始めた。<br><br>帰り道、スマホに友人からメッセージが届く。<br>『明日、普通に来るよな？』<br><br>あなたは少しだけ迷ってから、『行く』と返した。</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>非常口から外へ出た。</p><p>翌朝、学校は何事もなかったように始まる。</p><p>出席簿の自分の欄だけが、いつの間にか『出席』に直されていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>去年の記録を削除した。</p><p class="code">DELETE COMPLETE</p><p>翌日、教室で目を覚ます。</p><p>壁時計は17:18で止まっている。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}function reset(){localStorage.removeItem('afterschoolSave');location.reload()}
+function networkTerminal(){addClue('network','校内ネットワーク端末','去年の文化祭前日の記録一式を外部へ送信可能。校内から削除することもできる。');sheet('<h2>ネットワーク端末</h2><p>去年の記録はまだ校内サーバに残っている。</p><p>外部送信／削除、どちらも可能。</p>')}function finalChoice(){sheet(`<h2>最後の選択</h2><p>手紙、録音、出席簿、今日のログ。全部をここで終わらせることも、外へ残すこともできる。</p><button class="choice primary" ${hasClue('network')?'':'disabled'} onclick="endGame('true')">記録を外部へ送信して、先生に連絡する</button><p class="muted">${hasClue('network')?'':'※外部送信手段をまだ確認していない。'}</p><button class="choice" onclick="endGame('normal')">自分だけ校舎を出る</button><button class="choice bad" onclick="endGame('bad')">去年の記録を全部削除する</button>`)}function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>屋上前の端末から記録を送信した。</p><p>数分後、スマホに圏外表示が消える。</p><div class="dialog"><div class="name">担任</div>『今どこにいる？　学校か？』</div><div class="dialog"><div class="name">自分</div>「……先生。去年のこと、聞きたいです。」</div><p>自分が何を忘れたのかは、まだ全部分からない。</p><p>でも、記録を消さずに残すことはできた。</p><hr><p class="muted">翌週。旧校舎のロッカーは撤去された。<br>学校は去年の件について、生徒と保護者への説明を始めた。<br><br>帰り道、スマホに友人からメッセージが届く。<br>『明日、普通に来るよな？』<br><br>あなたは少しだけ迷ってから、『行く』と返した。</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>非常口から外へ出た。</p><p>翌朝、学校は何事もなかったように始まる。</p><p>出席簿の自分の欄だけが、いつの間にか『出席』に直されていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>去年の記録を削除した。</p><p class="code">DELETE COMPLETE</p><p>翌日、教室で目を覚ます。</p><p>壁時計は17:18で止まっている。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}function reset(){localStorage.removeItem('schoolEscapePremiumStableV2');location.reload()}
 function panel(type){if(type==='items')sheet('<h2>持ち物</h2>'+(S.items.length?S.items.map(x=>`<div class="item"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>何もない。</p>'));else if(type==='clues')sheet('<h2>手掛かり</h2>'+(S.clues.length?S.clues.map(x=>`<div class="clue"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>まだない。</p>'));else if(type==='log')sheet('<h2>行動ログ</h2>'+(S.logs.length?S.logs.slice().reverse().map(x=>`<div class="log">${x}</div>`).join(''):'<p>まだない。</p>'));else if(type==='map')sheet('<h2>移動</h2>'+Object.keys(rooms).map(r=>`<button class="choice" ${can(r)?'':'disabled'} onclick="closeSheet();go('${r}')">${can(r)?rooms[r].name:'未確認区画'}</button>`).join(''));else{let l=S.hint[S.chapter]||0;sheet(`<h2>ヒント</h2><p>${hint(S.chapter,l)}</p><button class="choice" onclick="moreHint()">もう少しヒント</button>`)}}function moreHint(){S.hint[S.chapter]=(S.hint[S.chapter]||0)+1;sv();panel('hint')}function hint(ch,l){let H={0:['まず現在時刻と、学校の予定を確認しよう。','黒板の完全下校時刻を見る。'],1:['職員室には今日の記録がある。','出席簿とPCログを確認しよう。'],2:['理科室の展示装置には手順が残されている。','文化祭準備メモを見る。'],3:['放送室には去年の記録が残っている。','古い録音機を使う。'],4:['旧校舎のロッカーは普通の光では読めない。','理科室で拾ったUVペンを使う。'],5:['最後は謎ではなく選択。記録を残すか消すか。']};let a=H[ch]||['手掛かりを見直そう。'];return a[Math.min(l,a.length-1)]}function menu(){sheet(`<h2>メニュー</h2><button class="choice" onclick="closeSheet()">戻る</button><button class="choice" onclick="showIntro()">遊び方</button><button class="choice bad" onclick="reset()">セーブ削除</button>`)}
-ld();document.getElementById('cont').disabled=!localStorage.getItem('afterschoolSave');if(localStorage.getItem('afterschoolSave'))render();
+ld();document.getElementById('cont').disabled=!localStorage.getItem('schoolEscapePremiumStableV2');if(localStorage.getItem('schoolEscapePremiumStableV2'))render();
 </script><script>
 // === COMPLETE STORY / REASONING PATCH ===
 S.board=S.board||{};
@@ -674,326 +736,503 @@ panel=function(type){
 }
 </style>
 
-<style id="premium-ui-v1">
+<script id="premium-stable-logic-v2">
+/* ===== FINAL STATE / NAVIGATION GUARD ===== */
+function stableEsc(k){return !!(S.flags&&S.flags["esc_"+k])}
+
+function can(r){
+  if(r==="classroom") return true;
+  if(r==="hall") return stableEsc("class");
+  if(r==="staff") return stableEsc("class");
+  if(r==="science") return stableEsc("fire") && S.chapter>=2 && hasItem("staffKey");
+  if(r==="broadcast") return stableEsc("fire") && S.chapter>=3 && hasItem("keyTag");
+  if(r==="old") return stableEsc("stairs") && S.chapter>=4;
+  if(r==="rooftop") return stableEsc("roof") && S.chapter>=5;
+  return false;
+}
+
+function go(r){
+  if(r==="hall"&&!stableEsc("class")){toast("教室の扉はまだ開いていない。");return}
+  if((r==="science"||r==="broadcast")&&!stableEsc("fire")){toast("廊下の防火扉が閉じている。");return}
+  if(r==="old"&&!stableEsc("stairs")){toast("階段区画が閉じている。");return}
+  if(r==="rooftop"&&!stableEsc("roof")){toast("屋上前の扉が閉じている。");return}
+  if(!can(r)){toast("まだ移動できない。");return}
+  S.room=r;S.view=0;sv();render();
+}
+
+/* Map travel obeys exactly the same unlock rules as doors. */
+function renderMap(){
+  let cells=[];
+  for(let y=0;y<5;y++){
+    for(let x=0;x<5;x++){
+      const r=Object.keys(rooms).find(k=>rooms[k].pos[0]===x&&rooms[k].pos[1]===y);
+      if(!r){cells.push('<div class="mapcell"></div>');continue}
+      const unlocked=can(r), here=S.room===r;
+      const move=unlocked&&!here ? `onclick="go('${r}')"` : "";
+      cells.push(`<div class="mapcell ${unlocked?'open':''} ${here?'here':''} ${unlocked&&!here?'tappable':''}" ${move}>
+        <span>${unlocked?rooms[r].name:"？"}</span>
+        ${here?'<span class="arrow">▲</span>':''}
+      </div>`);
+    }
+  }
+  document.getElementById("map").innerHTML=cells.join("");
+}
+
+/* Always launch at the locked classroom, regardless of a prior broken build. */
+function startGame(){
+  S=JSON.parse(JSON.stringify(BASE));
+  S.room="classroom"; S.view=0; S.chapter=0; S.flags={};
+  S.items=[]; S.clues=[]; S.logs=[]; S.hint={}; S.ending=null;
+  localStorage.removeItem("schoolEscapePremiumStableV2");
+  document.getElementById("prologue").classList.add("hidden");
+  introSequence();
+}
+function continueGame(){
+  ld();
+  if(!S.room || !rooms[S.room]) S.room="classroom";
+  if(typeof S.view!=="number") S.view=0;
+  if(!S.flags) S.flags={};
+  document.getElementById("prologue").classList.add("hidden");
+  render();
+}
+
+/* ===== TITLE MODAL ===== */
+function showIntro(){
+  const o=document.getElementById("overlay"), c=document.getElementById("sheet");
+  c.innerHTML=`
+    <h2>あらすじ</h2>
+    <p>放課後の教室で目を覚ましたあなた。完全下校時刻を過ぎ、校舎の出口へ続く区画は閉じている。</p>
+    <p>まずは身近な道具を使い、<strong>学校から脱出する方法</strong>を探す。探索を進めるうち、去年この学校で起きた事故と、自分の失われた記憶につながる記録が見つかっていく。</p>
+    <hr>
+    <h2>遊び方</h2>
+    <p><strong>左右の矢印</strong>で部屋の4面を見回し、気になる物をタップして調べます。</p>
+    <p>鍵・工具・UVライトなどの<strong>持ち物</strong>で物理ロックを解除すると、行ける範囲が広がります。</p>
+    <p>一度開放した部屋は<strong>校内マップを直接タップ</strong>して移動できます。未開放区画には移動できません。</p>
+    <p><strong>いまの目的</strong>は次の方向だけを示します。答えが必要なときはヒントを段階的に確認できます。</p>
+    <button class="choice primary" onclick="closeSheet()">閉じる</button>`;
+  o.classList.add("show");
+}
+
+/* synopsis modal must be above title */
+document.addEventListener("DOMContentLoaded",()=>{
+  const o=document.getElementById("overlay");
+  if(o) o.style.zIndex="500";
+});
+</script>
+
+<style id="premium-stable-gui-v2">
 :root{
-  --ui-paper:#f7f1e6;
-  --ui-paper-deep:#e8ddcb;
-  --ui-ink:#27221c;
-  --ui-brown:#65513f;
-  --ui-line:#a89478;
-  --ui-red:#9f4037;
-  --ui-green:#456b55;
-  --ui-gold:#c6a15d;
-  --ui-shadow:0 12px 28px rgba(52,39,28,.18);
+ --paper:#f7f1e5;--paper2:#e9ddca;--ink:#28221c;--muted:#655b4f;
+ --line:#a99579;--wood:#6a523e;--red:#9e4037;--green:#55755e;
+ --shadow:0 12px 28px rgba(48,35,24,.17);
 }
-html,body{
-  background:
-    linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,0)),
-    #cfc9bd!important;
-  color:var(--ui-ink)!important;
-}
-body:after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background-image:
-    radial-gradient(circle at 20% 10%,rgba(255,255,255,.35),transparent 24%),
-    radial-gradient(circle at 85% 80%,rgba(91,73,55,.09),transparent 30%);
-}
-header{
-  border:1px solid #b4a58d!important;
-  border-radius:12px!important;
-  background:rgba(250,246,237,.94)!important;
-  box-shadow:0 5px 18px rgba(64,48,33,.12)!important;
-  backdrop-filter:blur(10px);
-  margin-bottom:10px!important;
-}
-header button{
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 2px 5px rgba(68,52,37,.12)!important;
-}
-.brand b{
-  font-size:16px!important;
-  font-weight:900!important;
-  letter-spacing:.1em!important;
-}
-.brand small{
-  display:inline-block!important;
-  margin-top:3px!important;
-  padding:3px 8px!important;
-  border-radius:999px!important;
-  background:#e9decb!important;
-  color:#5f5143!important;
-  font-weight:800!important;
-  letter-spacing:.08em!important;
+html,body{background:#cbc6bb!important;color:var(--ink)!important}
+body{
+ background-image:
+  radial-gradient(circle at 50% 0,rgba(255,255,255,.46),transparent 28%),
+  linear-gradient(#d5d5cf 0 58%,#bcb7ac 58%)!important;
 }
 
-/* cinematic frame */
-.scene{
-  border:8px solid #5f4d3d!important;
-  border-radius:12px!important;
-  box-shadow:
-    0 14px 35px rgba(39,29,21,.28),
-    inset 0 0 0 1px rgba(255,255,255,.25)!important;
-  overflow:hidden!important;
-}
-.scene:after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  box-shadow:inset 0 0 70px rgba(30,23,17,.12);
-  z-index:3;
-}
-.tag{
-  top:12px!important;
-  padding:7px 11px!important;
-  border-radius:999px!important;
-  font-size:11px!important;
-  letter-spacing:.04em!important;
-  box-shadow:0 2px 8px rgba(45,34,24,.18)!important;
-}
-.where{left:12px!important}.ch{right:12px!important}
-.turn{bottom:14px!important;left:14px!important;right:14px!important}
-.turn button{
-  width:52px!important;height:52px!important;
-  font-size:26px!important;
-  border-width:2px!important;
-  box-shadow:0 4px 12px rgba(47,35,25,.24)!important;
-  transition:transform .12s ease,box-shadow .12s ease!important;
-}
-.turn button:active{transform:scale(.94)!important;box-shadow:0 2px 5px rgba(47,35,25,.2)!important}
-
-/* notebook / info */
-.card,.mapbox,.objective-box{
-  box-shadow:var(--ui-shadow)!important;
-  border:1px solid #b7a78e!important;
-  background-color:#f8f2e7!important;
-}
-.card{
-  border-radius:10px!important;
-  position:relative!important;
-  overflow:hidden!important;
-}
-.card:after{
-  content:"";position:absolute;right:12px;top:10px;width:42px;height:14px;
-  background:#e8d8b8;opacity:.55;transform:rotate(5deg);
-}
-.card h2{
-  font-size:18px!important;font-weight:900!important;color:#2a251f!important;
-}
-.card p{font-size:14px!important;line-height:1.85!important}
-.objective-box{
-  border-left:6px solid var(--ui-red)!important;
-  background:linear-gradient(90deg,#fff9ef,#f7eee0)!important;
-  border-radius:9px!important;
-}
-.objective-label{
-  font-size:10px!important;
-  letter-spacing:.14em!important;
-}
-.objective-text{
-  font-size:14px!important;
-  line-height:1.65!important;
-}
-
-/* map like a school guide sheet */
-.mapbox{
-  background:
-    linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.25)),
-    #efe6d7!important;
-  border-radius:10px!important;
-}
-.mc{
-  min-height:42px!important;
-  border-radius:6px!important;
-  font-weight:700!important;
-  transition:.12s ease!important;
-}
-.mc.on{
-  box-shadow:inset 0 0 0 1px rgba(108,88,67,.12)!important;
-}
-.mc.tappable:hover{transform:translateY(-1px)!important}
-.mc.here{
-  background:#f3d3ca!important;
-  border:2px solid #a54c43!important;
-  color:#5d2d28!important;
-  box-shadow:0 2px 8px rgba(159,64,55,.18)!important;
-}
-
-/* bottom nav */
-.bottom{padding-top:12px!important}
-.bi{
-  gap:8px!important;
-}
-.bi button{
-  min-height:60px!important;
-  background:linear-gradient(#fffaf0,#eee5d7)!important;
-  border:1px solid #a8967d!important;
-  border-radius:11px!important;
-  box-shadow:0 4px 10px rgba(52,39,27,.12)!important;
-  font-weight:800!important;
-  transition:transform .12s ease,box-shadow .12s ease!important;
-}
-.bi button:active{transform:translateY(2px)!important;box-shadow:0 2px 5px rgba(52,39,27,.12)!important}
-.bi i{font-size:20px!important}
-
-/* modal notebook */
-.sheet{
-  border-radius:18px 18px 0 0!important;
-  box-shadow:0 -18px 48px rgba(29,22,16,.28)!important;
-  background-color:#f7f0e4!important;
-  background-image:
-    linear-gradient(90deg,transparent 0 28px,#dd9e9b 29px,#dd9e9b 30px,transparent 31px),
-    repeating-linear-gradient(transparent 0 31px,#cfd7d2 32px)!important;
-  padding-left:42px!important;
-}
-.sheet h2{
-  font-size:21px!important;
-  font-weight:900!important;
-  letter-spacing:.04em!important;
-}
-.x{
-  position:sticky!important;top:0!important;
-  box-shadow:0 2px 8px rgba(57,43,30,.12)!important;
-}
-.choice{
-  min-height:48px!important;
-  padding:13px 14px!important;
-  border-radius:10px!important;
-  box-shadow:0 2px 5px rgba(60,46,32,.08)!important;
-}
-.choice.primary{
-  background:linear-gradient(#e3eee0,#cfe0cd)!important;
-  border-color:#68896d!important;
-}
-.choice.bad{
-  background:linear-gradient(#f1dfdb,#e8cac4)!important;
-}
-
-/* evidence / inventory cards */
-.box,.item,.clue,.log{
-  background:rgba(255,250,239,.88)!important;
-  border:1px solid #b8aa92!important;
-  border-radius:9px!important;
-  box-shadow:0 2px 6px rgba(62,47,33,.08)!important;
-}
-.box b,.item b,.clue b{
-  font-weight:900!important;
-}
-.important,.code{
-  color:#963a33!important;
-  font-weight:900!important;
-}
-.dialog{
-  background:rgba(255,250,239,.88)!important;
-  border-left:5px solid #66856f!important;
-  box-shadow:0 2px 6px rgba(54,41,29,.08)!important;
-}
-
-/* reasoning board */
-.boardrow{
-  padding:8px 10px!important;
-  border:1px solid #c0b39e!important;
-  border-radius:9px!important;
-  background:rgba(255,250,239,.72)!important;
-}
-.boardrow span{font-weight:900!important}
-.boardrow select{
-  background:#fffaf0!important;
-  border:1px solid #a9977e!important;
-  border-radius:8px!important;
-  min-height:44px!important;
-}
-
-/* start screen: higher-end game cover */
+/* COVER */
 .prologue{
-  background:
-    radial-gradient(circle at 50% 30%,rgba(80,95,105,.34),transparent 35%),
-    linear-gradient(#202a30,#0f1519)!important;
+ background:radial-gradient(circle at 50% 26%,#43515a 0,#1c252b 48%,#0b0f12 100%)!important;
 }
 .proCard{
-  width:min(680px,100%)!important;
-  border:1px solid #7a6754!important;
-  border-radius:16px!important;
-  background:#efe6d8!important;
-  box-shadow:0 28px 70px rgba(0,0,0,.48)!important;
+ border:1px solid #76614d!important;border-radius:18px!important;
+ background:#ede3d3!important;box-shadow:0 30px 75px #0008!important;
 }
-.hero{
-  height:330px!important;
-  border-bottom:1px solid #59483a!important;
-}
+.hero{height:330px!important;border-bottom:1px solid #584536!important}
 .hero:after{
-  content:"";position:absolute;inset:0;
-  background:
-    linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.08) 45%,rgba(0,0,0,.75) 100%),
-    radial-gradient(circle at 50% 35%,transparent 0 38%,rgba(0,0,0,.18) 100%);
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(transparent 25%,rgba(8,11,13,.08) 45%,rgba(5,7,9,.90) 100%)!important;
 }
-.heroText{z-index:2!important}
-.heroText h1{
-  font-size:34px!important;
-  letter-spacing:.15em!important;
-}
-.heroText p{
-  font-size:13px!important;
-  letter-spacing:.12em!important;
-}
-.proActions{
-  padding:16px!important;
-  background:
-    linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0)),
-    #eee4d5!important;
-}
+.heroText{z-index:3!important;bottom:0!important;padding:100px 15px 24px!important}
+.heroText h1{color:#fff!important;font-size:34px!important;font-weight:900!important;letter-spacing:.14em!important;text-shadow:0 3px 10px #000!important}
+.heroText p{color:#fff0cf!important;font-weight:800!important;letter-spacing:.10em!important;text-shadow:0 2px 6px #000!important}
+.proActions{background:#ede3d3!important;padding:17px!important}
 .proActions button{
-  min-height:58px!important;
-  border-radius:12px!important;
-  margin:7px 0!important;
-  font-weight:900!important;
-  letter-spacing:.04em!important;
-  box-shadow:0 4px 10px rgba(55,42,29,.13)!important;
-  background:linear-gradient(#fffaf0,#eee4d6)!important;
+ min-height:58px!important;margin:7px 0!important;border:1px solid #927b60!important;
+ border-radius:12px!important;background:linear-gradient(#fffaf0,#e9dece)!important;
+ color:#241f1a!important;font-weight:900!important;letter-spacing:.03em!important;
+ box-shadow:0 4px 11px #49362320!important;
 }
-.proActions button:first-child{
-  background:linear-gradient(#b25449,#8f3c34)!important;
-  color:#fff!important;
-  border-color:#7d302a!important;
-  text-shadow:0 1px 2px #0005!important;
+.proActions button:first-child{background:linear-gradient(#b5564b,#8f3d35)!important;color:#fff!important;border-color:#7e302a!important;text-shadow:0 1px 2px #0005!important}
+.proActions button:disabled{background:#d8d0c4!important;color:#746c62!important;opacity:1!important}
+
+/* TOP BAR */
+.top,header{
+ background:rgba(249,245,237,.97)!important;color:#251f1a!important;
+ border:1px solid #b5a58d!important;border-radius:13px!important;
+ box-shadow:0 5px 16px #3d2d1f18!important;
 }
-.proActions button:disabled{
-  filter:saturate(.3)!important;
-  opacity:.62!important;
+.top button,header button,#deskQuick button{
+ background:linear-gradient(#fffaf0,#ece2d3)!important;color:#241f1a!important;
+ border:1px solid #917d64!important;border-radius:10px!important;font-weight:900!important;
+ text-shadow:none!important;opacity:1!important;
+}
+.brand b{color:#251f1a!important;font-size:16px!important;font-weight:900!important}
+.brand span,.brand small{color:#625649!important;font-weight:800!important}
+
+/* SCENE */
+.scene{
+ border:7px solid #604b39!important;border-radius:13px!important;
+ background:#e6ddcf!important;box-shadow:0 15px 34px #38271938!important;
+}
+#scene svg{display:block!important;width:100%!important;height:auto!important;opacity:1!important}
+.tag{
+ background:#fffaf0f4!important;color:#2b251f!important;border:1px solid #87745e!important;
+ border-radius:999px!important;font-weight:900!important;box-shadow:0 2px 8px #45332324!important;
+}
+.ch{color:var(--red)!important}
+.turn button{
+ background:#fffaf0eb!important;color:#493929!important;border:2px solid #7e674f!important;
+ box-shadow:0 4px 12px #39291c33!important;
+}
+.label{fill:#fffaf0!important;stroke:#3f3024!important;stroke-width:7px!important;font-weight:900!important}
+
+/* PAPER UI */
+.card,.mapbox,.objective-box{
+ border:1px solid #b5a58c!important;border-radius:10px!important;
+ background:#f8f2e7!important;box-shadow:var(--shadow)!important;
+}
+.card{
+ background:
+  linear-gradient(90deg,transparent 0 27px,#dc9e9a 28px,#dc9e9a 29px,transparent 30px),
+  repeating-linear-gradient(#faf5ea 0 31px,#d3dad5 32px)!important;
+ padding-left:38px!important;
+}
+.card h2{color:#28221c!important;font-weight:900!important}
+.card p{color:#40372e!important;line-height:1.85!important}
+.objective-box{border-left:6px solid var(--red)!important;background:linear-gradient(90deg,#fff9ef,#f3e8d8)!important}
+.objective-label{color:#8d3932!important;font-weight:900!important}
+.objective-text{color:#28221c!important;font-weight:900!important}
+
+/* MAP */
+.mapbox{background:#eee4d5!important}
+.mapcell,.mc{
+ background:#e7ddcd!important;color:#73675a!important;border:1px solid #b9aa94!important;
+ border-radius:7px!important;font-weight:800!important;position:relative!important;
+}
+.mapcell.open,.mc.on{background:#fff8eb!important;color:#2d2721!important}
+.mapcell.tappable{cursor:pointer!important}
+.mapcell.tappable:after{content:"移動";position:absolute;right:3px;bottom:2px;font-size:8px;color:#8b4a42;font-weight:900}
+.mapcell.here,.mc.here{background:#f1d5ce!important;color:#702f29!important;border:2px solid #a54840!important;box-shadow:0 2px 7px #9e403720!important}
+.mapcell.here:after{content:"現在地";position:absolute;right:3px;bottom:2px;font-size:8px;color:#8b3a33;font-weight:900}
+
+/* BOTTOM MENU */
+.bottom{background:linear-gradient(transparent,#cbc6bb 30%)!important}
+.bottomin,.bi{background:rgba(237,227,210,.96)!important;border:1px solid #ad9b80!important;border-radius:13px!important;padding:7px!important;box-shadow:0 6px 18px #3c2c1f22!important}
+.bottom button,.bottomin button,.bi button{
+ background:linear-gradient(#fffaf0,#e9dfd0)!important;color:#28221c!important;
+ border:1px solid #9b886f!important;border-radius:10px!important;font-weight:900!important;
+ opacity:1!important;text-shadow:none!important;box-shadow:0 3px 8px #3e2d1e1c!important;
+}
+.bottom button i,.bottomin button i,.bi button i{color:#694f3c!important}
+
+/* MODALS / NOTE */
+.overlay{z-index:500!important}
+.sheet{
+ background-color:#f7f0e4!important;
+ background-image:
+  linear-gradient(90deg,transparent 0 28px,#dd9e9b 29px,#dd9e9b 30px,transparent 31px),
+  repeating-linear-gradient(transparent 0 31px,#cfd7d2 32px)!important;
+ color:#29231e!important;border:1px solid #a7957d!important;border-radius:18px 18px 0 0!important;
+ padding-left:42px!important;box-shadow:0 -20px 50px #1c140e42!important;
+}
+.sheet h2{color:#27211b!important;font-weight:900!important}
+.sheet p{color:#40372f!important}
+.choice,.x{
+ background:#fffaf0!important;color:#29231e!important;border:1px solid #a38f74!important;
+ border-radius:9px!important;font-weight:800!important;
+}
+.choice.primary{background:linear-gradient(#e3eee0,#cedfcb)!important;border-color:#6f8a73!important}
+.choice.bad{background:linear-gradient(#f0dfda,#e8c9c3)!important}
+.box,.item,.clue,.log,.dialog,.boardrow{
+ background:rgba(255,250,239,.90)!important;border:1px solid #b8aa93!important;
+ border-radius:8px!important;box-shadow:0 2px 6px #3c2b1d10!important;
+}
+.important,.code{color:#963b34!important;font-weight:900!important}
+.muted{color:#665c50!important}
+.toast{background:#fffaf0!important;color:#27211c!important;border-color:#836f58!important;font-weight:900!important}
+
+/* DESKTOP = generated mock feeling */
+@media(min-width:820px){
+ #app{
+   max-width:1440px!important;display:grid!important;
+   grid-template-columns:minmax(250px,310px) minmax(520px,1fr) minmax(230px,290px)!important;
+   grid-template-rows:auto auto auto auto!important;gap:14px!important;align-items:start!important;
+ }
+ .top,header{grid-column:1/-1!important}
+ .scene{grid-column:2!important;grid-row:2!important}
+ .card{grid-column:1!important;grid-row:2!important;margin:0!important;min-height:520px!important}
+ .card:before{content:"調査ノート";display:block;font-size:20px;font-weight:900;margin-bottom:18px;border-bottom:2px solid #78634e;padding-bottom:7px}
+ .objective-box{grid-column:2!important;grid-row:3!important;margin:0!important}
+ .mapbox{grid-column:3!important;grid-row:2!important;margin:0!important;min-height:245px!important}
+ .bottom{grid-column:2/4!important;grid-row:4!important;position:sticky!important;bottom:8px!important;background:none!important;padding:0!important}
 }
 
-/* toast */
-.toast{
-  border-radius:999px!important;
-  box-shadow:0 6px 18px rgba(36,27,19,.2)!important;
-}
-
-/* subtle animation */
-@keyframes fadeInGame{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.card,.mapbox,.objective-box{animation:fadeInGame .22s ease both}
-
+/* MOBILE */
 @media(max-width:819px){
-  #app{padding-left:8px!important;padding-right:8px!important}
-  header{border-radius:0 0 10px 10px!important;margin:0 -2px 8px!important}
-  .scene{border-width:5px!important;border-radius:10px!important}
-  .tag{font-size:10px!important;padding:5px 8px!important}
-  .turn button{width:48px!important;height:48px!important}
-  .card,.mapbox,.objective-box{border-radius:8px!important}
-  .sheet{padding-left:34px!important}
-  .proCard{border-radius:14px!important}
-  .hero{height:300px!important}
-  .heroText h1{font-size:30px!important}
-  .bi{gap:5px!important}
-  .bi button{min-height:56px!important;font-size:9px!important}
+ #app{padding-left:8px!important;padding-right:8px!important}
+ .top,header{border-radius:0 0 11px 11px!important}
+ .scene{border-width:5px!important}
+ .hero{height:300px!important}.heroText h1{font-size:30px!important}
+ .sheet{padding-left:35px!important}
+ .bottomin,.bi{gap:5px!important}
+ .bottom button,.bottomin button,.bi button{min-height:57px!important;font-size:9px!important}
 }
 </style>
 
-<script id="premium-enhancer-v1">
-document.addEventListener("DOMContentLoaded",()=>{
-  const brand=document.querySelector(".brand");
-  if(brand && !document.getElementById("chapterRibbon")){
-    const r=document.createElement("div");
-    r.id="chapterRibbon";
-    r.style.cssText="margin-top:4px;font-size:10px;font-weight:900;color:#7d3f38;letter-spacing:.08em";
-    r.textContent="ESCAPE / MYSTERY";
-    brand.appendChild(r);
+<style id="rich-v3">
+/* ===== Rich visual layer ===== */
+:root{
+ --r-paper:#f7f0e4;--r-ink:#29231d;--r-line:#a9967e;--r-red:#9b3f37;
+ --r-green:#506f58;--r-gold:#c5a15b;--r-blue:#708897;
+}
+@keyframes softIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes popIn{0%{opacity:0;transform:scale(.94)}70%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+@keyframes pulseImportant{0%,100%{box-shadow:0 0 0 rgba(158,64,55,0)}50%{box-shadow:0 0 0 5px rgba(158,64,55,.13)}}
+@keyframes flickerOld{0%,96%,100%{opacity:1}97%{opacity:.86}98%{opacity:1}99%{opacity:.92}}
+@keyframes unlockGlow{0%{filter:brightness(1)}50%{filter:brightness(1.35)}100%{filter:brightness(1)}}
+@keyframes chapterIn{0%{opacity:0;letter-spacing:.5em}100%{opacity:1;letter-spacing:.12em}}
+
+.scene{position:relative!important}
+.scene.room-classroom:before,
+.scene.room-hall:before,
+.scene.room-staff:before,
+.scene.room-science:before,
+.scene.room-broadcast:before,
+.scene.room-old:before,
+.scene.room-rooftop:before{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+}
+.scene.room-classroom:before{background:linear-gradient(90deg,rgba(244,185,120,.08),transparent 35%,rgba(41,56,66,.06))}
+.scene.room-hall:before{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(47,58,63,.08))}
+.scene.room-staff:before{background:linear-gradient(180deg,rgba(255,250,225,.06),rgba(255,255,255,0))}
+.scene.room-science:before{background:linear-gradient(180deg,rgba(220,240,230,.04),rgba(40,50,48,.06))}
+.scene.room-broadcast:before{background:radial-gradient(circle at 50% 40%,rgba(255,245,220,.04),rgba(35,31,27,.10))}
+.scene.room-old:before{background:radial-gradient(circle at 50% 35%,transparent 15%,rgba(20,15,12,.22) 100%);animation:flickerOld 8s infinite}
+.scene.room-rooftop:before{background:linear-gradient(180deg,rgba(20,32,42,.18),rgba(10,15,20,.03))}
+.scene.unlock-flash{animation:unlockGlow .7s ease}
+
+.room-caption{
+ position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+ z-index:5;background:rgba(255,250,240,.92);border:1px solid #8e775d;
+ border-radius:999px;padding:6px 12px;font-size:10px;font-weight:900;
+ color:#3b3128;box-shadow:0 3px 10px #2e211728;pointer-events:none;
+}
+
+/* evidence status chips */
+.status-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.status-chip{padding:5px 8px;border-radius:999px;border:1px solid #b7a78e;background:#fff9ed;font-size:10px;font-weight:800;color:#574b3f}
+.status-chip.ok{background:#dfeade;border-color:#7d987f;color:#365842}
+.status-chip.lock{background:#ede3d4;color:#796b5d}
+.status-chip.alert{background:#f1d9d4;color:#8c3b34;border-color:#b8756c}
+
+/* objective becomes mission card */
+.objective-box{position:relative;overflow:hidden}
+.objective-box:before{
+ content:"MISSION";position:absolute;right:10px;top:8px;
+ font-size:10px;font-weight:900;letter-spacing:.16em;color:#a98c6e;opacity:.75
+}
+.objective-box.urgent{animation:pulseImportant 2.2s ease infinite}
+
+/* scene object hint mode */
+.hot rect{transition:fill .15s ease,stroke .15s ease}
+body.hint-mode .hot rect{fill:rgba(255,244,210,.07)!important;stroke:rgba(255,235,185,.55)!important;stroke-width:2!important}
+
+/* inventory cards */
+.inventory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.inv-card{
+ padding:11px;border:1px solid #b7a78f;border-radius:10px;background:#fff9ed;
+ box-shadow:0 3px 9px #3d2b1d16;position:relative;min-height:82px;animation:softIn .18s ease
+}
+.inv-card b{display:block;font-size:14px;margin-bottom:5px}
+.inv-icon{font-size:23px;position:absolute;right:10px;top:8px;opacity:.42}
+
+/* evidence cards */
+.evidence-card{border-left:5px solid #7b8f7e!important}
+.evidence-card.critical{border-left-color:#a54a41!important}
+.evidence-card .ev-tag{font-size:9px;letter-spacing:.09em;font-weight:900;color:#806f5f;margin-bottom:4px}
+
+/* puzzle presentation */
+.puzzle-stage{
+ background:rgba(255,250,239,.92);border:1px solid #a9957c;border-radius:12px;
+ padding:12px;margin:10px 0;box-shadow:0 4px 13px #3d2b1d16
+}
+.puzzle-stage h3{margin:0 0 7px;color:#5a4635}
+.puzzle-meta{font-size:10px;color:#756a5d;margin-bottom:8px}
+.puzzle-grid button:hover{transform:translateY(-1px)}
+.puzzle-grid button:active{transform:translateY(1px)}
+
+/* reasoning board as corkboard */
+.reason-board{
+ background:
+  radial-gradient(circle at 10px 10px,#a87c52 0 1px,transparent 1.5px),
+  #b88a5e;background-size:22px 22px;
+ border:7px solid #6b4f38;border-radius:13px;padding:15px;box-shadow:inset 0 0 22px #5a3f2b55
+}
+.reason-board .boardrow{
+ background:#fff6df!important;transform:rotate(-.3deg);box-shadow:0 4px 8px #4b33242b!important
+}
+.reason-board .boardrow:nth-child(even){transform:rotate(.35deg)}
+.reason-pin{display:inline-block;width:9px;height:9px;background:#a94d43;border-radius:50%;box-shadow:0 1px 3px #0004;margin-right:5px}
+
+/* chapter splash */
+.chapter-splash{
+ position:fixed;z-index:800;inset:0;display:flex;align-items:center;justify-content:center;
+ background:rgba(20,23,24,.88);color:white;opacity:0;pointer-events:none;transition:opacity .22s ease
+}
+.chapter-splash.show{opacity:1}
+.chapter-splash .inner{text-align:center;animation:chapterIn .45s ease}
+.chapter-splash small{display:block;color:#d7c9b5;letter-spacing:.2em;margin-bottom:8px}
+.chapter-splash b{font-size:27px;letter-spacing:.12em}
+
+/* acquire toast */
+.acquire{
+ position:fixed;z-index:850;left:50%;top:18%;transform:translateX(-50%);
+ min-width:min(330px,82vw);background:#fff9ed;color:#2b251f;border:2px solid #91795e;
+ border-radius:13px;padding:14px 16px;box-shadow:0 14px 35px #0004;
+ opacity:0;pointer-events:none;transition:.22s ease;text-align:center
+}
+.acquire.show{opacity:1;animation:popIn .24s ease}
+.acquire small{display:block;color:#806f5f;font-weight:900;letter-spacing:.12em}
+.acquire b{display:block;font-size:17px;margin-top:4px}
+
+/* footer progress */
+.progress-strip{margin-top:9px;height:6px;background:#dfd5c6;border:1px solid #b7a78f;border-radius:999px;overflow:hidden}
+.progress-strip span{display:block;height:100%;background:linear-gradient(90deg,#7b947d,#b85b50);width:0;transition:width .3s ease}
+
+/* richer title */
+.proCard:before{
+ content:"ESCAPE MYSTERY";position:absolute;z-index:5;left:50%;top:14px;transform:translateX(-50%);
+ color:#efe2ce;font-size:9px;font-weight:900;letter-spacing:.25em;opacity:.8
+}
+.proCard{position:relative}
+.proActions button{position:relative;overflow:hidden}
+.proActions button:after{content:"›";position:absolute;right:16px;font-size:22px;top:50%;transform:translateY(-50%);opacity:.5}
+.proActions button:disabled:after{display:none}
+
+/* desktop polish */
+@media(min-width:820px){
+ .card:after{content:"CASE NOTE";position:absolute;right:14px;top:13px;font-size:9px;letter-spacing:.18em;font-weight:900;color:#9f8c72}
+ .mapbox:after{content:"開放済みの部屋はタップで移動";display:block;margin-top:12px;font-size:10px;color:#75695d;text-align:center}
+}
+</style>
+
+<script id="rich-v3-js">
+(function(){
+  const roomLabels={
+    classroom:"2年3組",hall:"2階廊下",staff:"職員室",science:"理科室",
+    broadcast:"放送室",old:"旧校舎",rooftop:"屋上前"
+  };
+  const roomMood={
+    classroom:"夕暮れの教室",hall:"人気のない廊下",staff:"無人の職員室",science:"理科実験室",
+    broadcast:"静かな放送室",old:"立入禁止の旧校舎",rooftop:"夜の屋上前"
+  };
+
+  function ensureRichNodes(){
+    if(!document.getElementById("chapterSplash")){
+      document.body.insertAdjacentHTML("beforeend",`
+        <div id="chapterSplash" class="chapter-splash"><div class="inner"><small>CHAPTER</small><b id="chapterSplashText"></b></div></div>
+        <div id="acquire" class="acquire"><small>GET ITEM</small><b id="acquireText"></b></div>`);
+    }
   }
-});
+
+  window.showChapterSplash=function(text){
+    ensureRichNodes();
+    const s=document.getElementById("chapterSplash");
+    document.getElementById("chapterSplashText").textContent=text;
+    s.classList.add("show");setTimeout(()=>s.classList.remove("show"),900);
+  };
+
+  window.showAcquire=function(name){
+    ensureRichNodes();
+    const a=document.getElementById("acquire");
+    document.getElementById("acquireText").textContent=name;
+    a.classList.add("show");setTimeout(()=>a.classList.remove("show"),1100);
+  };
+
+  const _render=render;
+  render=function(){
+    _render();
+    const sc=document.querySelector(".scene");
+    if(sc){
+      [...sc.classList].filter(x=>x.startsWith("room-")).forEach(x=>sc.classList.remove(x));
+      sc.classList.add("room-"+S.room);
+      let cap=sc.querySelector(".room-caption");
+      if(!cap){cap=document.createElement("div");cap.className="room-caption";sc.appendChild(cap)}
+      cap.textContent=roomMood[S.room]||roomLabels[S.room]||"";
+    }
+    const ob=document.getElementById("objectiveBox");
+    if(ob){
+      const urgent=!stableEsc("class")||(!stableEsc("fire")&&S.chapter>=1)||(!stableEsc("exit")&&S.chapter>=5);
+      ob.classList.toggle("urgent",urgent);
+      if(!ob.querySelector(".progress-strip")){
+        const p=document.createElement("div");p.className="progress-strip";p.innerHTML="<span></span>";ob.appendChild(p);
+      }
+      const p=ob.querySelector(".progress-strip span");
+      const pct=Math.max(5,Math.min(100,(S.chapter/6)*100));
+      p.style.width=pct+"%";
+    }
+  };
+
+  const _addItem=addItem;
+  addItem=function(id,name,desc){
+    const before=hasItem(id);
+    _addItem(id,name,desc);
+    if(!before&&hasItem(id))showAcquire(name);
+  };
+
+  const _panel=panel;
+  panel=function(type){
+    _panel(type);
+    setTimeout(()=>{
+      const sh=document.getElementById("sheet");
+      if(!sh)return;
+      if(type==="items"){
+        const items=sh.querySelectorAll(".item");
+        if(items.length){
+          const wrap=document.createElement("div");wrap.className="inventory-grid";
+          items.forEach((el,i)=>{
+            el.classList.add("inv-card");el.classList.remove("item");
+            el.insertAdjacentHTML("beforeend",`<span class="inv-icon">${["🔑","🪛","🔦","📱","📎","🪪"][i%6]}</span>`);
+            wrap.appendChild(el);
+          });
+          sh.appendChild(wrap);
+        }
+      }
+      if(type==="clues"){
+        sh.querySelectorAll(".clue").forEach((el,i)=>{
+          el.classList.add("evidence-card");
+          if(i%3===0)el.classList.add("critical");
+          el.insertAdjacentHTML("afterbegin",`<div class="ev-tag">${i%3===0?"IMPORTANT":"EVIDENCE"}</div>`);
+        });
+      }
+      if(type==="board"){
+        const rows=sh.querySelectorAll(".boardrow");
+        if(rows.length){
+          const rb=document.createElement("div");rb.className="reason-board";
+          rows.forEach(r=>{r.insertAdjacentHTML("afterbegin",'<span class="reason-pin"></span>');rb.appendChild(r)});
+          const btn=sh.querySelector(".choice.primary");sh.insertBefore(rb,btn||null);
+        }
+      }
+    },0);
+  };
+
+  const oldSetEsc=window.setEsc;
+  if(typeof oldSetEsc==="function"){
+    window.setEsc=function(k){
+      oldSetEsc(k);
+      const sc=document.querySelector(".scene");if(sc){sc.classList.add("unlock-flash");setTimeout(()=>sc.classList.remove("unlock-flash"),700)}
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    ensureRichNodes();
+    const hintBtn=[...document.querySelectorAll("button")].find(b=>b.textContent.trim()==="?"); 
+    if(hintBtn) hintBtn.addEventListener("dblclick",()=>document.body.classList.toggle("hint-mode"));
+  });
+})();
 </script>
 </body></html>
