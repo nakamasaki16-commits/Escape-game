@@ -85,9 +85,82 @@ button,.choice,.x{color:#241f1a!important}.bi button,.choice{font-weight:700!imp
 .mc{color:#655c50!important}.mc.on{color:#29231e!important;font-weight:700!important}
 .toast{background:#fffaf0!important;color:#211d19!important;border-color:#75634f!important;font-weight:800!important}
 .boardrow select{color:#211d19!important;font-weight:700!important}.ok{color:#2f6244!important;font-weight:800!important}.ng{color:#8b302d!important;font-weight:800!important}
-</style></head><body>
+</style>
+<style id="map-click-v1">
+.mapcell.tappable{
+  cursor:pointer;
+  position:relative;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.mapcell.tappable:after{
+  content:"移動";
+  position:absolute;
+  right:3px;
+  bottom:2px;
+  font-size:8px;
+  color:#7a4b43;
+  font-weight:800;
+  opacity:.8;
+}
+.mapcell.tappable:active{
+  transform:scale(.96);
+  box-shadow:inset 0 0 0 2px #a46b61;
+  background:#f2dfd3!important;
+}
+.mapcell.here:after{content:"現在地";position:absolute;right:3px;bottom:2px;font-size:8px;color:#7a4b43;font-weight:800}
+</style>
+<style id="important-red-v1">
+:root{--important:#a33d35;--important-bg:#f7e7e2}
+.important,.code{color:var(--important)!important;font-weight:800!important}
+.box b{color:#332d27}
+.box b:has(+ .important){color:var(--important)!important}
+.mapcell.here{border-color:var(--important)!important;box-shadow:inset 0 0 0 1px var(--important)!important}
+.mapcell.here:after{color:var(--important)!important}
+.ch{color:var(--important)!important;font-weight:900!important}
+</style>
+
+<style id="objective-guide-v1">
+.objective-box{
+  margin-top:10px;
+  padding:11px 13px;
+  border:1px solid #b3a38b;
+  border-left:5px solid #a33d35;
+  border-radius:7px;
+  background:#fff8ec;
+  box-shadow:0 2px 6px #0001;
+}
+.objective-label{
+  font-size:11px;
+  font-weight:900;
+  color:#8f3d35;
+  letter-spacing:.06em;
+  margin-bottom:4px;
+}
+.objective-text{
+  color:#2b261f;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.55;
+}
+@media(min-width:820px){
+  .objective-box{
+    grid-column:2;
+    grid-row:3;
+    margin:0;
+  }
+  .bottom{
+    grid-column:2/4!important;
+    grid-row:4!important;
+  }
+}
+</style>
+</head><body>
 <div id="prologue" class="prologue"><div class="proCard"><div class="hero"><svg viewBox="0 0 800 460"><rect width="800" height="460" fill="#101820"/><rect x="80" y="70" width="640" height="300" rx="10" fill="#17212a" stroke="#324657" stroke-width="5"/><rect x="120" y="110" width="260" height="130" rx="5" fill="#0d151c" stroke="#3b566a"/><path d="M150 145h200M150 178h165M150 211h190" stroke="#93b1c2" stroke-width="5" opacity=".35"/><rect x="490" y="110" width="150" height="180" fill="#0e151b" stroke="#364b5d"/><circle cx="565" cy="158" r="45" fill="#e6e1d4" stroke="#79838d" stroke-width="4"/><path d="M565 158V128M565 158l25 10" stroke="#23282d" stroke-width="4"/><rect x="0" y="370" width="800" height="90" fill="#080b0f"/></svg><div class="heroText"><h1>学校からの脱出</h1><p>― 放課後、誰もいない ―</p></div></div><div class="proActions"><button onclick="startGame()">NEW GAME</button><button id="cont" onclick="continueGame()">CONTINUE</button><button onclick="showIntro()">あらすじ / 遊び方</button></div></div></div>
-<div id="app"><div class="top"><button onclick="menu()">☰</button><div class="brand"><b>学校からの脱出</b><span id="chapTxt">CHAPTER 0</span></div><button onclick="panel('hint')">?</button></div><div class="scene"><div id="where" class="tag"></div><div id="wall" class="tag"></div><div id="chapter" class="tag"></div><div id="scene"></div><div class="nav"><button onclick="turn(-1)">‹</button><button onclick="turn(1)">›</button></div></div><div class="card"><h2 id="title"></h2><p id="desc"></p></div><div class="minimap"><div class="muted" style="margin-bottom:6px">校内マップ</div><div id="map" class="mapgrid"></div></div></div>
+<div id="app"><div class="top"><button onclick="menu()">☰</button><div class="brand"><b>学校からの脱出</b><span id="chapTxt">CHAPTER 0</span></div><button onclick="panel('hint')">?</button></div><div class="scene"><div id="where" class="tag"></div><div id="wall" class="tag"></div><div id="chapter" class="tag"></div><div id="scene"></div><div class="nav"><button onclick="turn(-1)">‹</button><button onclick="turn(1)">›</button></div></div><div class="card"><h2 id="title"></h2><p id="desc"></p></div>
+<div id="objectiveBox" class="objective-box">
+  <div class="objective-label">いまの目的</div>
+  <div id="objectiveText" class="objective-text"></div>
+</div><div class="minimap"><div class="muted" style="margin-bottom:6px">校内マップ</div><div id="map" class="mapgrid"></div></div></div>
 <div class="bottom"><div class="bottomin"><button onclick="panel('log')"><i>☷</i>ログ</button><button onclick="panel('items')"><i>▣</i>持ち物</button><button onclick="panel('clues')"><i>⌕</i>手掛かり</button><button onclick="reasoningBoard()"><i>◇</i>推理</button><button onclick="panel('map')"><i>⌂</i>移動</button><button onclick="panel('hint')"><i>?</i>ヒント</button></div></div>
 <div id="overlay" class="overlay"><div class="sheet"><button class="close" onclick="closeSheet()">閉じる</button><div id="sheet"></div></div></div><div id="toast" class="toast"></div>
 <script>
@@ -99,72 +172,69 @@ function showIntro(){sheet(`<h2>あらすじ</h2><p>放課後の教室で目を�
 function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。蛍光灯は半分消え、窓の外はもう暗い。</p><div class="dialog"><div class="name">自分</div>「……寝てた？」</div><p>スマホを手に取る。時刻は18:42。通知はない。</p><div class="dialog"><div class="name">自分</div>「みんな、帰ったのか……？」</div><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。圏外。バッテリー31%。');addLog('18:42、2年3組の教室で目を覚ました。');sv();render()">起き上がる</button>`)}
 function closeSheet(){document.getElementById('overlay').classList.remove('show')}function sheet(h){document.getElementById('sheet').innerHTML=h;document.getElementById('overlay').classList.add('show')}function toast(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}function addLog(t){if(!S.logs.includes(t))S.logs.push(t)}function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});toast('入手：'+name)}}function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog('手掛かり「'+name+'」');toast('手掛かり追加：'+name)}}function hasClue(id){return !!S.clues.find(x=>x.id===id)}function hasItem(id){return !!S.items.find(x=>x.id===id)}function turn(d){S.view=(S.view+d+rooms[S.room].views)%rooms[S.room].views;sv();render()}function can(r){if(r==='classroom'||r==='hall')return true;if(r==='staff')return S.chapter>=1;if(r==='science')return S.chapter>=2&&hasItem('staffKey');if(r==='broadcast')return S.chapter>=3&&hasItem('keyTag');if(r==='old')return S.chapter>=4;if(r==='rooftop')return S.chapter>=5;return false}function go(r){if(!can(r)){toast('まだ入れない。');return}S.room=r;S.view=0;sv();render()}
 function ui(){document.getElementById('chapTxt').textContent='CHAPTER '+S.chapter;document.getElementById('chapter').textContent='CH.'+S.chapter;document.getElementById('where').textContent=rooms[S.room].name;document.getElementById('wall').textContent='壁 '+(S.view+1)+'/'+rooms[S.room].views;renderMap()}
-function renderMap(){let cells=[];for(let y=0;y<5;y++)for(let x=0;x<5;x++){let r=Object.keys(rooms).find(k=>rooms[k].pos[0]===x&&rooms[k].pos[1]===y);if(!r){cells.push('<div class="mapcell"></div>');continue}let unlocked=can(r),here=S.room===r;cells.push(`<div class="mapcell ${unlocked?'open':''} ${here?'here':''}">${unlocked?rooms[r].name:'？'}${here?'<span class="arrow">▲</span>':''}</div>`)}document.getElementById('map').innerHTML=cells.join('')}
-function hot(x,y,w,h,fn){return `<g class="hot" onclick="${fn}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/></g>`}function lab(t,x,y){return `<text class="label" x="${x}" y="${y}" text-anchor="middle">${t}</text>`}function shell(inner){
-  let r=S.room,v=S.view,b="";
-  if(r==="classroom"){
-    b=`<rect width="800" height="550" fill="#e8e0d3"/>
-    <rect y="390" width="800" height="160" fill="#9a7654"/>
-    <path d="M0 430h800M0 480h800M0 530h800" stroke="#7b5c41" stroke-width="3" opacity=".55"/>
-    <rect x="548" y="92" width="205" height="238" fill="#758a95" stroke="#f0e8da" stroke-width="8"/>
-    <path d="M650 92v238M548 211h205" stroke="#e1dbcf" stroke-width="5"/>
-    <path d="M565 315l58-44 46 25 72-63" fill="none" stroke="#3f5054" stroke-width="8" opacity=".5"/>
-    <rect x="42" y="62" width="715" height="16" fill="#fff9ee"/>
-    <path d="M40 372h720" stroke="#7d6d5b" stroke-width="5"/>`;
-  }else if(r==="hall"){
-    b=`<rect width="800" height="550" fill="#e7e2d8"/>
-    <polygon points="0,550 800,550 602,305 198,305" fill="#b8ad9a"/>
-    <path d="M198 305L0 550M602 305l198 245" stroke="#8d8170" stroke-width="4"/>
-    <rect x="0" y="72" width="158" height="290" fill="#738791" stroke="#e7e2d8" stroke-width="8"/>
-    <path d="M79 72v290M0 217h158" stroke="#ded9cf" stroke-width="5"/>
-    <rect x="648" y="95" width="120" height="258" fill="#d8cfc0" stroke="#a99b87" stroke-width="5"/>
-    <rect x="347" y="64" width="106" height="14" rx="7" fill="#fffdf3"/>`;
-  }else if(r==="staff"){
-    b=`<rect width="800" height="550" fill="#e0ddd4"/>
-    <rect y="405" width="800" height="145" fill="#aaa69d"/>
-    <rect x="42" y="88" width="716" height="278" fill="#efebe2"/>
-    <rect x="73" y="298" width="654" height="82" fill="#987454"/>
-    <path d="M120 298v-100M350 298v-108M590 298v-94" stroke="#655345" stroke-width="12"/>
-    <rect x="302" y="55" width="196" height="15" rx="7" fill="#fffdf5"/>
-    <rect x="650" y="110" width="82" height="150" fill="#d7d0c4" stroke="#a99c88" stroke-width="4"/>`;
-  }else if(r==="science"){
-    b=`<rect width="800" height="550" fill="#dcd9d0"/>
-    <rect y="405" width="800" height="145" fill="#8d8a84"/>
-    <rect x="35" y="90" width="730" height="132" fill="#edf0e8" stroke="#aaa79f" stroke-width="4"/>
-    <path d="M105 90v132M180 90v132M620 90v132M695 90v132" stroke="#b7b4ad" stroke-width="5"/>
-    <rect x="58" y="320" width="684" height="86" fill="#3b3f3c"/>
-    <path d="M105 406v125M695 406v125" stroke="#514e48" stroke-width="18"/>
-    <path d="M220 320v-38q0-25 24-25t24 25v38" fill="none" stroke="#8c918d" stroke-width="7"/>`;
-  }else if(r==="broadcast"){
-    b=`<rect width="800" height="550" fill="#cec7ba"/>
-    <rect y="405" width="800" height="145" fill="#786b5e"/>
-    <rect x="52" y="78" width="305" height="224" fill="#77858c" stroke="#665e54" stroke-width="9"/>
-    <rect x="397" y="84" width="345" height="248" fill="#ded6c9" stroke="#9a8d79" stroke-width="5"/>
-    <path d="M423 130h294M423 176h294M423 222h294M423 268h294" stroke="#b5a994" stroke-width="4"/>
-    <rect x="128" y="344" width="544" height="72" fill="#504940"/>
-    <circle cx="220" cy="380" r="12" fill="#8e9da3"/><circle cx="265" cy="380" r="12" fill="#8e9da3"/>`;
-  }else if(r==="old"){
-    b=`<rect width="800" height="550" fill="#8c857a"/>
-    <rect y="405" width="800" height="145" fill="#51463b"/>
-    <path d="M0 120h800M0 250h800" stroke="#746c62" stroke-width="8"/>
-    <path d="M88 0v405M245 0v405M565 0v405M722 0v405" stroke="#675f54" stroke-width="10"/>
-    <rect x="64" y="80" width="192" height="255" fill="#344147" stroke="#706960" stroke-width="8"/>
-    <path d="M160 80v255M64 205h192" stroke="#777168" stroke-width="5"/>
-    <path d="M520 82l100 50-86 59 111 55-96 72" fill="none" stroke="#62594e" stroke-width="5"/>
-    <path d="M300 405l35-405M470 405l-20-405" stroke="#776c5f" stroke-width="6" opacity=".5"/>`;
-  }else{
-    b=`<rect width="800" height="550" fill="#39434c"/>
-    <rect y="405" width="800" height="145" fill="#777879"/>
-    <rect x="52" y="58" width="696" height="342" fill="#d6d2c9" stroke="#a39d91" stroke-width="6"/>
-    <rect x="568" y="98" width="128" height="182" fill="#17242c" stroke="#8d8c86" stroke-width="7"/>
-    <circle cx="635" cy="145" r="4" fill="#dbe3e6"/>
-    <rect x="90" y="335" width="620" height="11" fill="#aaa59a"/>`;
+function renderMap(){
+  let cells=[];
+  for(let y=0;y<5;y++){
+    for(let x=0;x<5;x++){
+      const r=Object.keys(rooms).find(k=>rooms[k].pos[0]===x&&rooms[k].pos[1]===y);
+      if(!r){
+        cells.push('<div class="mapcell"></div>');
+        continue;
+      }
+      const unlocked=can(r), here=S.room===r;
+      const click = unlocked && !here ? `onclick="go('${r}')"` : "";
+      const role = unlocked ? 'role="button"' : '';
+      const extra = unlocked && !here ? ' tappable' : '';
+      cells.push(
+        `<div class="mapcell ${unlocked?'open':''} ${here?'here':''}${extra}" ${click} ${role}>`+
+        `${unlocked?rooms[r].name:"？"}${here?'<span class="arrow">▲</span>':''}</div>`
+      );
+    }
   }
-  return `<svg viewBox="0 0 800 550">${b}${inner}</svg>`
+  document.getElementById("map").innerHTML=cells.join("");
 }
-function render(){ui();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#16221d" stroke="#53675b" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#151c23" stroke="#435666"/><rect x="115" y="165" width="150" height="90" fill="#0d1821" stroke="#355a70"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#181d22" stroke="#4c5965"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#0f1922" stroke="#42576b"/><rect x="160" y="115" width="480" height="210" fill="#0b1218"/><circle cx="250" cy="205" r="55" fill="#1f2a33"/><circle cx="400" cy="205" r="55" fill="#1f2a33"/><circle cx="550" cy="205" r="55" fill="#1f2a33"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#13191f" stroke="#495a68" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#171e24" stroke="#455665"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#10161c" stroke="#435564"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#10161c" stroke="#435564"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#18212a" stroke="#465b6c"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#10161c" stroke="#435564"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#171e24" stroke="#435564"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#10161c" stroke="#435564"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#151c23" stroke="#435666"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#355a70"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#141b22" stroke="#455867"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#455867"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#0b1218" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#455867"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#111820" stroke="#455867"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#10161c" stroke="#435564"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#455867"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#10161c" stroke="#435564" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#435564"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
+
+function currentObjective(){
+  if(S.chapter===0){
+    if(!hc("pc") || !hc("clock")) return "教室に残された違和感を調べよう。";
+    return "教室の外へ出て、今日の自分の記録を確かめよう。";
+  }
+  if(S.chapter===1){
+    if(!hc("entry") || !hc("absence")) return "今日、自分が学校にいたことになっているのか確かめよう。";
+    return "次の手掛かりを探すため、特別教室を調べよう。";
+  }
+  if(S.chapter===2){
+    if(!hc("diagram")) return "理科室に残された文化祭展示を調べよう。";
+    if(!hc("hidden")) return "展示装置を動かして、残された手掛かりを探そう。";
+    return "17:18に関係する記録を探しに行こう。";
+  }
+  if(S.chapter===3){
+    if(!hc("recorder")) return "放送室で、去年の文化祭前日の記録を探そう。";
+    if(!hc("1718")) return "壊れた録音の時系列を復元しよう。";
+    return "17:18に何が起きたのか、現場を確かめよう。";
+  }
+  if(S.chapter===4){
+    if(!hc("warning") || !hc("repair")) return "旧校舎で、事故の前から危険が知られていたか確かめよう。";
+    if(!hc("uvnote")) return "旧校舎に残された、自分自身の痕跡を探そう。";
+    return "集めた証拠から、去年の事件全体を組み立てよう。";
+  }
+  if(S.chapter===5){
+    return "推理ボードで、誰が何を知り、何をしたのか整理しよう。";
+  }
+  if(S.chapter===6){
+    if(!hc("msglog")) return "最後に残った謎――今日の匿名メッセージを調べよう。";
+    return "事件の記録をどう扱うか決めよう。";
+  }
+  return "ここまでの証拠を見直そう。";
+}
+function updateObjective(){
+  const e=document.getElementById("objectiveText");
+  if(e) e.textContent=currentObjective();
+}
+
+function render(){ui();updateObjective();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#16221d" stroke="#53675b" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#151c23" stroke="#435666"/><rect x="115" y="165" width="150" height="90" fill="#0d1821" stroke="#355a70"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#181d22" stroke="#4c5965"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#0f1922" stroke="#42576b"/><rect x="160" y="115" width="480" height="210" fill="#0b1218"/><circle cx="250" cy="205" r="55" fill="#1f2a33"/><circle cx="400" cy="205" r="55" fill="#1f2a33"/><circle cx="550" cy="205" r="55" fill="#1f2a33"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#13191f" stroke="#495a68" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#171e24" stroke="#455665"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#10161c" stroke="#435564"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#10161c" stroke="#435564"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#18212a" stroke="#465b6c"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#10161c" stroke="#435564"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#171e24" stroke="#435564"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#10161c" stroke="#435564"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#151c23" stroke="#435666"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#355a70"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#141b22" stroke="#455867"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#455867"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#0b1218" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#455867"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#111820" stroke="#455867"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#111820" stroke="#455867"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#10161c" stroke="#435564"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#455867"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#10161c" stroke="#435564" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#435564"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
 function blackboard(){addClue('schedule','黒板の予定','17:30 体育館：バスケ部、18:00完全下校。');sheet(`<h2>黒板</h2><p>今日の予定が残っている。</p><p class="code">17:30　体育館：バスケ部<br>18:00　完全下校</p><div class="dialog"><div class="name">自分</div>「18時……もう、とっくに過ぎてる。」</div>`)}function clock(){addClue('clock','教室の壁時計','17:18で止まっている。秒針は動かない。');sheet(`<h2>壁時計</h2><p>17:18で止まっている。</p><div class="dialog"><div class="name">自分</div>「電池切れかな。」</div>`)}function teacherDesk(){sheet(`<h2>教卓PC</h2><p>学校アカウントのログイン画面。画面右下には<span class="code">18:43</span>。</p><div class="dialog"><div class="name">自分</div>「18:43……。」</div>`)}function lockers(){addItem('keyTag','小さな鍵','ロッカーの隙間に落ちていた。札に「放送」。');sheet('<h2>ロッカー</h2><p>いくつか開いている。床に小さな鍵が落ちていた。</p>')}function classPhoto(){addClue('photo','文化祭のクラス写真','去年の文化祭。あなたの姿はあるが、写真の端に一人だけ顔が破れている生徒がいる。');sheet(`<h2>クラス写真</h2><p>去年の文化祭。みんな笑っている。</p><div class="dialog"><div class="name">自分</div>「……この破れ方、わざと？」</div>`)}function umbrella(){sheet('<h2>傘立て</h2><p>傘が一本だけ残っている。名札は剥がされている。</p>')}function classDoor(){if(S.chapter===0){sheet(`<h2>教室の扉</h2><p>内側からは開く。</p><p>ただし廊下側の防火扉が閉じているらしく、校舎の出口までは行けない。</p><button class="choice primary" onclick="ch0()">廊下へ出る</button>`)}else go('hall')}function ch0(){if(!hasClue('schedule')){toast('まだ状況が分からない。');return}closeSheet();S.chapter=1;addLog('教室を出て2階廊下へ。完全下校時刻は過ぎている。');sv();go('hall')}
-function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委員と理科部が共同展示「声と光の迷路」を準備していた。');sheet('<h2>掲示板</h2><p>文化祭準備の紙。</p><p>放送委員 × 理科部<br>共同展示「声と光の迷路」</p>')}function lostFound(){sheet('<h2>落とし物箱</h2><p>水筒、ハンカチ、片方だけの上履き。特に使えそうな物はない。</p>')}function staffPC(){addClue('login','職員PCのログ','18:06、校内放送システムに「2-3」の端末から接続。');sheet(`<h2>職員PC</h2><p>画面には直前のシステムログ。</p><p class="code">18:06　Broadcast system login<br>Source: CLASSROOM 2-3</p><div class="dialog"><div class="name">自分</div>「18:06……。」</div>`)}function keyBoard(){if(!S.items.find(x=>x.id==='staffKey'))addItem('staffKey','特別教室キー','鍵棚に「理科室」の予備キーが残っていた。');sheet('<h2>鍵棚</h2><p>理科室の予備キーを取った。</p>')}function attendance(){addClue('attendance','今日の出席簿','あなたの名前は「欠席」。理由欄は空白。');sheet(`<h2>出席簿</h2><p>今日の日付。</p><p>自分の名前の横に——<span class="badtext">欠席</span>。</p><div class="dialog"><div class="name">自分</div>「……は？」</div><p class="muted">理由欄は空白。</p>${S.chapter===1?'<button class="choice primary" onclick="advanceCh2()">出席簿を閉じる</button>':''}`);if(S.chapter===1){addLog('出席簿では自分は今日欠席扱い。');sv()}}function advanceCh2(){closeSheet();S.chapter=2;sv();sheet(`<h2>CHAPTER 2　今日、俺は欠席している</h2><p>教室で目を覚ました。けれど学校の記録では、自分は今日ここへ来ていない。</p><div class="dialog"><div class="name">自分</div>「……もう少し調べよう。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
+function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委員と理科部が共同展示「声と光の迷路」を準備していた。');sheet('<h2>掲示板</h2><p>文化祭準備の紙。</p><p>放送委員 × 理科部<br>共同展示「声と光の迷路」</p>')}function lostFound(){sheet('<h2>落とし物箱</h2><p>水筒、ハンカチ、片方だけの上履き。特に使えそうな物はない。</p>')}function staffPC(){addClue('login','職員PCのログ','18:06、校内放送システムに「2-3」の端末から接続。');sheet(`<h2>職員PC</h2><p>画面には直前のシステムログ。</p><p class="code">18:06　Broadcast system login<br>Source: CLASSROOM 2-3</p><div class="dialog"><div class="name">自分</div>「18:06……。」</div>`)}function keyBoard(){if(!S.items.find(x=>x.id==='staffKey'))addItem('staffKey','特別教室キー','鍵棚に「理科室」の予備キーが残っていた。');sheet('<h2>鍵棚</h2><p>理科室の予備キーを取った。</p>')}function attendance(){addClue('attendance','今日の出席簿','あなたの名前は「欠席」。理由欄は空白。');sheet(`<h2>出席簿</h2><p>今日の日付。</p><p>自分の名前の横に——<span class="badtext"><span class="important">欠席</span></span>。</p><div class="dialog"><div class="name">自分</div>「……は？」</div><p class="muted">理由欄は空白。</p>${S.chapter===1?'<button class="choice primary" onclick="advanceCh2()">出席簿を閉じる</button>':''}`);if(S.chapter===1){addLog('出席簿では自分は今日欠席扱い。');sv()}}function advanceCh2(){closeSheet();S.chapter=2;sv();sheet(`<h2>CHAPTER 2　今日、俺は欠席している</h2><p>教室で目を覚ました。けれど学校の記録では、自分は今日ここへ来ていない。</p><div class="dialog"><div class="name">自分</div>「……もう少し調べよう。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
 function scienceMemo(){addClue('mirrorHint','文化祭準備メモ','鏡3枚セット。順番は「左・右・左」。');sheet(`<h2>文化祭準備メモ</h2><p>「声と光の迷路」用。</p><p class="code">鏡：左 → 右 → 左</p>`)}function scienceCabinet(){addItem('uvPen','UVペン','準備棚に残っていた文化祭用の紫外線ペン。');sheet('<h2>準備室棚</h2><p>文化祭用のUVペンが一本残っている。</p>')}function laserPuzzle(){if(!hasClue('mirrorHint')){sheet('<h2>光学実験台</h2><p>鏡3枚の向きを変えられる。どこかに手順があるはず。</p>');return}sheet(`<h2>光学実験</h2><p>文化祭展示の再現用。メモ通りに鏡を並べる。</p><button class="choice" onclick="laserAns('LRL')">左 → 右 → 左</button><button class="choice" onclick="laserAns('RLR')">右 → 左 → 右</button><button class="choice" onclick="laserAns('LLR')">左 → 左 → 右</button>`)}function laserAns(a){if(a!=='LRL'){toast('受光器が反応しない。');return}closeSheet();addItem('cassette','小型ICレコーダー','受光器の隠しケースから出てきた。ラベルは「文化祭前日」。');S.chapter=3;addLog('理科室の展示装置から古い録音機を発見。');sv();sheet(`<h2>CHAPTER 3　文化祭前日の録音</h2><p>理科室の展示装置から、去年の日付が書かれた録音機が出てきた。</p><div class="dialog"><div class="name">自分</div>「放送室なら再生できるかも。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
 function broadcastSchedule(){addClue('broadcastDuty','放送委員当番表','文化祭前日17:40〜18:10の担当欄だけ、名前が黒く塗り潰されている。');sheet('<h2>放送当番表</h2><p>文化祭前日の担当欄。</p><p class="code">17:40–18:10　██████</p>')}function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。何か持ち出された跡がある。</p>');return}addClue('voice','文化祭前日の録音','18:04「まだ一人、2年3組に残ってる」／18:05「誰？」「……名前が出てこない」');sheet(`<h2>古い録音</h2><p class="code">18:04</p><p>『先生、まだ一人、2年3組に残ってます。』</p><p class="code">18:05</p><p>『誰？』<br>『……名前が出てこない。』</p><div class="dialog"><div class="name">自分</div>「……。」</div>`)}function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>新しい録音しか残っていない。古いデータは別媒体に移されている。</p>');return}addClue('todayAudio','今日の18:06録音','18:06、2年3組のマイクが30秒だけON。人の声はなく、机を引く音だけ。');sheet(`<h2>今日の放送ログ</h2><p class="code">18:06　MIC: CLASSROOM 2-3</p><p>机を引くような音。人の声はない。</p><div class="dialog"><div class="name">自分</div>「……18:06。」</div>`);if(S.chapter===3){S.chapter=4;sv();setTimeout(()=>sheet(`<h2>CHAPTER 4　去年と今日</h2><p>去年の録音と、今日の18:06。二つの記録が同じ教室を指している。</p><div class="dialog"><div class="name">自分</div>「……まだ足りない。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`),50)}}
 function timeCapsuleNote(){addClue('capsule','卒業制作の掲示','「忘れたくないことを一つだけ、旧校舎ロッカーへ」。去年の文化祭企画。');sheet('<h2>古い掲示</h2><p>「忘れたくないことを一つだけ、旧校舎ロッカーへ。」</p>')}function oldStairs(){sheet('<h2>旧校舎階段</h2><p>足跡が一組だけ、新しい。</p><div class="dialog"><div class="name">自分</div>「……見覚えのある模様だ。」</div>')}function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に薄い線。普通の光では読めない。</p>');return}addClue('letter','UVで浮かんだ手紙','「もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。」');sheet(`<h2>UVで浮かぶ文字</h2><p>ロッカーの内側に文字が浮かぶ。</p><p>『もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。』</p><div class="dialog"><div class="name">自分</div>「……“また”？」</div>`)}function roofDoor(){if(!hasClue('letter')){sheet('<h2>屋上前の扉</h2><p>開かない。ロッカーを調べる必要がありそうだ。</p>');return}S.chapter=5;addLog('旧校舎ロッカーの手紙を読んだ。屋上前へ。');sv();go('rooftop')}
@@ -175,15 +245,15 @@ ld();document.getElementById('cont').disabled=!localStorage.getItem('afterschool
 // === COMPLETE STORY / REASONING PATCH ===
 S.board=S.board||{};
 function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。窓の外はもう暗い。</p><p>スマホは18:42。圏外。ただ、一件だけ開いたままの匿名メッセージがある。</p><p class="code">17:18。2年3組。</p><div class="dialog"><div class="name">自分</div>「これを見て、学校に来た。……そこまでは覚えてる。」</div><p>去年の文化祭前日。自分は学校で事故に遭い、事故前後の記憶を失った。医師からそう聞かされている。</p><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。匿名メッセージ『17:18。2年3組。』。');addLog('匿名メッセージに呼ばれ、放課後の2年3組へ来た。');sv();render()">起き上がる</button>`)}
-function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に透明な線。普通の光では読めない。</p>');return}addClue('letter','事故直後の自分のメモ','「17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。」筆跡は自分のもの。');addClue('warning','事故前の危険通知','事故12日前、施設担当から文化祭担当の榊先生へ「旧校舎踊り場腐食・使用停止継続」の通知。受領印あり。');sheet(`<h2>UVで浮かぶ文字</h2><p>『17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。』</p><div class="dialog"><div class="name">自分</div>「……俺の字だ。」</div><hr><p>ロッカーの底には、事故12日前の施設通知のコピー。</p><p class="code">旧校舎踊り場：腐食<br>使用停止を継続すること<br>受領：榊</p>`)}
+function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に透明な線。普通の光では読めない。</p>');return}addClue('letter','事故直後の自分のメモ','「17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。」筆跡は自分のもの。');addClue('warning','事故前の危険通知','事故12日前、施設担当から文化祭担当の榊先生へ「旧校舎踊り場腐食・使用停止継続」の通知。受領印あり。');sheet(`<h2>UVで浮かぶ文字</h2><p>『17:18。水野。旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を見ろ。俺は事故のあとを覚えていない。』</p><div class="dialog"><div class="name">自分</div>「……俺の字だ。」</div><hr><p>ロッカーの底には、事故12日前の施設通知のコピー。</p><p class="code">旧校舎踊り場：腐食<br>使用停止を継続すること<br><span class="important">受領：榊</span></p>`)}
 function oldStairs(){addClue('repair','事故翌日の階段補修','旧校舎の踊り場だけ新しい部材。ラベルの日付は去年の事故翌日。');sheet('<h2>旧校舎階段</h2><p>踊り場の一部だけ補修材が新しい。</p><p class="code">施工：事故翌日</p>')}
 function broadcastSchedule(){addClue('broadcastDuty','去年の放送当番表','紙版では17:00–17:30「水野 悠」。サーバ版では水野の行だけ欠落。');addClue('keylog','旧校舎の鍵貸出記録','文化祭前日16:10、旧校舎の鍵を「榊」名義で貸出。事故後の電子版では該当行が削除。');sheet(`<h2>放送当番表</h2><p>紙版：<span class="code">17:00–17:30　水野 悠</span></p><p>電子版では、その一行だけ存在しない。</p><hr><p>同じファイル束に旧校舎の鍵貸出記録。</p><p class="code">16:10　貸出：榊</p>`)}
-function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。別の場所に予備媒体があるらしい。</p>');return}addClue('voice','17:18の復元録音','水野「旧校舎の階段、やっぱ危ないって榊先生に言った方がいい」→衝撃音→主人公「水野！」→救助要請。');sheet(`<h2>復元された録音</h2><p class="code">17:18</p><p>水野『旧校舎の階段、やっぱ危ないって榊先生に言った方がいい』</p><p>――大きな衝撃音。</p><p>『水野！』</p><p>その声は自分の声だった。</p><p>続いて、放送室から先生を呼ぶ声。</p>`)}
+function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。別の場所に予備媒体があるらしい。</p>');return}addClue('voice','17:18の復元録音','水野「旧校舎の階段、やっぱ危ないって榊先生に言った方がいい」→衝撃音→主人公「水野！」→救助要請。');sheet(`<h2>復元された録音</h2><p class="code"><span class="important">17:18</span></p><p>水野『旧校舎の階段、やっぱ危ないって榊先生に言った方がいい』</p><p>――大きな衝撃音。</p><p>『水野！』</p><p>その声は自分の声だった。</p><p>続いて、放送室から先生を呼ぶ声。</p>`)}
 function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>欠損ファイルがある。予備録音を先に確認したい。</p>');return}addClue('altered','改竄された放送記録','17:18の救助要請はサーバ版から削除されている。一方、予備レコーダーには残っていた。');sheet(`<h2>サーバ版との比較</h2><p>予備レコーダーにはある17:18の救助要請が、サーバ版には存在しない。</p><div class="dialog"><div class="name">自分</div>「消された……。」</div>`);if(S.chapter===3){S.chapter=4;sv()}}
 function roofDoor(){if(!hasClue('letter')||!hasClue('warning')||!hasClue('voice')){sheet('<h2>屋上前の扉</h2><p>まだ事件全体を説明できない。旧校舎と放送室の証拠を見直そう。</p>');return}reasoningBoard()}
 function reasoningBoard(){if(S.chapter<4){sheet('<h2>推理ボード</h2><p>まだ事件全体を組み立てるには証拠が足りない。</p>');return}S.board=S.board||{};const rows=[['place','事故場所',['','旧校舎','放送室','2年3組']],['first','第一発見者',['','主人公','水野','榊先生']],['cause','事故原因',['','老朽化した階段','展示装置','停電']],['knew','危険を事前に認識',['','榊先生','主人公','水野']],['alter','記録を改竄',['','榊先生','主人公','施設担当']],['purpose','改竄の目的',['','管理責任の隠蔽','文化祭の成功','主人公を守る']],['memory','記憶喪失の理由',['','事故時の頭部外傷','薬物','超常現象']]];let h='<h2>推理ボード</h2><p>去年17:18に起きたことを再構成する。</p>';for(const [k,l,o] of rows){h+=`<div style="display:grid;grid-template-columns:105px 1fr;gap:8px;align-items:center;margin:7px 0"><span>${l}</span><select onchange="S.board.${k}=this.value;sv()" style="width:100%;padding:10px;background:#0d151d;color:white;border:1px solid #2b3848;border-radius:9px">${o.map(v=>`<option ${S.board[k]===v?'selected':''}>${v}</option>`).join('')}</select></div>`}h+='<button class="choice primary" onclick="judgeReasoning()">推理する</button><p class="muted">間違えてもゲームオーバーにはならない。</p>';sheet(h)}
 function judgeReasoning(){const a={place:'旧校舎',first:'主人公',cause:'老朽化した階段',knew:'榊先生',alter:'榊先生',purpose:'管理責任の隠蔽',memory:'事故時の頭部外傷'};let n=Object.keys(a).filter(k=>S.board[k]!==a[k]).length;if(n){sheet(`<h2>推理不成立</h2><p>${n}項目が、集めた証拠と矛盾している。</p><button class="choice" onclick="reasoningBoard()">戻る</button>`);return}S.chapter=5;addLog('推理成立：去年の事故と記録改竄を再構成した。');sv();sheet(`<h2 class="good">推理成立</h2><p>去年17:18、水野は旧校舎の老朽化した階段で事故に遭った。</p><p>榊先生は事故前から危険を知らされながら、文化祭準備で旧校舎を使わせていた。</p><p>主人公は事故を発見して救助を要請。その後、自身も負傷し、事故前後の記憶を失った。</p><p>榊先生は管理責任を避けるため、鍵記録・展示当番・放送記録を改竄した。</p><p>事故直後の主人公は、記憶が失われる前に証拠を複数の場所へ残していた。</p><hr><p><b>ただし、一つだけ説明できない。</b></p><p>今日16:52、誰が『17:18。2年3組。』を送ったのか。</p><button class="choice primary" onclick="closeSheet();S.chapter=5;sv();go('rooftop')">管理端末を調べる</button>`)}
-function networkTerminal(){addClue('network','匿名メッセージ送信ログ','今日16:52、MIZUNO.Yから「17:18。2年3組。」。ただし水野の学校アカウントは去年10月に削除済み。');sheet(`<h2>管理端末</h2><p class="code">16:52 SEND<br>FROM: MIZUNO.Y<br>17:18。2年3組。</p><p class="badtext">ACCOUNT DELETED : LAST OCTOBER</p><div class="dialog"><div class="name">自分</div>「……水野？」</div>`)}
+function networkTerminal(){addClue('network','匿名メッセージ送信ログ','今日16:52、MIZUNO.Yから「17:18。2年3組。」。ただし水野の学校アカウントは去年10月に削除済み。');sheet(`<h2>管理端末</h2><p class="code">16:52 SEND<br>FROM: MIZUNO.Y<br>17:18。2年3組。</p><p class="badtext"><span class="important">ACCOUNT DELETED : LAST OCTOBER</span></p><div class="dialog"><div class="name">自分</div>「……水野？」</div>`)}
 function finalChoice(){if(!hasClue('network')){sheet('<h2>最後の扉</h2><p>管理端末に、まだ確認していないログがある。</p>');return}sheet(`<h2>最後の選択</h2><p>事件は説明できた。だが、今日のメッセージだけは説明できない。</p><button class="choice primary" onclick="endGame('true')">証拠一式を外部へ送信する</button><button class="choice" onclick="endGame('normal')">コピーだけ持って学校を出る</button><button class="choice bad" onclick="endGame('bad')">記録を削除する</button>`)}
 function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>証拠を外部へ送信した。</p><p>数日後。旧校舎の使用許可と事故後の記録改竄について、正式な調査が始まった。</p><p>水野は事故後、長期入院を経て転校していた。</p><p>普通の朝。2年3組。壁時計は何事もなく動いている。</p><div class="dialog"><div class="name">自分</div>「全部は戻らなくてもいい。残ってるものから確かめればいい。」</div><p>スマホが一度だけ震える。</p><p class="code">FROM: MIZUNO.Y<br>『思い出した？』</p><p class="muted">その学校アカウントは、去年削除されている。</p><div class="titleline">学校からの脱出</div><p style="text-align:center">― END ―</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>コピーを持って学校を出た。</p><p>翌朝、榊先生の机だけが空いていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>記録を削除した。</p><p>翌朝、教室の壁時計は17:18で止まっていた。</p><p>自分がそうしたのかどうか、思い出せない。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}
 </script>
@@ -206,4 +276,724 @@ document.addEventListener("DOMContentLoaded",()=>{
  #deskQuick button{height:38px!important;padding:0 12px!important;font-size:12px!important}
 }
 </style>
+
+<style id="puzzle-expansion-css">
+.puzzle-title{font-weight:900;color:#7d3c35;margin:8px 0}
+.puzzle-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}
+.puzzle-grid button{padding:11px;border:1px solid #a9967e;border-radius:7px;background:#fff9ed;font-weight:700}
+.fragment{display:inline-block;padding:4px 7px;margin:3px;border:1px dashed #9f8d75;background:#fff8e9;border-radius:4px;font-weight:800}
+</style>
+<script id="puzzle-expansion-v1">
+/* 45–60 minute expansion layer.
+   Existing ending/story logic is preserved; this layer gates major evidence behind room puzzles. */
+function pf(k){return !!S.flags[k]}
+function sf(k){S.flags[k]=true;save()}
+function puzzleWrong(msg="何かが違う。"){toast(msg)}
+
+const old_pc=pc;
+pc=function(){
+ if(pf("class_pc_open")) return old_pc();
+ sh(`<h2>教卓PC</h2><p>ロック画面。4桁のPINが必要だ。</p>
+ <p class="muted">付箋には「日直は忘れ物をしないこと。今日の予定を上から。」</p>
+ <input id="pinClass" inputmode="numeric" maxlength="4" placeholder="4桁" style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+ <button class="choice primary" onclick="classPin()">解除</button>`);
+}
+function classPin(){
+ const v=(document.getElementById("pinClass").value||"").trim();
+ if(v==="1800"){sf("class_pc_open");closeS();old_pc()}
+ else puzzleWrong("PINが違う。黒板の『今日の予定』を見直そう。")
+}
+
+const old_locker=locker;
+locker=function(){
+ if(pf("class_locker_open")) return old_locker();
+ sh(`<h2>自分のロッカー</h2><p>ダイヤル式の簡易ロック。側面に小さく「前・後・右」と書かれている。</p>
+ <p class="muted">教室の3か所に貼られた文化祭シールの数字を、指定された順に読むらしい。</p>
+ <div class="puzzle-grid"><button onclick="lockerCode('314')">3-1-4</button><button onclick="lockerCode('413')">4-1-3</button><button onclick="lockerCode('143')">1-4-3</button><button onclick="lockerCode('341')">3-4-1</button></div>`);
+}
+function lockerCode(v){
+ if(v==="314"){sf("class_locker_open");closeS();old_locker()}
+ else puzzleWrong("開かない。向きの順番を確認しよう。")
+}
+
+const old_keys=keys;
+keys=function(){
+ if(pf("keyboard_done")) return old_keys();
+ sh(`<h2>鍵管理棚</h2><p>鍵番号と部屋名の札が外されている。机に残ったメモ：</p>
+ <div class="box">「理科室は偶数。放送室より2小さい。旧校舎は最大。職員室は1。」</div>
+ <p>鍵番号は 1 / 3 / 4 / 6。理科室はどれ？</p>
+ <div class="puzzle-grid"><button onclick="keyPuzzle(1)">1</button><button onclick="keyPuzzle(3)">3</button><button onclick="keyPuzzle(4)">4</button><button onclick="keyPuzzle(6)">6</button></div>`);
+}
+function keyPuzzle(n){
+ if(n===4){sf("keyboard_done");closeS();old_keys()}
+ else puzzleWrong("条件を全部満たしていない。")
+}
+
+const old_attendance=attendance;
+attendance=function(){
+ if(!pf("staff_sort")){
+  sh(`<h2>書類棚</h2><p>出席簿が年度別に混ざっている。背表紙には記号だけ。</p>
+  <p class="muted">今年＝文化祭ポスターが青／去年＝赤。掲示板の写真と同じ印を探す。</p>
+  <div class="puzzle-grid"><button onclick="staffSort('BR')">青→赤</button><button onclick="staffSort('RB')">赤→青</button><button onclick="staffSort('BB')">青→青</button><button onclick="staffSort('RR')">赤→赤</button></div>`);
+  return;
+ }
+ old_attendance();
+}
+function staffSort(v){
+ if(v==="BR"){sf("staff_sort");closeS();attendance()}
+ else puzzleWrong("年度の対応が違う。")
+}
+
+const old_laser=laser;
+laser=function(){
+ if(!pf("science_parts")){
+  sh(`<h2>光の迷路</h2><p>装置は完成していない。鏡Cが外され、受光器の電源もない。</p>
+  <p class="muted">準備棚と設計図を調べてから戻ろう。</p>`);
+  return;
+ }
+ old_laser();
+}
+const old_scienceShelf=scienceShelf;
+scienceShelf=function(){
+ if(!pf("science_parts")){
+   sf("science_parts");
+   item("mirrorC","鏡C","光の迷路から外されていた小型鏡。");
+   sh(`<h2>準備棚</h2><p>箱の奥から<span class="important">鏡C</span>と受光器用電池を見つけた。</p><p>さらに透明インク確認用のUVライトがある。</p><button class="choice primary" onclick="closeS();scienceShelf()">残りも調べる</button>`);
+   return;
+ }
+ old_scienceShelf();
+}
+
+const old_recordings=recordings;
+recordings=function(){
+ if(!pf("broadcast_tune")){
+  sh(`<h2>録音アーカイブ</h2><p>ノイズが強く、そのままでは聞き取れない。ミキサーに3つの帯域つまみがある。</p>
+  <p class="muted">予備レコーダーのケースに「声は中央、雨は高域、チャイムは低域」とメモ。</p>
+  <div class="puzzle-grid"><button onclick="tune('MHL')">声→中 / 雨→高 / チャイム→低</button><button onclick="tune('MLH')">声→中 / 雨→低 / チャイム→高</button><button onclick="tune('HML')">声→高 / 雨→中 / チャイム→低</button><button onclick="tune('LMH')">声→低 / 雨→中 / チャイム→高</button></div>`);
+  return;
+ }
+ old_recordings();
+}
+function tune(v){
+ if(v==="MHL"){sf("broadcast_tune");toast("ノイズが下がった。");closeS();recordings()}
+ else puzzleWrong("必要な音が埋もれてしまう。")
+}
+
+const old_stairs=stairs;
+stairs=function(){
+ if(!pf("accident_spot")){
+  sh(`<h2>旧校舎・階段</h2><p>踊り場、上段、下段の3か所に補修跡がある。事故地点を特定したい。</p>
+  <div class="box">録音：衝撃の直前、水野の声に強い反響。<br>掲示：腐食報告は「踊り場」。<br>床：新しい補修材は中央だけ。</div>
+  <div class="puzzle-grid"><button onclick="spot('upper')">上段</button><button onclick="spot('landing')">踊り場</button><button onclick="spot('lower')">下段</button><button onclick="spot('door')">階段入口</button></div>`);
+  return;
+ }
+ old_stairs();
+}
+function spot(v){
+ if(v==="landing"){sf("accident_spot");toast("事故地点を特定した。");closeS();old_stairs()}
+ else puzzleWrong("証拠と一致しない。")
+}
+
+const old_oldLocker=oldLocker;
+oldLocker=function(){
+ if(!hi("uv")) return old_oldLocker();
+ if(!pf("uv_fragments")){
+  sh(`<h2>UVで浮かぶ断片</h2><p>文章は3つに分かれている。</p>
+  <span class="fragment">A：録音が消えたら</span>
+  <span class="fragment">B：俺は17:18を見た</span>
+  <span class="fragment">C：紙と予備機を見ろ</span>
+  <p>自然な順番に並べる。</p>
+  <div class="puzzle-grid"><button onclick="frag('BAC')">B → A → C</button><button onclick="frag('ABC')">A → B → C</button><button onclick="frag('BCA')">B → C → A</button><button onclick="frag('CAB')">C → A → B</button></div>`);
+  return;
+ }
+ old_oldLocker();
+}
+function frag(v){
+ if(v==="BAC"){sf("uv_fragments");closeS();oldLocker()}
+ else puzzleWrong("文章として不自然だ。")
+}
+
+/* Objective guide becomes slightly more puzzle-aware. */
+const oldObjective=currentObjective;
+currentObjective=function(){
+ if(S.chapter===0 && !pf("class_pc_open")) return "教室を調べ、PCを開く手掛かりを探そう。";
+ if(S.chapter===1 && !pf("keyboard_done")) return "職員室の記録と鍵管理棚を調べよう。";
+ if(S.chapter===2 && !pf("science_parts")) return "理科室の展示装置に足りないものを探そう。";
+ if(S.chapter===3 && !pf("broadcast_tune")) return "放送室の録音を聞き取れる状態にしよう。";
+ if(S.chapter===4 && !pf("accident_spot")) return "旧校舎で、事故が起きた正確な場所を特定しよう。";
+ return oldObjective();
+}
+</script>
+
+<style id="escape-layer-css">
+.escape-status{margin:8px 0;padding:10px;border:2px solid #8f433b;background:#fff2e9;border-radius:8px}
+.escape-status b{color:#8f332d}.usebtn{display:inline-block;margin:4px;padding:8px 10px;border:1px solid #9f8d75;background:#fff9ed;border-radius:7px;font-weight:800}
+</style>
+<script id="escape-layer-v2">
+/* Physical escape layer: the mystery remains, but progression now opens actual barriers. */
+function esc(k){return !!S.flags["esc_"+k]}
+function setEsc(k){S.flags["esc_"+k]=true;sv()}
+function escapeState(){
+ if(!esc("class")) return "教室の扉を開けて廊下へ出る";
+ if(!esc("fire")) return "閉じた防火扉を解除して校舎奥へ進む";
+ if(!esc("stairs")) return "階段区画のロックを解除する";
+ if(!esc("roof")) return "屋上前の扉を開ける";
+ if(!esc("exit")) return "最後の非常口を開けて学校の外へ出る";
+ return "学校の外へ脱出した";
+}
+
+/* Make the objective explicitly about escape while keeping story guidance. */
+const mysteryObjective=currentObjective;
+currentObjective=function(){
+ const e=escapeState();
+ if(!esc("class")) return "脱出目標：教室の扉を開けよう。";
+ if(!esc("fire")) return "脱出目標：廊下の防火扉を開け、行ける範囲を広げよう。";
+ if(!esc("stairs") && S.chapter>=2) return "脱出目標：階段区画を開ける方法を探そう。";
+ if(!esc("roof") && S.chapter>=4) return "脱出目標：旧校舎から屋上前へ進もう。";
+ if(S.chapter>=5 && !esc("exit")) return "脱出目標：最後の非常口を解除しよう。";
+ return mysteryObjective();
+}
+
+/* Classroom is now genuinely locked. The PC puzzle yields a magnetic card;
+   the locker yields a metal ruler. Both are needed to reach the emergency thumbturn. */
+const baseTeacherDesk=teacherDesk;
+teacherDesk=function(){
+ if(!pf("class_pc_open")) return pc();
+ if(!hasItem("studentCard")){
+   addItem("studentCard","生徒証カード","教卓PC脇に落ちていた薄いプラスチックカード。");
+   sv();
+ }
+ baseTeacherDesk();
+}
+const baseLockers=lockers;
+lockers=function(){
+ if(!pf("class_locker_open")) return locker();
+ if(!hasItem("ruler")){
+   addItem("ruler","30cm金属定規","ロッカーの奥。先端が少し曲がっている。");
+   sv();
+ }
+ baseLockers();
+}
+classDoor=function(){
+ if(esc("class")){go("hall");return}
+ sheet(`<h2>教室の扉</h2><div class="escape-status"><b>LOCKED</b><br>引戸は数センチしか動かない。外側のサムターンが見える。</div>
+ <p>隙間から何かを差し込み、外側のつまみを回せそうだ。</p>
+ <p class="muted">持ち物を組み合わせて使う。</p>
+ <button class="choice" ${hasItem("studentCard")&&hasItem("ruler")?"":"disabled"} onclick="escapeClass()">生徒証カード＋金属定規を使う</button>
+ <p class="muted">${hasItem("studentCard")?"✓ 生徒証カード":"□ 薄い板状のもの"}　${hasItem("ruler")?"✓ 金属定規":"□ 細長いもの"}</p>`)
+}
+function escapeClass(){
+ if(!hasItem("studentCard")||!hasItem("ruler"))return;
+ setEsc("class");S.chapter=Math.max(S.chapter,1);addLog("教室扉のサムターンを隙間から回し、教室を脱出。");
+ closeSheet();toast("教室から脱出した");go("hall")
+}
+
+/* Hall fire shutter. Staff room is accessible, but science/broadcast side is behind shutter. */
+const oldCan=can;
+can=function(r){
+ if(r==="classroom"||r==="hall")return true;
+ if(r==="staff")return esc("class");
+ if((r==="science"||r==="broadcast")&&!esc("fire"))return false;
+ if(r==="science")return S.chapter>=2&&hasItem("staffKey");
+ if(r==="broadcast")return S.chapter>=3&&hasItem("keyTag");
+ if(r==="old")return S.chapter>=4&&esc("stairs");
+ if(r==="rooftop")return S.chapter>=5&&esc("roof");
+ return oldCan(r);
+}
+
+const baseLostFound=lostFound;
+lostFound=function(){
+ if(!hasItem("driver")){
+   addItem("driver","小型ドライバー","落とし物箱の工具ケースに入っていた。");
+   sv();
+   sheet(`<h2>落とし物箱</h2><p>工具ケースから<span class="important">小型ドライバー</span>を見つけた。</p><p>廊下の防火扉脇に、ネジ止めされた非常操作盤がある。</p>`);
+   return;
+ }
+ baseLostFound();
+}
+const baseKeyBoard=keyBoard;
+keyBoard=function(){
+ if(!pf("keyboard_done"))return keys();
+ baseKeyBoard();
+ if(!hasItem("fuse")){
+   addItem("fuse","予備ヒューズ","鍵棚の非常設備ケースに入っていた。");
+   sv();
+ }
+}
+function fireShutter(){
+ if(esc("fire")){sheet("<h2>防火扉</h2><p>非常操作で開放済み。</p>");return}
+ sheet(`<h2>廊下の防火扉</h2><div class="escape-status"><b>非常操作盤：電源断</b></div>
+ <p>操作盤はネジ止め。内部のヒューズが切れている。</p>
+ <button class="choice" ${hasItem("driver")&&hasItem("fuse")?"":"disabled"} onclick="openFire()">ドライバーで盤を開け、予備ヒューズを入れる</button>
+ <p class="muted">${hasItem("driver")?"✓ ドライバー":"□ 工具"}　${hasItem("fuse")?"✓ 予備ヒューズ":"□ 交換部品"}</p>`)
+}
+function openFire(){
+ setEsc("fire");addLog("防火扉の非常操作盤を修理し、校舎奥への通路を開放。");closeSheet();toast("防火扉が開いた");render()
+}
+
+/* Add a visible/tappable shutter to the hall east wall. */
+const baseRender=render;
+render=function(){
+ baseRender();
+ if(S.room==="hall"&&S.view===1&&!esc("fire")){
+   const sc=document.getElementById("scene");
+   const ov=document.createElement("div");
+   ov.style.cssText="position:absolute;inset:0;background:linear-gradient(90deg,#6d6a63dd,#858078ee);display:flex;align-items:center;justify-content:center;z-index:4";
+   ov.innerHTML='<button onclick="fireShutter()" style="padding:15px 20px;border:2px solid #5b4e43;background:#f3e7d5;border-radius:8px;font-weight:900">閉鎖中の防火扉<br><small>非常操作盤を調べる</small></button>';
+   sc.style.position="relative";sc.appendChild(ov);
+ }
+ updateObjective();
+}
+
+/* Science puzzle now physically powers the stair electromagnetic lock. */
+const baseLaserAns=laserAns;
+laserAns=function(a){
+ if(a!=="LRL")return baseLaserAns(a);
+ setEsc("stairs");
+ addLog("光学実験の受光器を作動させ、階段区画の非常解錠回路へ給電。");
+ baseLaserAns(a);
+}
+
+/* Roof door requires both truth and a physical key recovered by backtracking to classroom with UV. */
+const baseBlackboard=blackboard;
+blackboard=function(){
+ baseBlackboard();
+ if(hasItem("uvPen")&&!hasItem("roofKey")){
+   addItem("roofKey","非常階段キー","UVで黒板脇の『清掃用具入れ 17』が浮かび、中から見つけた。");
+   addLog("UVペンを持って教室へ戻り、非常階段キーを発見。");
+   sv();
+ }
+}
+roofDoor=function(){
+ if(!hasClue("letter")||!hasClue("warning")||!hasClue("voice")){
+   sheet("<h2>屋上前の扉</h2><p>電子ロックの解除条件が分からない。事件の証拠を揃える必要がありそうだ。</p>");return
+ }
+ if(!hasItem("roofKey")){
+   sheet(`<h2>屋上前の扉</h2><div class="escape-status"><b>KEY REQUIRED</b></div><p>電子ロックは解除されたが、非常用シリンダーも回す必要がある。</p><p>扉のプレートに<span class="code">「非常鍵：2年3組 清掃用具」</span>と薄く刻まれている。</p><p class="muted">一度調べた場所へ戻る必要がありそうだ。</p>`);return
+ }
+ setEsc("roof");S.chapter=5;addLog("非常階段キーで屋上前の扉を開錠。");sv();toast("屋上前の扉が開いた");go("rooftop")
+}
+
+/* Final mystery resolution no longer immediately ends the game.
+   It provides one of three physical release conditions. */
+const baseJudgeReasoning=judgeReasoning;
+judgeReasoning=function(){
+ const a={place:"旧校舎",first:"主人公",cause:"老朽化した階段",knew:"榊先生",alter:"榊先生",purpose:"管理責任の隠蔽",memory:"事故時の頭部外傷"};
+ let n=Object.keys(a).filter(k=>!S.board||S.board[k]!==a[k]).length;
+ if(n)return baseJudgeReasoning();
+ S.flags.finalReason=true;S.chapter=5;addLog("推理成立。非常口解除コードの意味が分かった。");sv();
+ sheet(`<h2 class="good">推理成立</h2><p>事件の全体像がつながった。</p><hr>
+ <p>推理ボードの正解項目に付いていた番号を読むと、非常口の第1コードは——</p>
+ <p class="code" style="font-size:28px;text-align:center">1718</p>
+ <p>ただし、非常口は<span class="important">コード・管理端末認証・物理レバー</span>の3段階解除らしい。</p>
+ <button class="choice primary" onclick="closeSheet();S.chapter=5;sv();go('rooftop')">屋上前へ</button>`)
+}
+
+/* Network terminal provides authorization token. */
+const baseNetworkTerminal=networkTerminal;
+networkTerminal=function(){
+ baseNetworkTerminal();
+ if(!S.flags.exitAuth){S.flags.exitAuth=true;addItem("exitToken","非常口認証トークン","管理端末から発行した一時認証。");sv()}
+}
+
+/* The last door is now an actual escape puzzle. */
+finalChoice=function(){
+ if(esc("exit"))return endGame("true");
+ sheet(`<h2>最後の非常口</h2><div class="escape-status"><b>3段階ロック</b></div>
+ <p>① 4桁コード　② 管理端末認証　③ 非常レバー</p>
+ <input id="exitCode" inputmode="numeric" maxlength="4" placeholder="4桁コード" style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+ <button class="choice" onclick="tryFinalEscape()">解除する</button>
+ <p class="muted">${S.flags.finalReason?"✓ 推理からコードを得た":"□ コードの根拠"}<br>${S.flags.exitAuth?"✓ 管理端末認証":"□ 管理端末認証"}<br>${hasItem("ruler")?"✓ レバー操作に使えそうな金属定規":"□ レバーに届く道具"}</p>`)
+}
+function tryFinalEscape(){
+ const c=(document.getElementById("exitCode").value||"").trim();
+ if(c!=="1718"){toast("コードが違う。");return}
+ if(!S.flags.finalReason){toast("偶然の入力では解除されない。");return}
+ if(!S.flags.exitAuth){toast("管理端末認証がない。");return}
+ if(!hasItem("ruler")){toast("非常レバーに手が届かない。");return}
+ setEsc("exit");addLog("非常口の3段階ロックを解除。学校から脱出。");sv();
+ sheet(`<h2>UNLOCK</h2><p>電子音。最後に、扉上部の非常レバーへ金属定規を引っ掛ける。</p>
+ <p>——重い扉が、ゆっくり外側へ開いた。</p>
+ <div class="dialog"><div class="name">自分</div>「……出られる。」</div>
+ <button class="choice primary" onclick="endGame('true')">学校の外へ出る</button>`)
+}
+
+/* Item panel now communicates that items are physical escape tools. */
+const basePanel=panel;
+panel=function(type){
+ if(type!=="items")return basePanel(type);
+ sheet('<h2>持ち物</h2><p class="muted">鍵や道具は、扉・設備を調べたときに使用できます。</p>'+
+ (S.items.length?S.items.map(x=>`<div class="item"><b>${x.name}</b>${x.desc}</div>`).join(""):"<p>何もない。</p>"))
+}
+</script>
+<style id="cover-contrast-final">
+.start .hero .herot,.start .hero .herot h1,.start .hero .herot p{color:#fff!important}
+.start .hero .herot{background:linear-gradient(180deg,transparent 0%,rgba(15,18,20,.72) 38%,rgba(10,12,14,.96) 100%)!important;text-shadow:0 2px 5px #000!important}
+.start .hero .herot h1{color:#fff!important;font-weight:900!important;text-shadow:0 3px 8px #000!important}
+.start .hero .herot p{color:#fff3d8!important;font-weight:800!important}
+.start .sa,.start .sa p,.start .sa small{color:#27221d!important}
+.start .sa button{color:#27221d!important;background:#fffaf0!important}
+</style>
+<style id="real-cover-contrast-fix">
+.prologue{background:#05080b!important}
+.proCard{
+  background:#f3ecdf!important;
+  border-color:#76614d!important;
+}
+.proCard .heroText{
+  background:linear-gradient(180deg,transparent 0%,rgba(5,8,10,.72) 45%,rgba(5,8,10,.96) 100%)!important;
+  bottom:0!important;
+  padding:80px 12px 22px!important;
+  text-shadow:0 2px 6px #000!important;
+}
+.proCard .heroText h1{
+  color:#fff!important;
+  font-weight:900!important;
+  text-shadow:0 3px 8px #000!important;
+}
+.proCard .heroText p{
+  color:#fff0cf!important;
+  font-weight:800!important;
+  text-shadow:0 2px 5px #000!important;
+}
+.proActions{
+  background:#f3ecdf!important;
+}
+.proActions button{
+  background:#fffaf0!important;
+  color:#241f1a!important;
+  border:2px solid #8f7a61!important;
+  font-weight:900!important;
+  opacity:1!important;
+}
+.proActions button:disabled{
+  background:#ded7cb!important;
+  color:#777066!important;
+  border-color:#b9ae9e!important;
+  opacity:1!important;
+}
+</style>
+
+<style id="premium-ui-v1">
+:root{
+  --ui-paper:#f7f1e6;
+  --ui-paper-deep:#e8ddcb;
+  --ui-ink:#27221c;
+  --ui-brown:#65513f;
+  --ui-line:#a89478;
+  --ui-red:#9f4037;
+  --ui-green:#456b55;
+  --ui-gold:#c6a15d;
+  --ui-shadow:0 12px 28px rgba(52,39,28,.18);
+}
+html,body{
+  background:
+    linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,0)),
+    #cfc9bd!important;
+  color:var(--ui-ink)!important;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:
+    radial-gradient(circle at 20% 10%,rgba(255,255,255,.35),transparent 24%),
+    radial-gradient(circle at 85% 80%,rgba(91,73,55,.09),transparent 30%);
+}
+header{
+  border:1px solid #b4a58d!important;
+  border-radius:12px!important;
+  background:rgba(250,246,237,.94)!important;
+  box-shadow:0 5px 18px rgba(64,48,33,.12)!important;
+  backdrop-filter:blur(10px);
+  margin-bottom:10px!important;
+}
+header button{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 2px 5px rgba(68,52,37,.12)!important;
+}
+.brand b{
+  font-size:16px!important;
+  font-weight:900!important;
+  letter-spacing:.1em!important;
+}
+.brand small{
+  display:inline-block!important;
+  margin-top:3px!important;
+  padding:3px 8px!important;
+  border-radius:999px!important;
+  background:#e9decb!important;
+  color:#5f5143!important;
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+}
+
+/* cinematic frame */
+.scene{
+  border:8px solid #5f4d3d!important;
+  border-radius:12px!important;
+  box-shadow:
+    0 14px 35px rgba(39,29,21,.28),
+    inset 0 0 0 1px rgba(255,255,255,.25)!important;
+  overflow:hidden!important;
+}
+.scene:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 70px rgba(30,23,17,.12);
+  z-index:3;
+}
+.tag{
+  top:12px!important;
+  padding:7px 11px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  letter-spacing:.04em!important;
+  box-shadow:0 2px 8px rgba(45,34,24,.18)!important;
+}
+.where{left:12px!important}.ch{right:12px!important}
+.turn{bottom:14px!important;left:14px!important;right:14px!important}
+.turn button{
+  width:52px!important;height:52px!important;
+  font-size:26px!important;
+  border-width:2px!important;
+  box-shadow:0 4px 12px rgba(47,35,25,.24)!important;
+  transition:transform .12s ease,box-shadow .12s ease!important;
+}
+.turn button:active{transform:scale(.94)!important;box-shadow:0 2px 5px rgba(47,35,25,.2)!important}
+
+/* notebook / info */
+.card,.mapbox,.objective-box{
+  box-shadow:var(--ui-shadow)!important;
+  border:1px solid #b7a78e!important;
+  background-color:#f8f2e7!important;
+}
+.card{
+  border-radius:10px!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+.card:after{
+  content:"";position:absolute;right:12px;top:10px;width:42px;height:14px;
+  background:#e8d8b8;opacity:.55;transform:rotate(5deg);
+}
+.card h2{
+  font-size:18px!important;font-weight:900!important;color:#2a251f!important;
+}
+.card p{font-size:14px!important;line-height:1.85!important}
+.objective-box{
+  border-left:6px solid var(--ui-red)!important;
+  background:linear-gradient(90deg,#fff9ef,#f7eee0)!important;
+  border-radius:9px!important;
+}
+.objective-label{
+  font-size:10px!important;
+  letter-spacing:.14em!important;
+}
+.objective-text{
+  font-size:14px!important;
+  line-height:1.65!important;
+}
+
+/* map like a school guide sheet */
+.mapbox{
+  background:
+    linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.25)),
+    #efe6d7!important;
+  border-radius:10px!important;
+}
+.mc{
+  min-height:42px!important;
+  border-radius:6px!important;
+  font-weight:700!important;
+  transition:.12s ease!important;
+}
+.mc.on{
+  box-shadow:inset 0 0 0 1px rgba(108,88,67,.12)!important;
+}
+.mc.tappable:hover{transform:translateY(-1px)!important}
+.mc.here{
+  background:#f3d3ca!important;
+  border:2px solid #a54c43!important;
+  color:#5d2d28!important;
+  box-shadow:0 2px 8px rgba(159,64,55,.18)!important;
+}
+
+/* bottom nav */
+.bottom{padding-top:12px!important}
+.bi{
+  gap:8px!important;
+}
+.bi button{
+  min-height:60px!important;
+  background:linear-gradient(#fffaf0,#eee5d7)!important;
+  border:1px solid #a8967d!important;
+  border-radius:11px!important;
+  box-shadow:0 4px 10px rgba(52,39,27,.12)!important;
+  font-weight:800!important;
+  transition:transform .12s ease,box-shadow .12s ease!important;
+}
+.bi button:active{transform:translateY(2px)!important;box-shadow:0 2px 5px rgba(52,39,27,.12)!important}
+.bi i{font-size:20px!important}
+
+/* modal notebook */
+.sheet{
+  border-radius:18px 18px 0 0!important;
+  box-shadow:0 -18px 48px rgba(29,22,16,.28)!important;
+  background-color:#f7f0e4!important;
+  background-image:
+    linear-gradient(90deg,transparent 0 28px,#dd9e9b 29px,#dd9e9b 30px,transparent 31px),
+    repeating-linear-gradient(transparent 0 31px,#cfd7d2 32px)!important;
+  padding-left:42px!important;
+}
+.sheet h2{
+  font-size:21px!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+}
+.x{
+  position:sticky!important;top:0!important;
+  box-shadow:0 2px 8px rgba(57,43,30,.12)!important;
+}
+.choice{
+  min-height:48px!important;
+  padding:13px 14px!important;
+  border-radius:10px!important;
+  box-shadow:0 2px 5px rgba(60,46,32,.08)!important;
+}
+.choice.primary{
+  background:linear-gradient(#e3eee0,#cfe0cd)!important;
+  border-color:#68896d!important;
+}
+.choice.bad{
+  background:linear-gradient(#f1dfdb,#e8cac4)!important;
+}
+
+/* evidence / inventory cards */
+.box,.item,.clue,.log{
+  background:rgba(255,250,239,.88)!important;
+  border:1px solid #b8aa92!important;
+  border-radius:9px!important;
+  box-shadow:0 2px 6px rgba(62,47,33,.08)!important;
+}
+.box b,.item b,.clue b{
+  font-weight:900!important;
+}
+.important,.code{
+  color:#963a33!important;
+  font-weight:900!important;
+}
+.dialog{
+  background:rgba(255,250,239,.88)!important;
+  border-left:5px solid #66856f!important;
+  box-shadow:0 2px 6px rgba(54,41,29,.08)!important;
+}
+
+/* reasoning board */
+.boardrow{
+  padding:8px 10px!important;
+  border:1px solid #c0b39e!important;
+  border-radius:9px!important;
+  background:rgba(255,250,239,.72)!important;
+}
+.boardrow span{font-weight:900!important}
+.boardrow select{
+  background:#fffaf0!important;
+  border:1px solid #a9977e!important;
+  border-radius:8px!important;
+  min-height:44px!important;
+}
+
+/* start screen: higher-end game cover */
+.prologue{
+  background:
+    radial-gradient(circle at 50% 30%,rgba(80,95,105,.34),transparent 35%),
+    linear-gradient(#202a30,#0f1519)!important;
+}
+.proCard{
+  width:min(680px,100%)!important;
+  border:1px solid #7a6754!important;
+  border-radius:16px!important;
+  background:#efe6d8!important;
+  box-shadow:0 28px 70px rgba(0,0,0,.48)!important;
+}
+.hero{
+  height:330px!important;
+  border-bottom:1px solid #59483a!important;
+}
+.hero:after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.08) 45%,rgba(0,0,0,.75) 100%),
+    radial-gradient(circle at 50% 35%,transparent 0 38%,rgba(0,0,0,.18) 100%);
+}
+.heroText{z-index:2!important}
+.heroText h1{
+  font-size:34px!important;
+  letter-spacing:.15em!important;
+}
+.heroText p{
+  font-size:13px!important;
+  letter-spacing:.12em!important;
+}
+.proActions{
+  padding:16px!important;
+  background:
+    linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0)),
+    #eee4d5!important;
+}
+.proActions button{
+  min-height:58px!important;
+  border-radius:12px!important;
+  margin:7px 0!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+  box-shadow:0 4px 10px rgba(55,42,29,.13)!important;
+  background:linear-gradient(#fffaf0,#eee4d6)!important;
+}
+.proActions button:first-child{
+  background:linear-gradient(#b25449,#8f3c34)!important;
+  color:#fff!important;
+  border-color:#7d302a!important;
+  text-shadow:0 1px 2px #0005!important;
+}
+.proActions button:disabled{
+  filter:saturate(.3)!important;
+  opacity:.62!important;
+}
+
+/* toast */
+.toast{
+  border-radius:999px!important;
+  box-shadow:0 6px 18px rgba(36,27,19,.2)!important;
+}
+
+/* subtle animation */
+@keyframes fadeInGame{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card,.mapbox,.objective-box{animation:fadeInGame .22s ease both}
+
+@media(max-width:819px){
+  #app{padding-left:8px!important;padding-right:8px!important}
+  header{border-radius:0 0 10px 10px!important;margin:0 -2px 8px!important}
+  .scene{border-width:5px!important;border-radius:10px!important}
+  .tag{font-size:10px!important;padding:5px 8px!important}
+  .turn button{width:48px!important;height:48px!important}
+  .card,.mapbox,.objective-box{border-radius:8px!important}
+  .sheet{padding-left:34px!important}
+  .proCard{border-radius:14px!important}
+  .hero{height:300px!important}
+  .heroText h1{font-size:30px!important}
+  .bi{gap:5px!important}
+  .bi button{min-height:56px!important;font-size:9px!important}
+}
+</style>
+
+<script id="premium-enhancer-v1">
+document.addEventListener("DOMContentLoaded",()=>{
+  const brand=document.querySelector(".brand");
+  if(brand && !document.getElementById("chapterRibbon")){
+    const r=document.createElement("div");
+    r.id="chapterRibbon";
+    r.style.cssText="margin-top:4px;font-size:10px;font-weight:900;color:#7d3f38;letter-spacing:.08em";
+    r.textContent="ESCAPE / MYSTERY";
+    brand.appendChild(r);
+  }
+});
+</script>
 </body></html>
