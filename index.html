@@ -1921,7 +1921,7 @@ currentObjective=function(){
     if(brand){
       let t=document.getElementById("buildTag");
       if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}
-      t.textContent="RICH v19";
+      t.textContent="RICH v21 AUDITED";
     }
   });
 })();
@@ -2435,5 +2435,114 @@ finalChoice=function(){
 };
 
 })();
+</script>
+
+<script id="door-action-fix-v20">
+/* v19 fix: itemOptionsV18 was scoped inside an older IIFE.
+   classDoor() in v19 referenced it as a global and crashed on tap. */
+window.itemOptionsV18=function(){
+  const items=(S.items||[]).map(x=>`<option value="${x.id}">${x.name}</option>`).join("");
+  return `<option value="">選択する</option>${items}`;
+};
+
+/* Rebind the final door action after exposing the helper. */
+classDoor=function(){
+  if(S.flags&&S.flags.esc_class){go("hall");return}
+
+  const opts=window.itemOptionsV18();
+  sheet(`<h2>教室の扉</h2>
+    ${puzzleCardDoorV20(
+      "引戸は数センチ動く。隙間の向こうに、内側のつまみが見える。手は入らない。",
+      "薄い物と、細長くて少し硬い物があれば……つまみに届くかもしれない。",
+      `<div class="item-combo">
+        <select id="doorItemA">${opts}</select>
+        <select id="doorItemB">${opts}</select>
+       </div>
+       <button class="choice primary" onclick="tryDoorItemsV18()">2つを組み合わせて試す</button>`
+    )}`);
+};
+
+window.puzzleCardDoorV20=function(observe,infer,actionHtml){
+  return `<div class="puzzle-card">
+    <div class="puzzle-step"><b>観察</b><span>${observe}</span></div>
+    <div class="puzzle-step"><b>推測</b><span>${infer}</span></div>
+    <div class="puzzle-input">${actionHtml||""}</div>
+  </div>`;
+};
+
+/* classDoor is defined before puzzleCardDoorV20 is first called, so runtime lookup is safe. */
+
+/* Visible fallback if the hotspot action itself throws in Safari. */
+window.openClassDoorV20=function(){
+  try{
+    classDoor();
+  }catch(e){
+    console.error("classDoor",e);
+    sheet(`<h2>教室の扉</h2>
+      <p>引戸は数センチ動く。隙間の向こうに内側のつまみが見える。</p>
+      <p class="muted">薄い物と、細長くて少し硬い物があれば届くかもしれない。</p>`);
+  }
+};
+
+/* Force the current classroom wall-4 hotspot to the safe wrapper. */
+function fixDoorSpotV20(){
+  if(!window.SCENE_HOTSPOTS_V15)return;
+  const a=window.SCENE_HOTSPOTS_V15["classroom_3"];
+  if(!a)return;
+  const door=a.find(x=>x.label==="教室の扉");
+  if(door)door.fn="openClassDoorV20()";
+}
+fixDoorSpotV20();
+
+document.addEventListener("DOMContentLoaded",()=>{
+  fixDoorSpotV20();
+  const brand=document.querySelector(".brand");
+  if(brand){
+    let t=document.getElementById("buildTag");
+    if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}
+    t.textContent="RICH v21 AUDITED";
+  }
+});
+</script>
+
+<style id="full-audit-fix-v21-css">
+/* The modal's real close button uses .close, not .x. */
+.overlay .close,.sheet .close,button.close{
+  background:#171b20!important;
+  background-image:none!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:1.5px solid #505a64!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+.overlay .close *,.sheet .close *,button.close *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+</style>
+<script id="full-audit-fix-v21">
+/* Desktop quick buttons existed in the premium layout but their wrapper
+   functions had never been defined. Route them to the canonical panels. */
+window.inventory=function(){panel("items");};
+window.evidence=function(){panel("clues");};
+
+/* Make the modal close action explicit as well. */
+window.closeModalV21=function(){closeSheet();};
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const brand=document.querySelector(".brand");
+  if(brand){
+    let t=document.getElementById("buildTag");
+    if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t);}
+    t.textContent="RICH v21 AUDITED";
+  }
+
+  /* Normalize existing close button without changing the premium layout. */
+  document.querySelectorAll(".overlay .close,.sheet .close,button.close").forEach(b=>{
+    b.style.setProperty("color","#fff","important");
+    b.style.setProperty("-webkit-text-fill-color","#fff","important");
+  });
+});
 </script>
 </body></html>
