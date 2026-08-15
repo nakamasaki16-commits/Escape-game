@@ -167,8 +167,8 @@ button,.choice,.x{color:#241f1a!important}.bi button,.choice{font-weight:700!imp
 <script>
 const BASE={chapter:0,room:'classroom',view:0,flags:{},items:[],clues:[],logs:[],hint:{},ending:null};let S=JSON.parse(JSON.stringify(BASE));
 const rooms={classroom:{name:'2年3組',views:4,pos:[2,4]},hall:{name:'2階廊下',views:4,pos:[2,3]},staff:{name:'職員室',views:4,pos:[1,3]},science:{name:'理科室',views:4,pos:[3,3]},broadcast:{name:'放送室',views:4,pos:[2,2]},old:{name:'旧校舎階段',views:4,pos:[2,1]},rooftop:{name:'屋上前',views:2,pos:[2,0]}};
-function sv(){localStorage.setItem('schoolEscapePremiumStableV2',JSON.stringify(S));ui()}function ld(){let x=localStorage.getItem('schoolEscapePremiumStableV2');if(x)try{S={...BASE,...JSON.parse(x)}}catch(e){}}
-function startGame(){S=JSON.parse(JSON.stringify(BASE));localStorage.removeItem('schoolEscapePremiumStableV2');document.getElementById('prologue').classList.add('hidden');introSequence()}function continueGame(){ld();document.getElementById('prologue').classList.add('hidden');render()}
+function sv(){localStorage.setItem('schoolEscapeRebuildV16',JSON.stringify(S));ui()}function ld(){let x=localStorage.getItem('schoolEscapeRebuildV16');if(x)try{S={...BASE,...JSON.parse(x)}}catch(e){}}
+function startGame(){S=JSON.parse(JSON.stringify(BASE));localStorage.removeItem('schoolEscapeRebuildV16');document.getElementById('prologue').classList.add('hidden');introSequence()}function continueGame(){ld();document.getElementById('prologue').classList.add('hidden');render()}
 function showIntro(){sheet(`<h2>あらすじ</h2><p>放課後の教室で目を覚ましたあなた。完全下校時刻はとうに過ぎ、校舎には人の気配がない。なぜ自分だけがここにいるのか——身近な記録を辿って学校から脱出する。</p><p>スマホ、黒板、鍵当番表、放送記録——身近なものを調べながら、なぜ自分だけが学校に残っているのかを追う。</p><p class="muted">左右で4面の壁を見回し、気になる物をタップ。重要な謎はその時点で得られる証拠だけで解けます。</p>`)}
 function introSequence(){sheet(`<div class="dialog"><div class="name">？？？</div>……寒い。</div><p>机に突っ伏していたらしい。蛍光灯は半分消え、窓の外はもう暗い。</p><div class="dialog"><div class="name">自分</div>「……寝てた？」</div><p>スマホを手に取る。時刻は18:42。通知はない。</p><div class="dialog"><div class="name">自分</div>「みんな、帰ったのか……？」</div><button class="choice primary" onclick="closeSheet();addItem('phone','スマートフォン','18:42。圏外。バッテリー31%。');addLog('18:42、2年3組の教室で目を覚ました。');sv();render()">起き上がる</button>`)}
 function closeSheet(){document.getElementById('overlay').classList.remove('show')}function sheet(h){document.getElementById('sheet').innerHTML=h;document.getElementById('overlay').classList.add('show')}function toast(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}function addLog(t){if(!S.logs.includes(t))S.logs.push(t)}function addItem(id,name,desc){if(!S.items.find(x=>x.id===id)){S.items.push({id,name,desc});toast('入手：'+name)}}function addClue(id,name,desc){if(!S.clues.find(x=>x.id===id)){S.clues.push({id,name,desc});addLog('手掛かり「'+name+'」');toast('手掛かり追加：'+name)}}function hasClue(id){return !!S.clues.find(x=>x.id===id)}function hasItem(id){return !!S.items.find(x=>x.id===id)}function turn(d){S.view=(S.view+d+rooms[S.room].views)%rooms[S.room].views;sv();render()}function can(r){if(r==='classroom'||r==='hall')return true;if(r==='staff')return S.chapter>=1;if(r==='science')return S.chapter>=2&&hasItem('staffKey');if(r==='broadcast')return S.chapter>=3&&hasItem('keyTag');if(r==='old')return S.chapter>=4;if(r==='rooftop')return S.chapter>=5;return false}function go(r){if(!can(r)){toast('まだ入れない。');return}S.room=r;S.view=0;sv();render()}
@@ -300,9 +300,9 @@ function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委�
 function scienceMemo(){addClue('mirrorHint','文化祭準備メモ','鏡3枚セット。順番は「左・右・左」。');sheet(`<h2>文化祭準備メモ</h2><p>「声と光の迷路」用。</p><p class="code">鏡：左 → 右 → 左</p>`)}function scienceCabinet(){addItem('uvPen','UVペン','準備棚に残っていた文化祭用の紫外線ペン。');sheet('<h2>準備室棚</h2><p>文化祭用のUVペンが一本残っている。</p>')}function laserPuzzle(){if(!hasClue('mirrorHint')){sheet('<h2>光学実験台</h2><p>鏡3枚の向きを変えられる。どこかに手順があるはず。</p>');return}sheet(`<h2>光学実験</h2><p>文化祭展示の再現用。メモ通りに鏡を並べる。</p><button class="choice" onclick="laserAns('LRL')">左 → 右 → 左</button><button class="choice" onclick="laserAns('RLR')">右 → 左 → 右</button><button class="choice" onclick="laserAns('LLR')">左 → 左 → 右</button>`)}function laserAns(a){if(a!=='LRL'){toast('受光器が反応しない。');return}closeSheet();addItem('cassette','小型ICレコーダー','受光器の隠しケースから出てきた。ラベルは「文化祭前日」。');S.chapter=3;addLog('理科室の展示装置から古い録音機を発見。');sv();sheet(`<h2>CHAPTER 3　文化祭前日の録音</h2><p>理科室の展示装置から、去年の日付が書かれた録音機が出てきた。</p><div class="dialog"><div class="name">自分</div>「放送室なら再生できるかも。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
 function broadcastSchedule(){addClue('broadcastDuty','放送委員当番表','文化祭前日17:40〜18:10の担当欄だけ、名前が黒く塗り潰されている。');sheet('<h2>放送当番表</h2><p>文化祭前日の担当欄。</p><p class="code">17:40–18:10　██████</p>')}function oldRecording(){if(!S.items.find(x=>x.id==='cassette')){sheet('<h2>古い録音棚</h2><p>棚は空いている。何か持ち出された跡がある。</p>');return}addClue('voice','文化祭前日の録音','18:04「まだ一人、2年3組に残ってる」／18:05「誰？」「……名前が出てこない」');sheet(`<h2>古い録音</h2><p class="code">18:04</p><p>『先生、まだ一人、2年3組に残ってます。』</p><p class="code">18:05</p><p>『誰？』<br>『……名前が出てこない。』</p><div class="dialog"><div class="name">自分</div>「……。」</div>`)}function audioLog(){if(!hasClue('voice')){sheet('<h2>放送記録</h2><p>新しい録音しか残っていない。古いデータは別媒体に移されている。</p>');return}addClue('todayAudio','今日の18:06録音','18:06、2年3組のマイクが30秒だけON。人の声はなく、机を引く音だけ。');sheet(`<h2>今日の放送ログ</h2><p class="code">18:06　MIC: CLASSROOM 2-3</p><p>机を引くような音。人の声はない。</p><div class="dialog"><div class="name">自分</div>「……18:06。」</div>`);if(S.chapter===3){S.chapter=4;sv();setTimeout(()=>sheet(`<h2>CHAPTER 4　去年と今日</h2><p>去年の録音と、今日の18:06。二つの記録が同じ教室を指している。</p><div class="dialog"><div class="name">自分</div>「……まだ足りない。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`),50)}}
 function timeCapsuleNote(){addClue('capsule','卒業制作の掲示','「忘れたくないことを一つだけ、旧校舎ロッカーへ」。去年の文化祭企画。');sheet('<h2>古い掲示</h2><p>「忘れたくないことを一つだけ、旧校舎ロッカーへ。」</p>')}function oldStairs(){sheet('<h2>旧校舎階段</h2><p>足跡が一組だけ、新しい。</p><div class="dialog"><div class="name">自分</div>「……見覚えのある模様だ。」</div>')}function oldLocker(){if(!S.items.find(x=>x.id==='uvPen')){sheet('<h2>古いロッカー</h2><p>扉の内側に薄い線。普通の光では読めない。</p>');return}addClue('letter','UVで浮かんだ手紙','「もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。」');sheet(`<h2>UVで浮かぶ文字</h2><p>ロッカーの内側に文字が浮かぶ。</p><p>『もしまた忘れてここに来たら、放送室の録音を聞け。君は悪くない。あの日、助けを呼んだのは君だ。』</p><div class="dialog"><div class="name">自分</div>「……“また”？」</div>`)}function roofDoor(){if(!hasClue('letter')){sheet('<h2>屋上前の扉</h2><p>開かない。ロッカーを調べる必要がありそうだ。</p>');return}S.chapter=5;addLog('旧校舎ロッカーの手紙を読んだ。屋上前へ。');sv();go('rooftop')}
-function networkTerminal(){addClue('network','校内ネットワーク端末','去年の文化祭前日の記録一式を外部へ送信可能。校内から削除することもできる。');sheet('<h2>ネットワーク端末</h2><p>去年の記録はまだ校内サーバに残っている。</p><p>外部送信／削除、どちらも可能。</p>')}function finalChoice(){sheet(`<h2>最後の選択</h2><p>手紙、録音、出席簿、今日のログ。全部をここで終わらせることも、外へ残すこともできる。</p><button class="choice primary" ${hasClue('network')?'':'disabled'} onclick="endGame('true')">記録を外部へ送信して、先生に連絡する</button><p class="muted">${hasClue('network')?'':'※外部送信手段をまだ確認していない。'}</p><button class="choice" onclick="endGame('normal')">自分だけ校舎を出る</button><button class="choice bad" onclick="endGame('bad')">去年の記録を全部削除する</button>`)}function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>屋上前の端末から記録を送信した。</p><p>数分後、スマホに圏外表示が消える。</p><div class="dialog"><div class="name">担任</div>『今どこにいる？　学校か？』</div><div class="dialog"><div class="name">自分</div>「……先生。去年のこと、聞きたいです。」</div><p>自分が何を忘れたのかは、まだ全部分からない。</p><p>でも、記録を消さずに残すことはできた。</p><hr><p class="muted">翌週。旧校舎のロッカーは撤去された。<br>学校は去年の件について、生徒と保護者への説明を始めた。<br><br>帰り道、スマホに友人からメッセージが届く。<br>『明日、普通に来るよな？』<br><br>あなたは少しだけ迷ってから、『行く』と返した。</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>非常口から外へ出た。</p><p>翌朝、学校は何事もなかったように始まる。</p><p>出席簿の自分の欄だけが、いつの間にか『出席』に直されていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>去年の記録を削除した。</p><p class="code">DELETE COMPLETE</p><p>翌日、教室で目を覚ます。</p><p>壁時計は17:18で止まっている。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}function reset(){localStorage.removeItem('schoolEscapePremiumStableV2');location.reload()}
+function networkTerminal(){addClue('network','校内ネットワーク端末','去年の文化祭前日の記録一式を外部へ送信可能。校内から削除することもできる。');sheet('<h2>ネットワーク端末</h2><p>去年の記録はまだ校内サーバに残っている。</p><p>外部送信／削除、どちらも可能。</p>')}function finalChoice(){sheet(`<h2>最後の選択</h2><p>手紙、録音、出席簿、今日のログ。全部をここで終わらせることも、外へ残すこともできる。</p><button class="choice primary" ${hasClue('network')?'':'disabled'} onclick="endGame('true')">記録を外部へ送信して、先生に連絡する</button><p class="muted">${hasClue('network')?'':'※外部送信手段をまだ確認していない。'}</p><button class="choice" onclick="endGame('normal')">自分だけ校舎を出る</button><button class="choice bad" onclick="endGame('bad')">去年の記録を全部削除する</button>`)}function endGame(t){S.ending=t;S.chapter=6;sv();if(t==='true')sheet(`<div class="titleline good">TRUE END</div><p>屋上前の端末から記録を送信した。</p><p>数分後、スマホに圏外表示が消える。</p><div class="dialog"><div class="name">担任</div>『今どこにいる？　学校か？』</div><div class="dialog"><div class="name">自分</div>「……先生。去年のこと、聞きたいです。」</div><p>自分が何を忘れたのかは、まだ全部分からない。</p><p>でも、記録を消さずに残すことはできた。</p><hr><p class="muted">翌週。旧校舎のロッカーは撤去された。<br>学校は去年の件について、生徒と保護者への説明を始めた。<br><br>帰り道、スマホに友人からメッセージが届く。<br>『明日、普通に来るよな？』<br><br>あなたは少しだけ迷ってから、『行く』と返した。</p><button class="choice primary" onclick="reset()">タイトルへ</button>`);else if(t==='normal')sheet(`<div class="titleline">NORMAL END</div><p>非常口から外へ出た。</p><p>翌朝、学校は何事もなかったように始まる。</p><p>出席簿の自分の欄だけが、いつの間にか『出席』に直されていた。</p><button class="choice" onclick="reset()">タイトルへ</button>`);else sheet(`<div class="titleline badtext">BAD END</div><p>去年の記録を削除した。</p><p class="code">DELETE COMPLETE</p><p>翌日、教室で目を覚ます。</p><p>壁時計は17:18で止まっている。</p><button class="choice bad" onclick="reset()">タイトルへ</button>`)}function reset(){localStorage.removeItem('schoolEscapeRebuildV16');location.reload()}
 function panel(type){if(type==='items')sheet('<h2>持ち物</h2>'+(S.items.length?S.items.map(x=>`<div class="item"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>何もない。</p>'));else if(type==='clues')sheet('<h2>手掛かり</h2>'+(S.clues.length?S.clues.map(x=>`<div class="clue"><b>${x.name}</b>${x.desc}</div>`).join(''):'<p>まだない。</p>'));else if(type==='log')sheet('<h2>行動ログ</h2>'+(S.logs.length?S.logs.slice().reverse().map(x=>`<div class="log">${x}</div>`).join(''):'<p>まだない。</p>'));else if(type==='map')sheet('<h2>移動</h2>'+Object.keys(rooms).map(r=>`<button class="choice" ${can(r)?'':'disabled'} onclick="closeSheet();go('${r}')">${can(r)?rooms[r].name:'未確認区画'}</button>`).join(''));else{let l=S.hint[S.chapter]||0;sheet(`<h2>ヒント</h2><p>${hint(S.chapter,l)}</p><button class="choice" onclick="moreHint()">もう少しヒント</button>`)}}function moreHint(){S.hint[S.chapter]=(S.hint[S.chapter]||0)+1;sv();panel('hint')}function hint(ch,l){let H={0:['まず現在時刻と、学校の予定を確認しよう。','黒板の完全下校時刻を見る。'],1:['職員室には今日の記録がある。','出席簿とPCログを確認しよう。'],2:['理科室の展示装置には手順が残されている。','文化祭準備メモを見る。'],3:['放送室には去年の記録が残っている。','古い録音機を使う。'],4:['旧校舎のロッカーは普通の光では読めない。','理科室で拾ったUVペンを使う。'],5:['最後は謎ではなく選択。記録を残すか消すか。']};let a=H[ch]||['手掛かりを見直そう。'];return a[Math.min(l,a.length-1)]}function menu(){sheet(`<h2>メニュー</h2><button class="choice" onclick="closeSheet()">戻る</button><button class="choice" onclick="showIntro()">遊び方</button><button class="choice bad" onclick="reset()">セーブ削除</button>`)}
-ld();document.getElementById('cont').disabled=!localStorage.getItem('schoolEscapePremiumStableV2');if(localStorage.getItem('schoolEscapePremiumStableV2'))render();
+ld();document.getElementById('cont').disabled=!localStorage.getItem('schoolEscapeRebuildV16');if(localStorage.getItem('schoolEscapeRebuildV16'))render();
 </script><script>
 // === COMPLETE STORY / REASONING PATCH ===
 S.board=S.board||{};
@@ -783,7 +783,7 @@ function startGame(){
   S=JSON.parse(JSON.stringify(BASE));
   S.room="classroom"; S.view=0; S.chapter=0; S.flags={};
   S.items=[]; S.clues=[]; S.logs=[]; S.hint={}; S.ending=null;
-  localStorage.removeItem("schoolEscapePremiumStableV2");
+  localStorage.removeItem("schoolEscapeRebuildV16");
   document.getElementById("prologue").classList.add("hidden");
   introSequence();
 }
@@ -1431,6 +1431,1009 @@ window.SCENE_HOTSPOTS_V15={"classroom_0":[{"x":100.0,"y":85.0,"w":450.0,"h":215.
       switchSceneImageV15();
     },50);
   });
+})();
+</script>
+
+<style id="progress-rebuild-v16-css">
+.progress-note{padding:10px 12px;margin:9px 0;border:1px solid #b8a58b;border-radius:9px;background:#fff8eb;color:#41372e}
+.progress-note b{color:#8e3e36}
+.puzzle-clue{padding:11px;margin:9px 0;border-left:4px solid #788c78;background:#faf4e9;line-height:1.7}
+</style>
+<script id="progress-rebuild-v16">
+/*
+  FINAL PROGRESSION REBUILD
+  Required path:
+  Ch0 Classroom -> Ch1 Staff/Hall -> Ch2 Science -> Ch3 Broadcast
+  -> Ch4 Old building -> Reasoning -> Ch5 Rooftop -> Exit
+  Optional evidence never blocks the main route.
+*/
+(function(){
+
+function flag(k){return !!(S.flags&&S.flags[k])}
+function setFlag(k){S.flags=S.flags||{};S.flags[k]=true;sv()}
+function esc16(k){return !!(S.flags&&S.flags["esc_"+k])}
+function setEsc16(k){S.flags=S.flags||{};S.flags["esc_"+k]=true;sv()}
+
+/* ---------- CH0: CLASSROOM ---------- */
+classPhoto=function(){
+  addClue("photo","不自然に破かれたクラス写真",
+    "去年の文化祭の集合写真。写真の端にいた一人の顔だけが、不自然に破り取られている。");
+  sheet(`<h2>クラス写真</h2>
+    <p>去年の文化祭。みんな笑っている。</p>
+    <p><span class="important">写真の端にいた一人の顔だけが、不自然に破り取られている。</span></p>
+    <p>自然に裂けたというより、誰かがその人物だけを消そうとしたように見える。</p>
+    <div class="dialog"><div class="name">自分</div>「……この破れ方、わざとだ。」</div>`);
+};
+
+pc=function(){
+  if(flag("class_pc_open")){
+    sheet(`<h2>教卓PC</h2><p>ロックは解除済み。</p>
+      <p class="code">18:43</p>
+      <p>PC脇にあった生徒証カードは回収した。</p>`);
+    return;
+  }
+  sheet(`<h2>教卓PC</h2>
+    <p>4桁のPINでロックされている。</p>
+    <div class="puzzle-clue">付箋：<b>「今日、全員が帰る時刻」</b></div>
+    <p class="muted">黒板の予定表を確認すれば分かりそうだ。</p>
+    <input id="pinClass" inputmode="numeric" maxlength="4" placeholder="4桁"
+      style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+    <button class="choice primary" onclick="classPin()">解除</button>`);
+};
+
+classPin=function(){
+  const v=(document.getElementById("pinClass")?.value||"").trim();
+  if(v!=="1800"){toast("PINが違う。黒板の『完全下校』を確認しよう。");return}
+  setFlag("class_pc_open");
+  addItem("studentCard","生徒証カード","PCの横に置かれていた薄いプラスチックカード。");
+  addClue("pc","教卓PCの時刻","PC表示は18:43。完全下校時刻を過ぎている。");
+  sheet(`<h2>UNLOCK</h2><p>PCのロックが解除された。</p>
+    <p>画面右下は<span class="code">18:43</span>。</p>
+    <p>横に置かれていた<span class="important">生徒証カード</span>を回収した。</p>`);
+};
+
+teacherDesk=function(){pc()};
+
+lockers=function(){
+  if(hasItem("ruler")){
+    sheet(`<h2>ロッカー</h2><p>開錠済み。中はもう空だ。</p>`);
+    return;
+  }
+  if(!hasItem("studentCard")){
+    sheet(`<h2>自分のロッカー</h2>
+      <p>鍵は壊れていて回らない。ただ、扉には細い隙間がある。</p>
+      <p class="muted">薄いものならラッチへ届くかもしれない。</p>`);
+    return;
+  }
+  sheet(`<h2>自分のロッカー</h2>
+    <p>ラッチの隙間へ、生徒証カードを差し込めそうだ。</p>
+    <button class="choice primary" onclick="openLockerV16()">生徒証カードを差し込む</button>`);
+};
+
+window.openLockerV16=function(){
+  setFlag("class_locker_open");
+  addItem("ruler","30cm金属定規","ロッカーに残っていた金属定規。先端が薄い。");
+  addItem("keyTag","放送室の鍵","ロッカーの底に落ちていた小さな鍵。札には『放送』。");
+  sheet(`<h2>ロッカーが開いた</h2>
+    <p><span class="important">金属定規</span>と、小さな<span class="important">放送室の鍵</span>を見つけた。</p>`);
+};
+
+classDoor=function(){
+  if(esc16("class")){go("hall");return}
+  const ready=hasItem("studentCard")&&hasItem("ruler");
+  sheet(`<h2>教室の扉</h2>
+    <div class="escape-status"><b>LOCKED</b><br>引戸は数センチだけ動く。外側のサムターンが見える。</div>
+    <p>隙間から薄いものを滑らせ、その先を細長い道具で押せば届きそうだ。</p>
+    <button class="choice primary" ${ready?"":"disabled"} onclick="escapeClassV16()">持ち物を使って開ける</button>
+    <p class="muted">${hasItem("studentCard")?"✓ 薄いカード":"□ 薄いもの"}　${hasItem("ruler")?"✓ 細長い金属":"□ 細長いもの"}</p>`);
+};
+
+window.escapeClassV16=function(){
+  if(!hasItem("studentCard")||!hasItem("ruler")){toast("まだ必要な道具が足りない。");return}
+  setEsc16("class");S.chapter=1;addLog("教室のサムターンを外側から操作して廊下へ出た。");sv();
+  closeSheet();go("hall");
+};
+
+/* ---------- CH1: STAFF ROOM / FIRE DOOR ---------- */
+keyBoard=function(){
+  if(flag("keyboard_done")){
+    sheet(`<h2>鍵管理棚</h2><p>必要な鍵と非常設備用ヒューズは回収済み。</p>`);
+    return;
+  }
+  sheet(`<h2>鍵管理棚</h2>
+    <p>札が外れた4本の鍵。番号は <b>1 / 3 / 4 / 6</b>。</p>
+    <div class="puzzle-clue">
+      ・職員室は1<br>
+      ・旧校舎は最大の番号<br>
+      ・理科室は偶数<br>
+      ・放送室は理科室より1小さい
+    </div>
+    <p>理科室の鍵は何番？</p>
+    <div class="puzzle-grid">
+      <button onclick="keyPuzzleV16(1)">1</button><button onclick="keyPuzzleV16(3)">3</button>
+      <button onclick="keyPuzzleV16(4)">4</button><button onclick="keyPuzzleV16(6)">6</button>
+    </div>`);
+};
+
+window.keyPuzzleV16=function(n){
+  if(n!==4){toast("条件をもう一度整理しよう。");return}
+  setFlag("keyboard_done");
+  addItem("staffKey","理科室の予備キー","鍵管理棚から特定した理科室の予備キー。");
+  addItem("fuse","予備ヒューズ","鍵管理棚の非常設備ケースに入っていた。");
+  sheet(`<h2>鍵を特定した</h2>
+    <p>条件に合う鍵を取り出した。</p>
+    <p><span class="important">理科室の予備キー</span>と、同じケースの<span class="important">予備ヒューズ</span>を回収した。</p>`);
+};
+
+attendance=function(){
+  addClue("attendance","今日の出席簿","今日、主人公は『欠席』扱い。理由欄は空白。");
+  sheet(`<h2>出席簿</h2><p>今日の日付。</p>
+    <p>自分の名前の横には——<span class="important">欠席</span>。</p>
+    <p class="muted">理由欄は空白。</p>
+    <div class="dialog"><div class="name">自分</div>「……じゃあ、今日ここにいる俺は何なんだ。」</div>`);
+};
+
+lostFound=function(){
+  if(!hasItem("driver")){
+    addItem("driver","小型ドライバー","落とし物箱の工具ケースに入っていた。");
+    sheet(`<h2>落とし物箱</h2><p>工具ケースから<span class="important">小型ドライバー</span>を見つけた。</p>`);
+    return;
+  }
+  sheet(`<h2>落とし物箱</h2><p>ほかに使えそうなものはない。</p>`);
+};
+
+noticeBoard=function(){
+  addClue("festival","文化祭準備の掲示","放送委員と理科部が共同展示『声と光の迷路』を準備していた。");
+  const ready=hasItem("driver")&&hasItem("fuse");
+  sheet(`<h2>廊下の掲示板</h2>
+    <p>放送委員 × 理科部　共同展示「声と光の迷路」</p>
+    <hr><p>すぐ横には、閉じた防火扉の非常操作盤がある。</p>
+    <button class="choice primary" ${ready?"":"disabled"} onclick="fireShutterV16()">非常操作盤を調べる</button>
+    <p class="muted">${hasItem("driver")?"✓ 操作盤を開ける工具":"□ 操作盤を開ける工具"}　${hasItem("fuse")?"✓ 交換部品":"□ 交換部品"}</p>`);
+};
+
+window.fireShutterV16=function(){
+  if(esc16("fire")){sheet("<h2>防火扉</h2><p>すでに開放されている。</p>");return}
+  if(!hasItem("driver")||!hasItem("fuse")){toast("修理に必要なものが足りない。");return}
+  setEsc16("fire");S.chapter=2;addLog("防火扉の操作盤を修理し、特別教室側を開放した。");sv();
+  sheet(`<h2>防火扉 OPEN</h2>
+    <p>ドライバーで操作盤を開き、切れたヒューズを交換した。</p>
+    <p>重い防火扉がゆっくり開く。<span class="important">理科室へ進める。</span></p>
+    <button class="choice primary" onclick="closeSheet();go('science')">理科室へ</button>`);
+};
+
+/* ---------- CH2: SCIENCE ---------- */
+scienceMemo=function(){
+  addClue("mirrorHint","展示装置の調整メモ",
+    "鏡Aには左向き固定マーク。鏡BはAと逆向き。鏡CはAと同じ向きに合わせる。");
+  sheet(`<h2>文化祭準備メモ</h2>
+    <p>「声と光の迷路」調整用。</p>
+    <div class="puzzle-clue">
+      鏡A：本体の固定マークに合わせる<br>
+      鏡B：Aと<b>逆向き</b><br>
+      鏡C：Aと<b>同じ向き</b>
+    </div>
+    <p class="muted">答えそのものではなく、装置上のAのマークから向きを組み立てる。</p>`);
+};
+
+scienceCabinet=function(){
+  if(!flag("science_parts")){
+    setFlag("science_parts");
+    addItem("mirrorC","鏡C","展示装置から外されていた小型鏡。");
+    addItem("battery","受光器用電池","展示装置の受光器に合う電池。");
+    addItem("uvPen","UVライト","透明インクを読むための文化祭用UVライト。");
+    sheet(`<h2>準備棚</h2>
+      <p>装置から外されていた<span class="important">鏡C</span>と、受光器用の電池を見つけた。</p>
+      <p>同じ箱には文化祭用の<span class="important">UVライト</span>も残っていた。</p>`);
+    return;
+  }
+  sheet(`<h2>準備棚</h2><p>必要な部品は回収済み。</p>`);
+};
+
+laserPuzzle=function(){
+  if(!flag("science_parts")){
+    sheet(`<h2>光学実験台</h2><p>鏡が1枚足りず、受光器にも電源がない。</p><p class="muted">準備棚を調べよう。</p>`);return
+  }
+  if(!hasClue("mirrorHint")){
+    sheet(`<h2>光学実験台</h2><p>鏡A・B・Cの向きを変えられるが、基準が分からない。</p><p class="muted">文化祭の調整メモを探そう。</p>`);return
+  }
+  sheet(`<h2>光の迷路</h2>
+    <p>鏡Aには<span class="important">左向きの固定マーク</span>がある。</p>
+    <p>A → B → C の向きを選ぶ。</p>
+    <div class="puzzle-grid">
+      <button onclick="laserV16('LLR')">左・左・右</button>
+      <button onclick="laserV16('LRL')">左・右・左</button>
+      <button onclick="laserV16('RLR')">右・左・右</button>
+      <button onclick="laserV16('RRL')">右・右・左</button>
+    </div>`);
+};
+
+window.laserV16=function(v){
+  if(v!=="LRL"){toast("受光器が反応しない。メモの『逆／同じ』を確認しよう。");return}
+  if(!hasItem("cassette")) addItem("cassette","小型ICレコーダー","受光器の隠しケースから出てきた。ラベルは『文化祭前日』。");
+  setEsc16("stairs");S.chapter=3;addLog("光学展示を起動し、隠しケースから古い録音機を発見。");sv();
+  sheet(`<h2>受光器が反応した</h2>
+    <p>光が最後の受光器へ届く。</p>
+    <p>実験台の下から<span class="important">小型ICレコーダー</span>がせり出した。</p>
+    <p class="muted">ラベル：文化祭前日</p>
+    <button class="choice primary" onclick="closeSheet();go('hall')">放送室を調べる</button>`);
+};
+
+/* ---------- CH3: BROADCAST ---------- */
+oldRecording=function(){
+  if(!hasItem("cassette")){
+    sheet(`<h2>古い録音機</h2><p>再生する媒体がない。</p>`);return
+  }
+  addClue("voice","17:18の復元録音",
+    "17:18、水野が旧校舎階段の危険を話した直後に衝撃音。続いて主人公の声で救助要請。");
+  sheet(`<h2>復元された録音</h2>
+    <p class="code"><span class="important">17:18</span></p>
+    <p>水野『旧校舎の階段、やっぱ危ないって榊先生に言った方がいい』</p>
+    <p>――大きな衝撃音。</p><p>『水野！』</p>
+    <p>その声は、自分の声だった。</p>`);
+};
+
+broadcastSchedule=function(){
+  addClue("broadcastDuty","去年の放送当番表","紙版では17:00–17:30『水野 悠』。電子版ではその行だけ欠落。");
+  addClue("keylog","旧校舎の鍵貸出記録","文化祭前日16:10、旧校舎の鍵を榊名義で貸出。事故後の電子版では行が削除。");
+  sheet(`<h2>放送当番表</h2>
+    <p>紙版：<span class="code">17:00–17:30　水野 悠</span></p>
+    <p>電子版では、その一行だけ存在しない。</p>
+    <hr><p>同じ束に旧校舎の鍵貸出記録。事故後の電子版では該当行が消えている。</p>`);
+};
+
+audioLog=function(){
+  if(!hasClue("voice")){
+    sheet(`<h2>放送サーバ</h2><p>17時台に欠損がある。</p><p class="muted">古い録音機で元データを先に確認したい。</p>`);return
+  }
+  addClue("altered","改竄された放送記録","予備録音に残る17:18の救助要請がサーバ版から削除されている。");
+  S.chapter=4;sv();
+  sheet(`<h2>サーバ版との比較</h2>
+    <p>予備録音には残っている<span class="important">17:18の救助要請</span>が、サーバ版には存在しない。</p>
+    <div class="dialog"><div class="name">自分</div>「……消された。」</div>
+    <button class="choice primary" onclick="closeSheet();go('old')">旧校舎へ</button>`);
+};
+
+/* ---------- CH4: OLD BUILDING ---------- */
+oldStairs=function(){
+  if(flag("accident_spot")){
+    addClue("repair","事故翌日の階段補修","旧校舎の踊り場だけ新しい補修材。施工日は事故翌日。");
+    sheet(`<h2>旧校舎階段</h2><p>事故地点と考えられる踊り場だけ補修材が新しい。</p><p class="code">施工：事故翌日</p>`);return
+  }
+  sheet(`<h2>旧校舎階段</h2>
+    <p>上段・踊り場・下段の3か所に古い傷がある。</p>
+    <div class="puzzle-clue">
+      復元録音では衝撃直前に強い反響。<br>
+      施設掲示には「踊り場の腐食」。<br>
+      新しい補修材も中央部に集中している。
+    </div>
+    <p>事故地点はどこだろう。</p>
+    <div class="puzzle-grid">
+      <button onclick="accidentV16('upper')">上段</button>
+      <button onclick="accidentV16('landing')">踊り場</button>
+      <button onclick="accidentV16('lower')">下段</button>
+    </div>`);
+};
+
+window.accidentV16=function(v){
+  if(v!=="landing"){toast("3つの手掛かりが一致しない。");return}
+  setFlag("accident_spot");
+  addClue("repair","事故翌日の階段補修","旧校舎の踊り場だけ新しい補修材。施工日は事故翌日。");
+  sheet(`<h2>事故地点を特定した</h2><p><span class="important">踊り場</span>だけ、事故翌日に補修されている。</p>`);
+};
+
+timeCapsuleNote=function(){
+  addClue("capsule","去年の展示メモ",
+    "事故直後の自分のメモは『見た事実 → 消された場合の対策 → 探す場所』の順で残す、と書かれている。");
+  sheet(`<h2>古い掲示</h2>
+    <p>去年の展示班メモ。</p>
+    <div class="puzzle-clue">記録は、<b>見た事実 → 消された場合の対策 → 探す場所</b> の順で残す。</div>`);
+};
+
+oldLocker=function(){
+  if(!hasItem("uvPen")){
+    sheet(`<h2>古いロッカー</h2><p>扉の内側に透明な線がある。普通の光では読めない。</p>`);return
+  }
+  if(!flag("uv_fragments")){
+    if(!hasClue("capsule")){
+      sheet(`<h2>UVで浮かぶ断片</h2>
+        <p>3つの文章が浮かぶが、順番が分からない。</p>
+        <p class="muted">並べ方のルールがどこかに残っているはずだ。</p>`);return
+    }
+    sheet(`<h2>UVで浮かぶ断片</h2>
+      <span class="fragment">A：録音が消えたら</span>
+      <span class="fragment">B：俺は17:18を見た</span>
+      <span class="fragment">C：紙と予備機を見ろ</span>
+      <p>古い掲示のルールに従って並べる。</p>
+      <div class="puzzle-grid">
+        <button onclick="fragmentV16('BAC')">B → A → C</button>
+        <button onclick="fragmentV16('ABC')">A → B → C</button>
+        <button onclick="fragmentV16('BCA')">B → C → A</button>
+        <button onclick="fragmentV16('CAB')">C → A → B</button>
+      </div>`);
+    return
+  }
+  showOldLockerEvidenceV16();
+};
+
+window.fragmentV16=function(v){
+  if(v!=="BAC"){toast("古い掲示の『事実→対策→探す場所』と合わない。");return}
+  setFlag("uv_fragments");showOldLockerEvidenceV16();
+};
+
+window.showOldLockerEvidenceV16=function(){
+  addClue("letter","事故直後の自分のメモ",
+    "17:18、水野、旧校舎。榊先生は危険を知っていた。録音が消えたら紙と予備機を確認するよう自分で残した。");
+  addClue("warning","事故前の危険通知",
+    "事故12日前、施設担当から文化祭担当へ旧校舎踊り場の腐食と使用停止継続を通知。榊の受領印。");
+  sheet(`<h2>復元したメモ</h2>
+    <p>『俺は17:18を見た。録音が消えたら、紙と予備機を見ろ。』</p>
+    <p>筆跡は自分のものだった。</p><hr>
+    <p>ロッカー底には事故12日前の施設通知。</p>
+    <p class="code">旧校舎踊り場：腐食<br>使用停止を継続<br><span class="important">受領：榊</span></p>`);
+};
+
+roofDoor=function(){
+  const needed=hasClue("voice")&&hasClue("altered")&&hasClue("warning")&&hasClue("repair")&&hasClue("letter");
+  if(!needed){
+    sheet(`<h2>屋上前の扉</h2><p>電子ロック脇に「事故記録照合後に解除」とある。</p>
+      <p class="muted">旧校舎・放送室の必須証拠をまだ整理しきれていない。</p>`);return
+  }
+  reasoningBoard();
+};
+
+/* ---------- REASONING / ROOFTOP ---------- */
+judgeReasoning=function(){
+  const a={place:"旧校舎",first:"主人公",cause:"老朽化した階段",knew:"榊先生",alter:"榊先生",purpose:"管理責任の隠蔽",memory:"事故時の頭部外傷"};
+  let n=Object.keys(a).filter(k=>!S.board||S.board[k]!==a[k]).length;
+  if(n){sheet(`<h2>推理不成立</h2><p>${n}項目が証拠と矛盾している。</p><button class="choice" onclick="reasoningBoard()">戻る</button>`);return}
+  setFlag("finalReason");setEsc16("roof");S.chapter=5;addLog("去年17:18の事故と記録改竄を再構成した。");sv();
+  sheet(`<h2 class="good">推理成立</h2>
+    <p>去年17:18。水野は旧校舎の老朽化した階段で事故に遭った。</p>
+    <p>榊先生は危険を事前に知らされていたが、事故後に鍵・当番・放送記録が改竄された。</p>
+    <p>主人公は事故を発見し、救助要請を残した。</p>
+    <hr>
+    <p>屋上前の非常口には4桁入力欄。その脇には、ただ一言——</p>
+    <div class="puzzle-clue"><b>「事故が起きた時刻」</b></div>
+    <p class="muted">数字そのものは書かれていない。</p>
+    <button class="choice primary" onclick="closeSheet();go('rooftop')">屋上前へ</button>`);
+};
+
+networkTerminal=function(){
+  addClue("network","匿名メッセージ送信ログ",
+    "今日16:52、削除済みのMIZUNO.Yアカウントから『17:18。2年3組。』が送信されている。");
+  setFlag("exitAuth");
+  sheet(`<h2>管理端末</h2>
+    <p class="code">16:52 SEND<br>FROM: MIZUNO.Y<br>17:18。2年3組。</p>
+    <p><span class="important">ACCOUNT DELETED : LAST OCTOBER</span></p>
+    <p>非常口の管理認証も、この端末から有効化できた。</p>`);
+};
+
+finalChoice=function(){
+  sheet(`<h2>最後の非常口</h2>
+    <div class="escape-status"><b>2段階解除</b></div>
+    <p>① 事故発生時刻を4桁で入力<br>② 管理端末認証</p>
+    <input id="exitCodeV16" inputmode="numeric" maxlength="4" placeholder="4桁"
+      style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+    <button class="choice primary" onclick="finalEscapeV16()">解除</button>
+    <p class="muted">${flag("exitAuth")?"✓ 管理端末認証済み":"□ 管理端末認証が必要"}</p>`);
+};
+
+window.finalEscapeV16=function(){
+  const v=(document.getElementById("exitCodeV16")?.value||"").trim();
+  if(v!=="1718"){toast("時刻が一致しない。事件記録を見直そう。");return}
+  if(!flag("exitAuth")){toast("管理端末認証が必要だ。");return}
+  setEsc16("exit");addLog("非常口を解除し、学校から脱出した。");sv();
+  sheet(`<h2>UNLOCK</h2><p>電子音が鳴り、重い非常口が外側へ開く。</p>
+    <div class="dialog"><div class="name">自分</div>「……出られる。」</div>
+    <button class="choice primary" onclick="endGame('true')">学校の外へ出る</button>`);
+};
+
+/* ---------- ACCESS RULES: ONE COHERENT MAIN LINE ---------- */
+can=function(r){
+  if(r==="classroom")return true;
+  if(r==="hall"||r==="staff")return esc16("class");
+  if(r==="science")return esc16("fire")&&S.chapter>=2&&hasItem("staffKey");
+  if(r==="broadcast")return esc16("fire")&&S.chapter>=3&&hasItem("keyTag");
+  if(r==="old")return esc16("stairs")&&S.chapter>=4;
+  if(r==="rooftop")return esc16("roof")&&S.chapter>=5;
+  return false;
+};
+
+currentObjective=function(){
+  if(!esc16("class")){
+    if(!flag("class_pc_open"))return "黒板を調べ、教卓PCのロックを解除しよう。";
+    if(!hasItem("ruler"))return "教室内で、扉を開けるための細長い道具を探そう。";
+    return "教室の扉を開けよう。";
+  }
+  if(!esc16("fire")){
+    if(!hasItem("driver"))return "廊下と職員室を調べ、非常操作盤を開ける工具を探そう。";
+    if(!flag("keyboard_done"))return "職員室の鍵管理棚を解き、非常設備の交換部品を探そう。";
+    return "掲示板横の非常操作盤を修理して、防火扉を開けよう。";
+  }
+  if(S.chapter===2){
+    if(!flag("science_parts"))return "理科室の準備棚で、展示装置の不足部品を探そう。";
+    if(!hasClue("mirrorHint"))return "理科室の文化祭準備メモを調べよう。";
+    return "光学実験台の『光の迷路』を起動しよう。";
+  }
+  if(S.chapter===3){
+    if(!hasClue("voice"))return "放送室で、文化祭前日の録音を再生しよう。";
+    if(!hasClue("altered"))return "放送サーバと予備録音を比較しよう。";
+    return "旧校舎へ向かおう。";
+  }
+  if(S.chapter===4){
+    if(!hasClue("repair"))return "旧校舎階段で事故地点を特定しよう。";
+    if(!hasClue("capsule"))return "旧校舎の古い掲示を調べよう。";
+    if(!hasClue("letter"))return "UVライトで古いロッカーの文字を復元しよう。";
+    return "屋上前の扉で、集めた証拠を整理しよう。";
+  }
+  if(S.chapter===5){
+    if(!hasClue("network"))return "屋上前の管理端末を調べ、非常口認証を確認しよう。";
+    return "最後の非常口を解除して学校から脱出しよう。";
+  }
+  return "学校から脱出した。";
+};
+
+})();
+</script>
+
+<script id="classroom-hotfix-v17">
+(function(){
+  function classroomSpots(){
+    return {
+      "classroom_0":[
+        {x:100,y:85,w:450,h:215,fn:"blackboard()",label:"黒板"},
+        {x:575,y:95,w:140,h:180,fn:"clock()",label:"時計"}
+      ],
+      "classroom_1":[
+        {x:85,y:130,w:210,h:240,fn:"teacherDesk()",label:"教卓PC"},
+        {x:420,y:110,w:265,h:260,fn:"lockers()",label:"ロッカー"}
+      ],
+      "classroom_2":[
+        {x:125,y:80,w:550,h:280,fn:"classPhoto()",label:"クラス写真"}
+      ],
+      "classroom_3":[
+        {x:280,y:90,w:240,h:300,fn:"classDoor()",label:"教室の扉"},
+        {x:80,y:125,w:140,h:220,fn:"umbrella()",label:"傘立て"}
+      ]
+    };
+  }
+
+  function rebuildClassroomHotspots(){
+    if(!window.SCENE_HOTSPOTS_V15) return;
+    const s=classroomSpots();
+    Object.keys(s).forEach(k=>window.SCENE_HOTSPOTS_V15[k]=s[k]);
+  }
+
+  rebuildClassroomHotspots();
+
+  const oldDraw = typeof switchSceneImageV15==="function" ? switchSceneImageV15 : null;
+  if(oldDraw){
+    window.switchSceneImageV15=function(){
+      rebuildClassroomHotspots();
+      return oldDraw();
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    rebuildClassroomHotspots();
+    const brand=document.querySelector(".brand");
+    if(brand){
+      let t=document.getElementById("buildTag");
+      if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}
+      t.textContent="RICH v19";
+    }
+  });
+})();
+</script>
+
+<style id="no-spoiler-v18-css">
+.item-combo{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0
+}
+.item-combo select{
+  width:100%;padding:11px 10px;border:1px solid #aa987f;border-radius:8px;
+  background:#fff9ed;color:#2b251f;font-weight:800
+}
+.thought{
+  margin:10px 0;padding:10px 12px;border-left:4px solid #8b7b65;
+  background:#fbf5ea;color:#51473e;font-style:italic;line-height:1.7
+}
+</style>
+<script id="no-spoiler-v18">
+(function(){
+
+function itemOptionsV18(){
+  const a=(S.items||[]).map(x=>`<option value="${x.id}">${x.name}</option>`).join("");
+  return `<option value="">選択する</option>${a}`;
+}
+
+/* ---------- Classroom door: observe -> infer -> choose two items ---------- */
+classDoor=function(){
+  if(S.flags&&S.flags.esc_class){go("hall");return}
+  const opts=itemOptionsV18();
+  sheet(`<h2>教室の扉</h2>
+    <div class="escape-status"><b>LOCKED</b><br>
+      引戸は数センチだけ動く。隙間の向こうに、内側のつまみが見える。
+    </div>
+    <p>手を入れるには狭すぎる。</p>
+    <div class="thought">「薄いものと、細長くて少し硬いものがあれば……届くかもしれない。」</div>
+    <p class="muted">持ち物を2つ選んで試す。</p>
+    <div class="item-combo">
+      <select id="doorItemA">${opts}</select>
+      <select id="doorItemB">${opts}</select>
+    </div>
+    <button class="choice primary" onclick="tryDoorItemsV18()">試す</button>`);
+};
+
+window.tryDoorItemsV18=function(){
+  const a=document.getElementById("doorItemA")?.value||"";
+  const b=document.getElementById("doorItemB")?.value||"";
+  if(!a||!b){toast("持ち物を2つ選ぼう。");return}
+  if(a===b){toast("同じものを2つは使えない。");return}
+  const pair=new Set([a,b]);
+  if(pair.has("studentCard")&&pair.has("ruler")){
+    S.flags=S.flags||{};S.flags.esc_class=true;
+    S.chapter=Math.max(S.chapter,1);
+    addLog("教室の扉を内側のつまみを外から操作して開けた。");
+    sv();
+    sheet(`<h2>開いた</h2>
+      <p>薄いカードで隙間を確保し、細長い金属で内側のつまみを押す。</p>
+      <p>小さく音がして、扉のロックが外れた。</p>
+      <button class="choice primary" onclick="closeSheet();go('hall')">廊下へ出る</button>`);
+    return;
+  }
+  toast("うまく届かない。形や硬さが合っていないようだ。");
+};
+
+/* ---------- Remove direct answer wording from PC / locker ---------- */
+pc=function(){
+  if(S.flags&&S.flags.class_pc_open){
+    sheet(`<h2>教卓PC</h2><p>ロックは解除済み。</p><p class="code">18:43</p>`);
+    return;
+  }
+  sheet(`<h2>教卓PC</h2>
+    <p>4桁のPINでロックされている。</p>
+    <div class="puzzle-clue">付箋：<b>「今日、みんなが学校を出る時刻」</b></div>
+    <p class="muted">教室のどこかに、今日の予定が残っている。</p>
+    <input id="pinClass" inputmode="numeric" maxlength="4" placeholder="4桁"
+      style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+    <button class="choice primary" onclick="classPin()">入力する</button>`);
+};
+
+lockers=function(){
+  if(hasItem("ruler")){
+    sheet(`<h2>自分のロッカー</h2><p>すでに開いている。</p>`);
+    return;
+  }
+  sheet(`<h2>自分のロッカー</h2>
+    <p>鍵が壊れていて、つまみは空回りする。</p>
+    <p>扉と枠の間には、ごく細い隙間がある。</p>
+    <div class="thought">「薄いものなら、中の留め具に触れられるかもしれない。」</div>
+    <button class="choice primary" onclick="openLockerChoiceV18()">持ち物を選ぶ</button>`);
+};
+
+window.openLockerChoiceV18=function(){
+  const opts=itemOptionsV18();
+  sheet(`<h2>ロッカー</h2>
+    <p>隙間へ差し込むものを選ぶ。</p>
+    <select id="lockerItemV18" style="width:100%;padding:11px;border:1px solid #aa987f;border-radius:8px;background:#fff9ed;color:#2b251f">${opts}</select>
+    <button class="choice primary" onclick="tryLockerItemV18()">試す</button>`);
+};
+
+window.tryLockerItemV18=function(){
+  const a=document.getElementById("lockerItemV18")?.value||"";
+  if(!a){toast("持ち物を選ぼう。");return}
+  if(a!=="studentCard"){toast("厚すぎるか、形が合わない。");return}
+  S.flags=S.flags||{};S.flags.class_locker_open=true;
+  if(!hasItem("ruler"))addItem("ruler","30cm金属定規","ロッカーに残っていた金属定規。先端が薄い。");
+  if(!hasItem("keyTag"))addItem("keyTag","小さな鍵","ロッカーの底に落ちていた。札には『放送』。");
+  sheet(`<h2>ロッカーが開いた</h2>
+    <p>留め具が外れた。</p>
+    <p>中から<span class="important">金属定規</span>と、札付きの<span class="important">小さな鍵</span>を見つけた。</p>`);
+};
+
+/* ---------- Key board: clues only; no answer wording after success ---------- */
+keyBoard=function(){
+  if(S.flags&&S.flags.keyboard_done){
+    sheet(`<h2>鍵管理棚</h2><p>必要な鍵はすでに回収している。</p>`);
+    return;
+  }
+  sheet(`<h2>鍵管理棚</h2>
+    <p>札が外れた4本の鍵。番号は <b>1 / 3 / 4 / 6</b>。</p>
+    <div class="puzzle-clue">
+      ・職員室は1<br>
+      ・旧校舎は最大の番号<br>
+      ・理科室は偶数<br>
+      ・放送室は理科室より1小さい
+    </div>
+    <p>理科室に対応する鍵を選ぶ。</p>
+    <div class="puzzle-grid">
+      <button onclick="keyPuzzleV18(1)">1番</button>
+      <button onclick="keyPuzzleV18(3)">3番</button>
+      <button onclick="keyPuzzleV18(4)">4番</button>
+      <button onclick="keyPuzzleV18(6)">6番</button>
+    </div>`);
+};
+
+window.keyPuzzleV18=function(n){
+  if(n!==4){toast("条件のどれかと矛盾している。");return}
+  S.flags=S.flags||{};S.flags.keyboard_done=true;
+  if(!hasItem("staffKey"))addItem("staffKey","特別教室の予備キー","鍵管理棚から条件に合うものを選んだ。");
+  if(!hasItem("fuse"))addItem("fuse","予備ヒューズ","非常設備ケースに入っていた交換部品。");
+  sheet(`<h2>鍵を取り出した</h2>
+    <p>条件に一致する鍵だった。</p>
+    <p>同じ棚の非常設備ケースから交換部品も回収した。</p>`);
+};
+
+/* ---------- Science: remove explicit answer from notes ---------- */
+scienceMemo=function(){
+  addClue("mirrorHint","展示装置の調整メモ",
+    "鏡Aには固定マーク。BはAと反対向き、CはAと同じ向きに合わせる。");
+  sheet(`<h2>文化祭準備メモ</h2>
+    <p>「声と光の迷路」調整用。</p>
+    <div class="puzzle-clue">
+      ・鏡Aには本体側の固定マーク<br>
+      ・鏡BはAと<b>反対</b><br>
+      ・鏡CはAと<b>同じ</b>
+    </div>
+    <p class="muted">Aの実際の向きは、実験台を見て判断する。</p>`);
+};
+
+/* ---------- Final exit: do not print the numeric answer in explanation ---------- */
+finalChoice=function(){
+  sheet(`<h2>最後の非常口</h2>
+    <div class="escape-status"><b>2段階解除</b></div>
+    <p>① 事故発生時刻を4桁で入力<br>② 管理端末認証</p>
+    <p class="muted">時刻は、ここまで集めた事故記録から判断する。</p>
+    <input id="exitCodeV18" inputmode="numeric" maxlength="4" placeholder="4桁"
+      style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+    <button class="choice primary" onclick="finalEscapeV18()">解除</button>`);
+};
+
+window.finalEscapeV18=function(){
+  const v=(document.getElementById("exitCodeV18")?.value||"").trim();
+  if(v!=="1718"){toast("時刻が一致しない。事故記録を見直そう。");return}
+  if(!(S.flags&&S.flags.exitAuth)){toast("管理端末側の認証が必要だ。");return}
+  S.flags.esc_exit=true;sv();
+  sheet(`<h2>UNLOCK</h2>
+    <p>電子音が鳴り、非常口のロックが外れた。</p>
+    <button class="choice primary" onclick="endGame('true')">学校の外へ出る</button>`);
+};
+
+/* ---------- Objective text must guide, not reveal answer ---------- */
+currentObjective=function(){
+  const F=S.flags||{};
+  if(!F.esc_class){
+    if(!F.class_pc_open)return "教室を調べ、PCのロックを解く手掛かりを探そう。";
+    if(!hasItem("ruler"))return "教室内のロッカーを開ける方法を考えよう。";
+    return "持ち物を組み合わせて、教室の扉を開けよう。";
+  }
+  if(!F.esc_fire){
+    if(!hasItem("driver"))return "廊下と職員室を調べよう。";
+    if(!F.keyboard_done)return "職員室の鍵管理棚を調べよう。";
+    return "閉じた防火扉の非常操作盤を調べよう。";
+  }
+  if(S.chapter===2){
+    if(!F.science_parts)return "理科室の展示装置を動かすために、足りないものを探そう。";
+    if(!hasClue("mirrorHint"))return "文化祭準備の記録を調べよう。";
+    return "光学実験台を起動しよう。";
+  }
+  if(S.chapter===3){
+    if(!hasClue("voice"))return "放送室に残された古い録音を調べよう。";
+    if(!hasClue("altered"))return "予備録音とサーバ記録を比較しよう。";
+    return "旧校舎へ向かおう。";
+  }
+  if(S.chapter===4){
+    if(!hasClue("repair"))return "旧校舎の事故現場を調べよう。";
+    if(!hasClue("capsule"))return "旧校舎に残された掲示を調べよう。";
+    if(!hasClue("letter"))return "古いロッカーの読めない痕跡を調べる方法を考えよう。";
+    return "集めた証拠から事故全体を組み立てよう。";
+  }
+  if(S.chapter===5){
+    if(!hasClue("network"))return "管理端末に残されたログを調べよう。";
+    return "非常口の解除条件を満たそう。";
+  }
+  return "学校から脱出した。";
+};
+
+})();
+</script>
+
+<style id="puzzle-standard-v19-css">
+.puzzle-card{
+  margin:10px 0;padding:12px;border:1px solid #b6a58e;border-radius:10px;
+  background:#fff9ed;box-shadow:0 3px 9px #3b2b1d12
+}
+.puzzle-step{
+  display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:start;
+  margin:8px 0;padding:8px 9px;border-radius:8px;background:#f7efe2
+}
+.puzzle-step b{color:#7c4d3c;font-size:11px;letter-spacing:.05em}
+.puzzle-step span{color:#3c332b;line-height:1.65}
+.puzzle-input{margin-top:10px}
+.puzzle-result{
+  margin-top:10px;padding:9px 11px;border-left:4px solid #6d8a71;background:#edf5ea
+}
+.puzzle-result.ng{border-left-color:#a05a52;background:#f6e7e3}
+</style>
+<script id="puzzle-standard-v19">
+(function(){
+
+function puzzleCardV19(observe,infer,actionHtml){
+  return `<div class="puzzle-card">
+    <div class="puzzle-step"><b>観察</b><span>${observe}</span></div>
+    <div class="puzzle-step"><b>推測</b><span>${infer}</span></div>
+    <div class="puzzle-input">${actionHtml||""}</div>
+  </div>`;
+}
+
+/* ===== 教卓PC ===== */
+pc=function(){
+  if(S.flags&&S.flags.class_pc_open){
+    sheet(`<h2>教卓PC</h2>
+      ${puzzleCardV19(
+        "ロックは解除済み。画面右下は18:43。",
+        "完全下校時刻を過ぎている。",
+        '<div class="puzzle-result">PCはもう調べ終わっている。</div>'
+      )}`);
+    return;
+  }
+  sheet(`<h2>教卓PC</h2>
+    ${puzzleCardV19(
+      '4桁PINでロック。付箋には「今日、みんなが学校を出る時刻」。',
+      '今日の予定表に、全員が学校を出る時刻が書かれていそうだ。',
+      `<input id="pinClass" inputmode="numeric" maxlength="4" placeholder="4桁"
+        style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+       <button class="choice primary" onclick="classPin()">入力する</button>`
+    )}`);
+};
+
+/* ===== ロッカー ===== */
+lockers=function(){
+  if(hasItem("ruler")){
+    sheet(`<h2>自分のロッカー</h2>${puzzleCardV19(
+      "扉は開いている。中は空。",
+      "必要な物は回収済み。",
+      '<div class="puzzle-result">ここにはもう手掛かりはなさそうだ。</div>'
+    )}`);
+    return;
+  }
+  sheet(`<h2>自分のロッカー</h2>
+    ${puzzleCardV19(
+      "鍵が壊れて空回りする。扉と枠の間に細い隙間がある。",
+      "薄い物なら、中の留め具へ触れられるかもしれない。",
+      '<button class="choice primary" onclick="openLockerChoiceV18()">持ち物を選ぶ</button>'
+    )}`);
+};
+
+/* ===== 教室扉 ===== */
+classDoor=function(){
+  if(S.flags&&S.flags.esc_class){go("hall");return}
+  const opts=itemOptionsV18();
+  sheet(`<h2>教室の扉</h2>
+    ${puzzleCardV19(
+      "引戸は数センチ動く。隙間の向こうに、内側のつまみが見える。手は入らない。",
+      "薄い物で隙間を使い、細長く少し硬い物でつまみに届かせられるかもしれない。",
+      `<div class="item-combo">
+        <select id="doorItemA">${opts}</select>
+        <select id="doorItemB">${opts}</select>
+       </div>
+       <button class="choice primary" onclick="tryDoorItemsV18()">2つを組み合わせて試す</button>`
+    )}`);
+};
+
+/* ===== 鍵管理棚 ===== */
+keyBoard=function(){
+  if(S.flags&&S.flags.keyboard_done){
+    sheet(`<h2>鍵管理棚</h2>${puzzleCardV19(
+      "鍵はすでに選別済み。",
+      "必要な鍵と非常設備の交換部品を回収した。",
+      '<div class="puzzle-result">ここは完了している。</div>'
+    )}`);
+    return;
+  }
+  sheet(`<h2>鍵管理棚</h2>
+    ${puzzleCardV19(
+      `番号だけ残った4本の鍵：1 / 3 / 4 / 6。<br>
+       メモ：職員室は1、旧校舎は最大、理科室は偶数、放送室は理科室より1小さい。`,
+      "4つの条件を全部同時に満たすように対応を決めれば、理科室の鍵を特定できる。",
+      `<div class="puzzle-grid">
+        <button onclick="keyPuzzleV18(1)">1番</button>
+        <button onclick="keyPuzzleV18(3)">3番</button>
+        <button onclick="keyPuzzleV18(4)">4番</button>
+        <button onclick="keyPuzzleV18(6)">6番</button>
+       </div>`
+    )}`);
+};
+
+/* ===== 防火扉 ===== */
+noticeBoard=function(){
+  addClue("festival","文化祭準備の掲示","放送委員と理科部が共同展示『声と光の迷路』を準備していた。");
+  sheet(`<h2>廊下の掲示板</h2>
+    <p>放送委員 × 理科部　共同展示「声と光の迷路」</p>
+    <hr>
+    ${puzzleCardV19(
+      "横の防火扉は閉鎖中。非常操作盤のカバーはネジ止めで、表示灯は消えている。",
+      "まず操作盤を開けて、中の故障箇所を確認する必要がありそうだ。",
+      `<button class="choice primary" onclick="fireShutterV19()">非常操作盤を調べる</button>`
+    )}`);
+};
+
+window.fireShutterV19=function(){
+  if(S.flags&&S.flags.esc_fire){
+    sheet(`<h2>防火扉</h2><div class="puzzle-result">すでに開放済み。</div>`);return;
+  }
+  if(!hasItem("driver")){
+    sheet(`<h2>非常操作盤</h2>
+      ${puzzleCardV19(
+        "カバーは2本のネジで固定されている。",
+        "素手では開けられない。工具が必要だ。",
+        '<div class="puzzle-result ng">今の持ち物では開けられない。</div>'
+      )}`);return;
+  }
+  if(!hasItem("fuse")){
+    sheet(`<h2>非常操作盤</h2>
+      ${puzzleCardV19(
+        "カバーを外すと、内部の小さな部品が黒く焼けている。",
+        "同じ形の交換部品があれば復旧できそうだ。",
+        '<div class="puzzle-result ng">交換できる部品を探そう。</div>'
+      )}`);return;
+  }
+  S.flags.esc_fire=true;S.chapter=2;addLog("非常操作盤を修理し、防火扉を開放した。");sv();
+  sheet(`<h2>防火扉</h2>
+    ${puzzleCardV19(
+      "焼けた部品を交換すると表示灯が点灯した。",
+      "操作盤が復旧した。",
+      '<div class="puzzle-result">重い防火扉が開き、特別教室側へ進めるようになった。</div><button class="choice primary" onclick="closeSheet();go(\'science\')">先へ進む</button>'
+    )}`);
+};
+
+/* ===== 理科室・準備メモ ===== */
+scienceMemo=function(){
+  addClue("mirrorHint","展示装置の調整メモ",
+    "鏡Aには固定マーク。BはAと反対向き、CはAと同じ向き。");
+  sheet(`<h2>文化祭準備メモ</h2>
+    ${puzzleCardV19(
+      "鏡Aには本体側の固定マーク。メモには『BはAと反対、CはAと同じ』。",
+      "Aの向きを実験台で確認すれば、BとCの向きも決められる。",
+      '<div class="puzzle-result">この関係を覚えておこう。</div>'
+    )}`);
+};
+
+/* ===== 理科室・光学 ===== */
+laserPuzzle=function(){
+  if(!(S.flags&&S.flags.science_parts)){
+    sheet(`<h2>光学実験台</h2>${puzzleCardV19(
+      "鏡が1枚足りず、受光器も反応しない。",
+      "装置を動かすには、まず不足部品を探す必要がある。",
+      '<div class="puzzle-result ng">今は動かせない。</div>'
+    )}`);return;
+  }
+  if(!hasClue("mirrorHint")){
+    sheet(`<h2>光学実験台</h2>${puzzleCardV19(
+      "鏡A・B・Cの向きを変えられる。Aには固定マークがある。",
+      "他の鏡をどう合わせるか、調整記録が必要だ。",
+      '<div class="puzzle-result ng">まだ基準が足りない。</div>'
+    )}`);return;
+  }
+  sheet(`<h2>光の迷路</h2>
+    ${puzzleCardV19(
+      "鏡Aの固定マークは左向き。調整メモではBはAと反対、CはAと同じ。",
+      "Aを基準にBとCを決める。",
+      `<div class="puzzle-grid">
+        <button onclick="laserV16('LLR')">左・左・右</button>
+        <button onclick="laserV16('LRL')">左・右・左</button>
+        <button onclick="laserV16('RLR')">右・左・右</button>
+        <button onclick="laserV16('RRL')">右・右・左</button>
+       </div>`
+    )}`);
+};
+
+/* ===== 放送室 ===== */
+oldRecording=function(){
+  if(!hasItem("cassette")){
+    sheet(`<h2>古い録音機</h2>${puzzleCardV19(
+      "再生機は動くが、入れる媒体がない。",
+      "どこかで録音媒体を見つける必要がある。",
+      '<div class="puzzle-result ng">今は再生できない。</div>'
+    )}`);return;
+  }
+  addClue("voice","17:18の復元録音",
+    "17:18、水野が旧校舎階段の危険を話した直後に衝撃音。続いて主人公の声で救助要請。");
+  sheet(`<h2>復元された録音</h2>
+    ${puzzleCardV19(
+      "録音は17:18付近から始まり、水野の声、衝撃音、主人公の救助要請が続く。",
+      "去年の事故は旧校舎で起き、自分も現場にいた可能性が高い。",
+      '<div class="puzzle-result">重要な時系列が一つ確定した。</div>'
+    )}`);
+};
+
+audioLog=function(){
+  if(!hasClue("voice")){
+    sheet(`<h2>放送サーバ</h2>${puzzleCardV19(
+      "17時台のログに不自然な欠損がある。",
+      "欠損していない別の録音と比較すれば、消された内容を特定できそうだ。",
+      '<div class="puzzle-result ng">比較対象がまだ足りない。</div>'
+    )}`);return;
+  }
+  addClue("altered","改竄された放送記録",
+    "予備録音に残る17:18の救助要請がサーバ版から削除されている。");
+  S.chapter=4;sv();
+  sheet(`<h2>サーバ版との比較</h2>
+    ${puzzleCardV19(
+      "予備録音にはある救助要請が、サーバ版には存在しない。",
+      "事故後に記録の一部が意図的に消された可能性が高い。",
+      '<div class="puzzle-result">記録改竄の証拠を得た。</div><button class="choice primary" onclick="closeSheet();go(\'old\')">旧校舎へ</button>'
+    )}`);
+};
+
+/* ===== 旧校舎 ===== */
+oldStairs=function(){
+  if(S.flags&&S.flags.accident_spot){
+    addClue("repair","事故翌日の階段補修","旧校舎の踊り場だけ新しい補修材。施工日は事故翌日。");
+    sheet(`<h2>旧校舎階段</h2>${puzzleCardV19(
+      "踊り場だけ補修材が新しく、施工日は事故翌日。",
+      "ここが事故地点だったと考えるのが自然だ。",
+      '<div class="puzzle-result">事故地点を特定済み。</div>'
+    )}`);return;
+  }
+  sheet(`<h2>旧校舎階段</h2>
+    ${puzzleCardV19(
+      "上段・踊り場・下段に古い傷。録音では衝撃直前に強い反響。施設記録には『踊り場の腐食』。新しい補修材は中央部。",
+      "複数の情報が同じ場所を指している。",
+      `<div class="puzzle-grid">
+        <button onclick="accidentV16('upper')">上段</button>
+        <button onclick="accidentV16('landing')">踊り場</button>
+        <button onclick="accidentV16('lower')">下段</button>
+       </div>`
+    )}`);
+};
+
+oldLocker=function(){
+  if(!hasItem("uvPen")){
+    sheet(`<h2>古いロッカー</h2>${puzzleCardV19(
+      "扉の内側に、透明な線のような跡がある。",
+      "普通の光では読めない。特殊な光なら見えるかもしれない。",
+      '<div class="puzzle-result ng">今のままでは読めない。</div>'
+    )}`);return;
+  }
+  if(!(S.flags&&S.flags.uv_fragments)){
+    if(!hasClue("capsule")){
+      sheet(`<h2>UVで浮かぶ断片</h2>${puzzleCardV19(
+        "UVを当てると3つの文章断片が浮かぶ。",
+        "順番を決めるためのルールが別の場所にあるはずだ。",
+        '<div class="puzzle-result ng">並べ方の根拠がまだ足りない。</div>'
+      )}`);return;
+    }
+    sheet(`<h2>UVで浮かぶ断片</h2>
+      ${puzzleCardV19(
+        "A：録音が消えたら / B：俺は17:18を見た / C：紙と予備機を見ろ",
+        "古い掲示の『事実 → 対策 → 探す場所』に合わせて並べる。",
+        `<div class="puzzle-grid">
+          <button onclick="fragmentV16('BAC')">B → A → C</button>
+          <button onclick="fragmentV16('ABC')">A → B → C</button>
+          <button onclick="fragmentV16('BCA')">B → C → A</button>
+          <button onclick="fragmentV16('CAB')">C → A → B</button>
+         </div>`
+      )}`);
+    return;
+  }
+  showOldLockerEvidenceV16();
+};
+
+/* ===== 最終非常口 ===== */
+finalChoice=function(){
+  sheet(`<h2>最後の非常口</h2>
+    ${puzzleCardV19(
+      "入力欄は4桁。横には『事故発生時刻』とだけ書かれている。もう一つ、管理端末認証の表示がある。",
+      "事故記録から時刻を特定し、管理端末側の認証も済ませる必要がある。",
+      `<input id="exitCodeV18" inputmode="numeric" maxlength="4" placeholder="4桁"
+        style="width:100%;padding:12px;font-size:20px;border:1px solid #aa997f;border-radius:7px;background:#fff9ed">
+       <button class="choice primary" onclick="finalEscapeV18()">解除する</button>`
+    )}`);
+};
+
 })();
 </script>
 </body></html>
