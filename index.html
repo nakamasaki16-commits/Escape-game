@@ -1314,173 +1314,126 @@ body.hint-mode .hot rect{fill:rgba(255,244,210,.07)!important;stroke:rgba(255,23
  document.addEventListener("DOMContentLoaded",()=>{const brand=document.querySelector(".brand");if(brand){let t=document.getElementById("buildTag");if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}t.textContent="RICH v8";}});
 })();
 </script>
-<style id="front-overlay-v9">
-/* ===== Independent top-most scene layer ===== */
+<style id="scene-image-v10-css">
 .scene{position:relative!important;isolation:isolate!important}
-#sceneOverlayV9{
-  position:absolute!important;
-  left:0!important;top:0!important;right:0!important;bottom:0!important;
-  width:100%!important;height:100%!important;
-  z-index:9!important;
-  pointer-events:none!important;
-  overflow:hidden!important;
+#sceneImageLayerV10{
+ position:absolute!important;inset:0!important;z-index:8!important;
+ width:100%!important;height:100%!important;pointer-events:none!important;overflow:hidden!important
 }
-#sceneOverlayV9 svg{
-  display:block!important;
-  width:100%!important;height:100%!important;
-  opacity:1!important;visibility:visible!important;
+#sceneImageLayerV10 img{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ display:block!important;object-fit:fill!important;opacity:1!important;visibility:visible!important
 }
-#sceneOverlayV9 .v9-bg{pointer-events:none!important}
-#sceneOverlayV9 .v9-fg{pointer-events:auto!important}
-#sceneOverlayV9 .hot{pointer-events:auto!important}
-#sceneOverlayV9 .hot rect{
-  fill:rgba(255,255,255,0)!important;
-  stroke:rgba(255,255,255,0)!important;
+#sceneHotLayerV10{
+ position:absolute!important;inset:0!important;z-index:9!important;
+ width:100%!important;height:100%!important;pointer-events:none!important
 }
-#sceneOverlayV9 .label{
-  fill:#fffaf0!important;
-  stroke:#35281e!important;
-  stroke-width:7px!important;
-  paint-order:stroke!important;
-  font-weight:900!important;
+#sceneHotLayerV10 .hot-v10{
+ position:absolute!important;pointer-events:auto!important;background:transparent!important;border:0!important;padding:0!important;margin:0!important
 }
+#sceneLabelLayerV10{
+ position:absolute!important;inset:0!important;z-index:10!important;pointer-events:none!important
+}
+#sceneLabelLayerV10 .label-v10{
+ position:absolute;transform:translate(-50%,-50%);
+ color:#fffaf0;font-weight:900;font-size:12px;
+ text-shadow:-1px -1px 0 #392b20,1px -1px 0 #392b20,-1px 1px 0 #392b20,1px 1px 0 #392b20,0 2px 4px #0008;
+ white-space:nowrap
+}
+.scene>.tag{z-index:20!important}.scene>.nav,.scene>.turn{z-index:25!important}
 
-/* HUD/nav remain above the new SVG overlay */
-.scene>.tag{z-index:20!important}
-.scene>.nav,.scene>.turn{z-index:25!important}
-
-/* ALL dark operational buttons -> white UI */
-.top>button,
-header>button,
-.scene .nav button,
-.scene .turn button,
-.x,button.x,
-.sheet>.x,
-.overlay .x{
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+/* ALL black operating buttons = white UI */
+.top>button,header>button,.scene .nav button,.scene .turn button,.x,button.x,.sheet .x,.overlay .x{
+ background:#171b20!important;background-image:none!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border-color:#505a64!important;opacity:1!important;text-shadow:none!important
 }
-.top>button *,
-header>button *,
-.scene .nav button *,
-.scene .turn button *,
-.x *,button.x *,
-.sheet>.x *,
-.overlay .x *{
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+.top>button *,header>button *,.scene .nav button *,.scene .turn button *,.x *,.sheet .x *,.overlay .x *{
+ color:#fff!important;-webkit-text-fill-color:#fff!important
 }
-
-/* Explicitly dark operating buttons */
-.top>button,
-header>button,
-.scene .nav button,
-.scene .turn button,
-.x,button.x{
-  background:#171b20!important;
-  background-image:none!important;
-  border-color:#505a64!important;
-  text-shadow:none!important;
-  opacity:1!important;
-}
-
-/* Build label on its own line */
-#buildTag{
-  display:block!important;
-  margin-top:3px!important;
-  font-size:8px!important;
-  line-height:1!important;
-  letter-spacing:.12em!important;
-  color:#8a463e!important;
-  font-weight:900!important;
-}
+#buildTag{display:block!important;color:#8c433b!important;font-size:8px!important;font-weight:900!important;letter-spacing:.12em!important;margin-top:3px!important}
 </style>
-
-<script id="front-overlay-v9-js">
+<script id="scene-image-v10-js">
 (function(){
-  function ensureOverlay(){
-    const scene=document.querySelector(".scene");
-    if(!scene) return null;
-    let o=document.getElementById("sceneOverlayV9");
-    if(!o){
-      o=document.createElement("div");
-      o.id="sceneOverlayV9";
-      /* insert before nav so HUD/nav remain DOM-later as well */
-      const nav=scene.querySelector(".nav,.turn");
-      if(nav) scene.insertBefore(o,nav);
-      else scene.appendChild(o);
-    }
-    return o;
-  }
+ function ensureLayers(){
+  const scene=document.querySelector(".scene");
+  if(!scene)return null;
+  let imgL=document.getElementById("sceneImageLayerV10");
+  let hotL=document.getElementById("sceneHotLayerV10");
+  let labL=document.getElementById("sceneLabelLayerV10");
+  if(!imgL){imgL=document.createElement("div");imgL.id="sceneImageLayerV10";scene.appendChild(imgL)}
+  if(!hotL){hotL=document.createElement("div");hotL.id="sceneHotLayerV10";scene.appendChild(hotL)}
+  if(!labL){labL=document.createElement("div");labL.id="sceneLabelLayerV10";scene.appendChild(labL)}
+  return {imgL,hotL,labL};
+ }
+ function refreshSceneImage(){
+  const host=document.getElementById("scene");
+  const L=ensureLayers(); if(!host||!L)return;
+  const source=host.querySelector("svg");
+  if(!source){L.imgL.innerHTML="";L.hotL.innerHTML="";L.labL.innerHTML="";return}
 
-  function refreshOverlay(){
-    const host=document.getElementById("scene");
-    const target=ensureOverlay();
-    if(!host||!target) return;
+  const clone=source.cloneNode(true);
+  clone.querySelectorAll(".hot").forEach(h=>h.remove()); // visual image does not need hotspots
+  const xml=new XMLSerializer().serializeToString(clone);
+  const src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(xml);
+  let img=L.imgL.querySelector("img");
+  if(!img){img=document.createElement("img");L.imgL.appendChild(img)}
+  img.src=src;
 
-    const source=host.querySelector("svg");
-    if(!source){
-      target.innerHTML="";
-      return;
-    }
-
-    /* Clone the already-generated SVG as a completely independent top layer. */
-    const clone=source.cloneNode(true);
-    clone.removeAttribute("class");
-    clone.setAttribute("class","scene-svg-overlay-v9");
-    clone.setAttribute("viewBox","0 0 800 550");
-    clone.setAttribute("width","800");
-    clone.setAttribute("height","550");
-    clone.setAttribute("preserveAspectRatio","xMidYMid meet");
-
-    /* Normalize both possible group names from earlier builds. */
-    const bg=clone.querySelector(".scene-bg,.v7-bg");
-    const fg=clone.querySelector(".scene-fg,.v7-fg");
-    if(bg) bg.setAttribute("class","v9-bg");
-    if(fg){
-      fg.setAttribute("class","v9-fg");
-      clone.appendChild(fg); /* painted last */
-    }
-
-    target.innerHTML="";
-    target.appendChild(clone);
-
-    /* Inline final visibility to beat any accumulated CSS. */
-    clone.style.display="block";
-    clone.style.width="100%";
-    clone.style.height="100%";
-    clone.style.opacity="1";
-    clone.style.visibility="visible";
-
-    if(fg){
-      fg.style.opacity="1";
-      fg.style.visibility="visible";
-      fg.style.display="inline";
-      fg.style.pointerEvents="auto";
-    }
-  }
-
-  const priorRender=render;
-  render=function(){
-    priorRender();
-    refreshOverlay();
-
-    document.querySelectorAll(".top>button,header>button,.scene .nav button,.scene .turn button,.x,button.x").forEach(b=>{
-      b.style.setProperty("color","#fff","important");
-      b.style.setProperty("-webkit-text-fill-color","#fff","important");
-    });
-  };
-
-  document.addEventListener("DOMContentLoaded",()=>{
-    const brand=document.querySelector(".brand");
-    if(brand){
-      let tag=document.getElementById("buildTag");
-      if(!tag){tag=document.createElement("small");tag.id="buildTag";brand.appendChild(tag)}
-      tag.textContent="RICH v9";
-    }
-    /* If page resumes from a save and render already happened, build overlay once. */
-    setTimeout(refreshOverlay,50);
+  /* Rebuild clickable HTML hotspots from SVG coordinates. */
+  L.hotL.innerHTML="";
+  source.querySelectorAll(".hot").forEach(g=>{
+   const r=g.querySelector("rect"); if(!r)return;
+   const x=parseFloat(r.getAttribute("x")||0), y=parseFloat(r.getAttribute("y")||0);
+   const w=parseFloat(r.getAttribute("width")||0), h=parseFloat(r.getAttribute("height")||0);
+   const b=document.createElement("button");b.className="hot-v10";
+   b.style.left=(x/8)+"%";b.style.top=(y/5.5)+"%";b.style.width=(w/8)+"%";b.style.height=(h/5.5)+"%";
+   const click=g.getAttribute("onclick");
+   if(click)b.setAttribute("onclick",click);
+   b.setAttribute("aria-label","調べる");
+   L.hotL.appendChild(b);
   });
+
+  /* Render labels as HTML so Japanese text never depends on SVG image font rendering. */
+  L.labL.innerHTML="";
+  source.querySelectorAll("text.label").forEach(t=>{
+   const x=parseFloat(t.getAttribute("x")||0),y=parseFloat(t.getAttribute("y")||0);
+   const d=document.createElement("div");d.className="label-v10";d.textContent=t.textContent;
+   d.style.left=(x/8)+"%";d.style.top=(y/5.5)+"%";
+   L.labL.appendChild(d);
+  });
+ }
+ function whitenDarkButtons(root=document){
+  root.querySelectorAll("button,.x").forEach(b=>{
+   const cs=getComputedStyle(b), c=cs.backgroundColor.match(/\d+/g);
+   if(c&&c.length>=3){
+    const lum=.2126*(+c[0])+.7152*(+c[1])+.0722*(+c[2]);
+    if(lum<90){
+     b.style.setProperty("color","#fff","important");
+     b.style.setProperty("-webkit-text-fill-color","#fff","important");
+     b.querySelectorAll("*").forEach(x=>{x.style.setProperty("color","#fff","important");x.style.setProperty("-webkit-text-fill-color","#fff","important")});
+    }
+   }
+  });
+ }
+ const oldRender=render;
+ render=function(){oldRender();refreshSceneImage();whitenDarkButtons()};
+ const mo=new MutationObserver(()=>whitenDarkButtons());
+ document.addEventListener("DOMContentLoaded",()=>{
+  const brand=document.querySelector(".brand");
+  if(brand){let t=document.getElementById("buildTag");if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}t.textContent="RICH v10"}
+  mo.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>{refreshSceneImage();whitenDarkButtons()},50);
+
+  /* Local/browser diagnostic only: ?debug=wall4 */
+  if(new URLSearchParams(location.search).get("debug")==="wall4"){
+    try{
+      S=JSON.parse(JSON.stringify(BASE));S.room="classroom";S.view=3;S.chapter=0;S.flags={};
+      const p=document.getElementById("prologue");if(p)p.classList.add("hidden");
+      render();
+    }catch(e){console.error(e)}
+  }
+ });
 })();
 </script>
 </body></html>
