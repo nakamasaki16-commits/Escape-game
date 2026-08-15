@@ -292,8 +292,7 @@ function shell(inner){
     <circle cx="635" cy="145" r="4" fill="#dbe3e6"/>
     <rect x="90" y="335" width="620" height="11" fill="#aaa59a"/>`;
   }
-  return `<svg viewBox="0 0 800 550">${b}${inner}</svg>`
-}
+  return `<svg class="scene-svg" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg"><g class="scene-bg">${b}</g><g class="scene-fg">${inner}</g></svg>`}
 function render(){ui();updateObjective();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=shell(`<rect x="110" y="95" width="430" height="190" fill="#365947" stroke="#675b49" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=shell(`<rect x="95" y="140" width="190" height="220" fill="#c5b399" stroke="#75624f"/><rect x="115" y="165" width="150" height="90" fill="#3f484a" stroke="#6f7673"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#9c7d5e" stroke="#6e5b49"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=shell(`<rect x="135" y="90" width="530" height="260" fill="#d8cbb8" stroke="#81705d"/><rect x="160" y="115" width="480" height="210" fill="#776a5d"/><circle cx="250" cy="205" r="55" fill="#8f7e6c"/><circle cx="400" cy="205" r="55" fill="#8f7e6c"/><circle cx="550" cy="205" r="55" fill="#8f7e6c"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=shell(`<rect x="290" y="100" width="220" height="280" fill="#806a55" stroke="#5f5042" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#9a8063" stroke="#695746"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=shell(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#806a55" stroke="#5f5042"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=shell(`<rect x="120" y="130" width="220" height="235" fill="#806a55" stroke="#5f5042"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#c0ad91" stroke="#796752"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=shell(`<rect x="135" y="120" width="230" height="250" fill="#806a55" stroke="#5f5042"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#9a8063" stroke="#5f5042"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=shell(`<rect x="280" y="105" width="240" height="270" fill="#806a55" stroke="#5f5042"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="245" fill="#c5b399" stroke="#75624f"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#6f7673"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=shell(`<rect x="160" y="120" width="480" height="250" fill="#bda98c" stroke="#77634f"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=shell(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=shell(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=shell(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=shell(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#77634f"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=shell(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#776a5d" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=shell(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#77634f"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=shell(`<rect x="180" y="120" width="440" height="245" fill="#806a55" stroke="#77634f"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=shell(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=shell(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=shell(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=shell(`<rect x="270" y="120" width="260" height="250" fill="#806a55" stroke="#5f5042"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=shell(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#77634f"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=shell(`<rect x="250" y="95" width="300" height="285" fill="#806a55" stroke="#5f5042" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=shell(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#5f5042"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;sv()}
 function blackboard(){addClue('schedule','黒板の予定','17:30 体育館：バスケ部、18:00完全下校。');sheet(`<h2>黒板</h2><p>今日の予定が残っている。</p><p class="code">17:30　体育館：バスケ部<br>18:00　完全下校</p><div class="dialog"><div class="name">自分</div>「18時……もう、とっくに過ぎてる。」</div>`)}function clock(){addClue('clock','教室の壁時計','17:18で止まっている。秒針は動かない。');sheet(`<h2>壁時計</h2><p>17:18で止まっている。</p><div class="dialog"><div class="name">自分</div>「電池切れかな。」</div>`)}function teacherDesk(){sheet(`<h2>教卓PC</h2><p>学校アカウントのログイン画面。画面右下には<span class="code">18:43</span>。</p><div class="dialog"><div class="name">自分</div>「18:43……。」</div>`)}function lockers(){addItem('keyTag','小さな鍵','ロッカーの隙間に落ちていた。札に「放送」。');sheet('<h2>ロッカー</h2><p>いくつか開いている。床に小さな鍵が落ちていた。</p>')}function classPhoto(){addClue('photo','文化祭のクラス写真','去年の文化祭。あなたの姿はあるが、写真の端に一人だけ顔が破れている生徒がいる。');sheet(`<h2>クラス写真</h2><p>去年の文化祭。みんな笑っている。</p><div class="dialog"><div class="name">自分</div>「……この破れ方、わざと？」</div>`)}function umbrella(){sheet('<h2>傘立て</h2><p>傘が一本だけ残っている。名札は剥がされている。</p>')}function classDoor(){if(S.chapter===0){sheet(`<h2>教室の扉</h2><p>内側からは開く。</p><p>ただし廊下側の防火扉が閉じているらしく、校舎の出口までは行けない。</p><button class="choice primary" onclick="ch0()">廊下へ出る</button>`)}else go('hall')}function ch0(){if(!hasClue('schedule')){toast('まだ状況が分からない。');return}closeSheet();S.chapter=1;addLog('教室を出て2階廊下へ。完全下校時刻は過ぎている。');sv();go('hall')}
 function noticeBoard(){addClue('festival','文化祭準備の掲示','放送委員と理科部が共同展示「声と光の迷路」を準備していた。');sheet('<h2>掲示板</h2><p>文化祭準備の紙。</p><p>放送委員 × 理科部<br>共同展示「声と光の迷路」</p>')}function lostFound(){sheet('<h2>落とし物箱</h2><p>水筒、ハンカチ、片方だけの上履き。特に使えそうな物はない。</p>')}function staffPC(){addClue('login','職員PCのログ','18:06、校内放送システムに「2-3」の端末から接続。');sheet(`<h2>職員PC</h2><p>画面には直前のシステムログ。</p><p class="code">18:06　Broadcast system login<br>Source: CLASSROOM 2-3</p><div class="dialog"><div class="name">自分</div>「18:06……。」</div>`)}function keyBoard(){if(!S.items.find(x=>x.id==='staffKey'))addItem('staffKey','特別教室キー','鍵棚に「理科室」の予備キーが残っていた。');sheet('<h2>鍵棚</h2><p>理科室の予備キーを取った。</p>')}function attendance(){addClue('attendance','今日の出席簿','あなたの名前は「欠席」。理由欄は空白。');sheet(`<h2>出席簿</h2><p>今日の日付。</p><p>自分の名前の横に——<span class="badtext"><span class="important">欠席</span></span>。</p><div class="dialog"><div class="name">自分</div>「……は？」</div><p class="muted">理由欄は空白。</p>${S.chapter===1?'<button class="choice primary" onclick="advanceCh2()">出席簿を閉じる</button>':''}`);if(S.chapter===1){addLog('出席簿では自分は今日欠席扱い。');sv()}}function advanceCh2(){closeSheet();S.chapter=2;sv();sheet(`<h2>CHAPTER 2　今日、俺は欠席している</h2><p>教室で目を覚ました。けれど学校の記録では、自分は今日ここへ来ていない。</p><div class="dialog"><div class="name">自分</div>「……もう少し調べよう。」</div><button class="choice primary" onclick="closeSheet();render()">続ける</button>`)}
@@ -1235,4 +1234,266 @@ body.hint-mode .hot rect{fill:rgba(255,244,210,.07)!important;stroke:rgba(255,23
   });
 })();
 </script>
+
+<style id="foreground-and-nav-fix-v4">
+#scene .scene-svg{display:block!important;width:100%!important;height:auto!important;opacity:1!important;overflow:visible!important}
+#scene .scene-svg .scene-bg{opacity:1!important;pointer-events:none!important}
+#scene .scene-svg .scene-fg{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+.scene:before,.scene:after{pointer-events:none!important;z-index:0!important}
+#scene{position:relative!important;z-index:2!important}
+.scene .tag,.scene .turn,.scene .nav{z-index:8!important}
+#scene .hot{pointer-events:auto!important}
+#scene .hot rect{fill:rgba(255,255,255,0)!important;stroke:rgba(255,255,255,0)!important}
+.scene .turn button,.scene .nav button,.nav button,.turn button{
+  background:linear-gradient(180deg,#fffaf0 0%,#e8ddcc 100%)!important;
+  color:#3f3024!important;border:2px solid #7e6850!important;
+  box-shadow:0 5px 13px rgba(48,34,23,.26),inset 0 1px 0 rgba(255,255,255,.85)!important;
+  opacity:1!important;text-shadow:none!important;filter:none!important}
+.scene .turn button:active,.scene .nav button:active,.nav button:active,.turn button:active{
+  background:#dfd2bf!important;color:#2f241b!important;transform:scale(.95)!important}
+#scene .scene-fg rect:not(.hot rect),#scene .scene-fg path,#scene .scene-fg circle,#scene .scene-fg polygon,#scene .scene-fg line,#scene .scene-fg text{
+  opacity:1!important;visibility:visible!important}
+#scene .scene-fg .label{
+  fill:#fffaf0!important;stroke:#3e3025!important;stroke-width:7px!important;
+  paint-order:stroke!important;font-weight:900!important}
+</style>
+
+<script id="foreground-safety-v4">
+(function(){
+  const baseRender=render;
+  render=function(){
+    baseRender();
+    const svg=document.querySelector("#scene svg.scene-svg");
+    if(svg){
+      const fg=svg.querySelector(".scene-fg");
+      if(fg) svg.appendChild(fg);
+    }
+    document.querySelectorAll(".scene .turn button,.scene .nav button").forEach(b=>{
+      b.style.background="linear-gradient(180deg,#fffaf0,#e8ddcc)";
+      b.style.color="#3f3024";
+    });
+  };
+})();
+</script>
+
+<script id="render-hard-fix-v5">
+(function(){
+  const previousRender=render;
+  render=function(){
+    previousRender();
+
+    const host=document.getElementById("scene");
+    const svg=host && host.querySelector("svg");
+    if(svg){
+      /* iOS Safari: give the SVG an explicit rendered box rather than height:auto. */
+      svg.setAttribute("width","800");
+      svg.setAttribute("height","550");
+      svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+      svg.style.cssText="display:block;width:100%;height:100%;opacity:1;visibility:visible;position:absolute;inset:0;z-index:4;";
+
+      const bg=svg.querySelector(".scene-bg");
+      const fg=svg.querySelector(".scene-fg");
+      if(bg) bg.style.cssText="display:inline;opacity:1;visibility:visible;pointer-events:none;";
+      if(fg){
+        fg.style.cssText="display:inline;opacity:1;visibility:visible;pointer-events:auto;";
+        svg.appendChild(fg);
+      }
+    }
+
+    host.style.cssText="position:absolute;inset:0;width:100%;height:100%;display:block;z-index:4;overflow:hidden;";
+
+    const scene=host.closest(".scene");
+    if(scene){
+      scene.style.background="#e8e0d3";
+      scene.style.isolation="isolate";
+    }
+
+    document.querySelectorAll(".scene .nav button").forEach(b=>{
+      b.style.setProperty("background","#fffaf0","important");
+      b.style.setProperty("background-image","linear-gradient(180deg,#fffaf0,#e7dbc8)","important");
+      b.style.setProperty("color","#3b2d22","important");
+      b.style.setProperty("border","2px solid #7d674f","important");
+      b.style.setProperty("opacity","1","important");
+      b.style.setProperty("filter","none","important");
+      b.style.setProperty("text-shadow","none","important");
+      b.style.setProperty("-webkit-text-fill-color","#3b2d22","important");
+      b.style.zIndex="20";
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const brand=document.querySelector(".brand");
+    if(brand&&!document.getElementById("buildTag")){
+      const t=document.createElement("small");
+      t.id="buildTag";
+      t.textContent="RICH v5";
+      t.style.cssText="display:block;font-size:8px;letter-spacing:.12em;color:#8b493f;font-weight:900;margin-top:2px";
+      brand.appendChild(t);
+    }
+  });
+})();
+</script>
+<style id="render-hard-css-v5">
+.scene{position:relative!important;isolation:isolate!important}
+.scene>#scene{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:4!important}
+.scene>#scene>svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:4!important}
+.scene>.tag{z-index:12!important}
+.scene>.nav{position:absolute!important;z-index:20!important}
+.scene>.nav button{
+ background:#fffaf0!important;background-image:linear-gradient(180deg,#fffaf0,#e7dbc8)!important;
+ color:#3b2d22!important;-webkit-text-fill-color:#3b2d22!important;
+ border:2px solid #7d674f!important;opacity:1!important;filter:none!important;text-shadow:none!important
+}
+</style>
+
+<style id="version-badge-v6">
+.version-badge{
+  position:absolute;right:12px;top:12px;z-index:20;
+  padding:5px 8px;border-radius:999px;
+  background:rgba(255,250,240,.94);
+  color:#7d3c35;border:1px solid #8e745b;
+  font-size:9px;font-weight:900;letter-spacing:.10em;
+  box-shadow:0 2px 7px #0002
+}
+</style>
+<script id="version-badge-script-v6">
+document.addEventListener("DOMContentLoaded",()=>{
+  const hero=document.querySelector(".proCard .hero");
+  if(hero && !hero.querySelector(".version-badge")){
+    const b=document.createElement("div");
+    b.className="version-badge";
+    b.textContent="RICH v6";
+    hero.appendChild(b);
+  }
+  const brand=document.querySelector(".brand");
+  if(brand){
+    let b=document.getElementById("buildTag");
+    if(!b){
+      b=document.createElement("small");
+      b.id="buildTag";
+      brand.appendChild(b);
+    }
+    b.textContent="RICH v6";
+  }
+});
+</script>
+
+<script id="render-engine-v7">
+
+function sceneSvgV7(inner){
+  const r=S.room;
+  let b="";
+  if(r==="classroom"){
+    b=`<rect width="800" height="550" fill="#e8e0d3"/>
+    <rect y="390" width="800" height="160" fill="#9a7654"/>
+    <path d="M0 430h800M0 480h800M0 530h800" stroke="#7b5c41" stroke-width="3" opacity=".55"/>
+    <rect x="548" y="92" width="205" height="238" fill="#758a95" stroke="#f0e8da" stroke-width="8"/>
+    <path d="M650 92v238M548 211h205" stroke="#e1dbcf" stroke-width="5"/>
+    <path d="M565 315l58-44 46 25 72-63" fill="none" stroke="#3f5054" stroke-width="8" opacity=".5"/>
+    <rect x="42" y="62" width="715" height="16" fill="#fff9ee"/>
+    <path d="M40 372h720" stroke="#7d6d5b" stroke-width="5"/>`;
+  }else if(r==="hall"){
+    b=`<rect width="800" height="550" fill="#e7e2d8"/>
+    <polygon points="0,550 800,550 602,305 198,305" fill="#b8ad9a"/>
+    <path d="M198 305L0 550M602 305l198 245" stroke="#8d8170" stroke-width="4"/>
+    <rect x="0" y="72" width="158" height="290" fill="#738791" stroke="#e7e2d8" stroke-width="8"/>
+    <path d="M79 72v290M0 217h158" stroke="#ded9cf" stroke-width="5"/>
+    <rect x="648" y="95" width="120" height="258" fill="#d8cfc0" stroke="#a99b87" stroke-width="5"/>
+    <rect x="347" y="64" width="106" height="14" rx="7" fill="#fffdf3"/>`;
+  }else if(r==="staff"){
+    b=`<rect width="800" height="550" fill="#e0ddd4"/>
+    <rect y="405" width="800" height="145" fill="#aaa69d"/>
+    <rect x="42" y="88" width="716" height="278" fill="#efebe2"/>
+    <rect x="73" y="298" width="654" height="82" fill="#987454"/>
+    <path d="M120 298v-100M350 298v-108M590 298v-94" stroke="#655345" stroke-width="12"/>
+    <rect x="302" y="55" width="196" height="15" rx="7" fill="#fffdf5"/>
+    <rect x="650" y="110" width="82" height="150" fill="#d7d0c4" stroke="#a99c88" stroke-width="4"/>`;
+  }else if(r==="science"){
+    b=`<rect width="800" height="550" fill="#dcd9d0"/>
+    <rect y="405" width="800" height="145" fill="#8d8a84"/>
+    <rect x="35" y="90" width="730" height="132" fill="#edf0e8" stroke="#aaa79f" stroke-width="4"/>
+    <path d="M105 90v132M180 90v132M620 90v132M695 90v132" stroke="#b7b4ad" stroke-width="5"/>
+    <rect x="58" y="320" width="684" height="86" fill="#3b3f3c"/>
+    <path d="M105 406v125M695 406v125" stroke="#514e48" stroke-width="18"/>
+    <path d="M220 320v-38q0-25 24-25t24 25v38" fill="none" stroke="#8c918d" stroke-width="7"/>`;
+  }else if(r==="broadcast"){
+    b=`<rect width="800" height="550" fill="#cec7ba"/>
+    <rect y="405" width="800" height="145" fill="#786b5e"/>
+    <rect x="52" y="78" width="305" height="224" fill="#77858c" stroke="#665e54" stroke-width="9"/>
+    <rect x="397" y="84" width="345" height="248" fill="#ded6c9" stroke="#9a8d79" stroke-width="5"/>
+    <path d="M423 130h294M423 176h294M423 222h294M423 268h294" stroke="#b5a994" stroke-width="4"/>
+    <rect x="128" y="344" width="544" height="72" fill="#504940"/>`;
+  }else if(r==="old"){
+    b=`<rect width="800" height="550" fill="#8c857a"/>
+    <rect y="405" width="800" height="145" fill="#51463b"/>
+    <path d="M0 120h800M0 250h800" stroke="#746c62" stroke-width="8"/>
+    <path d="M88 0v405M245 0v405M565 0v405M722 0v405" stroke="#675f54" stroke-width="10"/>
+    <rect x="64" y="80" width="192" height="255" fill="#344147" stroke="#706960" stroke-width="8"/>
+    <path d="M160 80v255M64 205h192" stroke="#777168" stroke-width="5"/>
+    <path d="M520 82l100 50-86 59 111 55-96 72" fill="none" stroke="#62594e" stroke-width="5"/>`;
+  }else{
+    b=`<rect width="800" height="550" fill="#39434c"/>
+    <rect y="405" width="800" height="145" fill="#777879"/>
+    <rect x="52" y="58" width="696" height="342" fill="#d6d2c9" stroke="#a39d91" stroke-width="6"/>
+    <rect x="568" y="98" width="128" height="182" fill="#17242c" stroke="#8d8c86" stroke-width="7"/>
+    <circle cx="635" cy="145" r="4" fill="#dbe3e6"/>`;
+  }
+  return `<svg class="scene-svg-v7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550" preserveAspectRatio="xMidYMid meet">
+    <g class="v7-bg">${b}</g>
+    <g class="v7-fg">${inner}</g>
+  </svg>`;
+}
+
+function renderV7(){ui();updateObjective();let svg='',title='',desc='';if(S.room==='classroom'){if(S.view===0){svg=sceneSvgV7(`<rect x="110" y="95" width="430" height="190" fill="#365947" stroke="#675b49" stroke-width="5"/><path d="M140 140h360M140 180h290M140 220h330" stroke="#c9d2c8" stroke-width="4" opacity=".38"/>${hot(100,85,450,215,'blackboard()')}${lab('黒板',325,310)}<rect x="585" y="105" width="120" height="160" fill="#161b1e" stroke="#465460"/><circle cx="645" cy="155" r="38" fill="#eee7d8" stroke="#7e8588" stroke-width="4"/><path d="M645 155V130M645 155l22 12" stroke="#222" stroke-width="4"/>${hot(575,95,140,180,'clock()')}${lab('時計',645,290)}`);title='教室・前方';desc='黒板と壁時計。黒板には今日の予定が残っている。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="95" y="140" width="190" height="220" fill="#c5b399" stroke="#75624f"/><rect x="115" y="165" width="150" height="90" fill="#3f484a" stroke="#6f7673"/>${hot(85,130,210,240,'teacherDesk()')}${lab('教卓PC',190,385)}<rect x="430" y="120" width="245" height="240" fill="#9c7d5e" stroke="#6e5b49"/><path d="M450 150h205M450 190h205M450 230h205M450 270h205" stroke="#33404b" stroke-width="4"/>${hot(420,110,265,260,'lockers()')}${lab('ロッカー',552,385)}`);title='教室・右側';desc='教卓のPCと、生徒用ロッカー。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="135" y="90" width="530" height="260" fill="#d8cbb8" stroke="#81705d"/><rect x="160" y="115" width="480" height="210" fill="#776a5d"/><circle cx="250" cy="205" r="55" fill="#8f7e6c"/><circle cx="400" cy="205" r="55" fill="#8f7e6c"/><circle cx="550" cy="205" r="55" fill="#8f7e6c"/>${hot(125,80,550,280,'classPhoto()')}${lab('クラス写真',400,380)}`);title='教室・後方';desc='文化祭のクラス写真が飾られている。'}else{svg=sceneSvgV7(`<rect x="290" y="100" width="220" height="280" fill="#806a55" stroke="#5f5042" stroke-width="5"/><circle cx="465" cy="242" r="8" fill="#c3a24f"/>${hot(280,90,240,300,'classDoor()')}${lab('教室の扉',400,405)}<rect x="90" y="135" width="120" height="200" fill="#9a8063" stroke="#695746"/>${hot(80,125,140,220,'umbrella()')}${lab('傘立て',150,360)}`);title='教室・廊下側';desc='廊下へ出る扉。脇に傘立てがある。'}}else if(S.room==='hall'){if(S.view===0){svg=sceneSvgV7(`<path d="M180 110L620 110L745 390L55 390Z" fill="#11171d" stroke="#3b4a58" stroke-width="4"/><rect x="325" y="145" width="150" height="215" fill="#806a55" stroke="#5f5042"/>${hot(315,135,170,235,"go('broadcast')")}${lab('放送室',400,385)}`);title='2階廊下・北';desc='廊下の奥に放送室。まだ鍵がかかっている。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="120" y="130" width="220" height="235" fill="#806a55" stroke="#5f5042"/>${hot(110,120,240,255,"go('science')")}${lab('理科室',230,390)}<rect x="500" y="145" width="180" height="190" fill="#c0ad91" stroke="#796752"/><path d="M525 180h130M525 215h100M525 250h120" stroke="#8ba2b3" stroke-width="4" opacity=".4"/>${hot(490,135,200,210,'noticeBoard()')}${lab('掲示板',590,365)}`);title='2階廊下・東';desc='理科室と掲示板。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="135" y="120" width="230" height="250" fill="#806a55" stroke="#5f5042"/>${hot(125,110,250,270,"go('staff')")}${lab('職員室',250,395)}<rect x="500" y="155" width="125" height="170" fill="#9a8063" stroke="#5f5042"/>${hot(490,145,145,190,'lostFound()')}${lab('落とし物箱',562,350)}`);title='2階廊下・南';desc='職員室と落とし物箱。'}else{svg=sceneSvgV7(`<rect x="280" y="105" width="240" height="270" fill="#806a55" stroke="#5f5042"/>${hot(270,95,260,290,"go('classroom')")}${lab('2年3組',400,400)}`);title='2階廊下・西';desc='さっきまでいた教室。'}}else if(S.room==='staff'){if(S.view===0){svg=sceneSvgV7(`<rect x="120" y="120" width="560" height="245" fill="#c5b399" stroke="#75624f"/><rect x="170" y="165" width="220" height="120" fill="#0b141c" stroke="#6f7673"/>${hot(110,110,580,265,'staffPC()')}${lab('職員用PC',280,390)}`);title='職員室・机側';desc='職員用PC。電源は入っている。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="160" y="120" width="480" height="250" fill="#bda98c" stroke="#77634f"/><path d="M190 155h420M190 195h420M190 235h420M190 275h420" stroke="#536371" stroke-width="3"/>${hot(150,110,500,270,'keyBoard()')}${lab('鍵管理表',400,395)}`);title='職員室・鍵棚';desc='教室や特別教室の鍵が管理されている。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="130" y="125" width="540" height="235" fill="#e0d9c7" stroke="#69645a"/><path d="M165 165h470M165 205h430M165 245h455M165 285h400" stroke="#7d7668" stroke-width="4" opacity=".55"/>${hot(120,115,560,255,'attendance()')}${lab('出席簿',400,390)}`);title='職員室・書類棚';desc='紙の出席簿と提出物が並んでいる。'}else{svg=sceneSvgV7(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='職員室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='science'){if(S.view===0){svg=sceneSvgV7(`<rect x="100" y="285" width="600" height="70" fill="#141b20" stroke="#3d4c58"/><circle cx="160" cy="245" r="12" fill="#ff6b73"/><path d="M172 245H650" stroke="#ff6b73" stroke-width="4" opacity=".75"/><rect x="265" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M270 258l38-42" stroke="#b8ecff" stroke-width="5"/><rect x="400" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M405 216l38 42" stroke="#b8ecff" stroke-width="5"/><rect x="535" y="200" width="48" height="75" fill="#1b252d" stroke="#4a6579"/><path d="M540 258l38-42" stroke="#b8ecff" stroke-width="5"/>${hot(90,185,620,185,'laserPuzzle()')}${lab('光学実験台',400,390)}`);title='理科室・実験台';desc='鏡とレーザーポインタを使った授業用の光学実験セット。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="145" y="100" width="510" height="270" fill="#0f171d" stroke="#405362"/><text x="400" y="150" text-anchor="middle" fill="#9ab0bf" font-size="17">文化祭 展示準備</text><text x="185" y="205" fill="#93a9b8" font-size="14">放送室へ：鏡3枚セット</text><text x="185" y="245" fill="#93a9b8" font-size="14">順番：左・右・左</text>${hot(135,90,530,290,'scienceMemo()')}${lab('準備メモ',400,395)}`);title='理科室・掲示';desc='文化祭展示の準備メモが貼られている。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="150" y="130" width="500" height="230" fill="#171f25" stroke="#77634f"/><path d="M180 170h440M180 210h440M180 250h440M180 290h440" stroke="#34444f" stroke-width="4"/>${hot(140,120,520,250,'scienceCabinet()')}${lab('準備室棚',400,390)}`);title='理科室・準備棚';desc='授業用の実験器具が並んでいる。'}else{svg=sceneSvgV7(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='理科室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='broadcast'){if(S.view===0){svg=sceneSvgV7(`<rect x="120" y="120" width="560" height="255" fill="#111a22" stroke="#42576a"/><rect x="165" y="165" width="470" height="120" fill="#776a5d" stroke="#315671"/><path d="M195 225h40l18-35 25 70 30-45 20 25 28-60 30 70 25-32 25 12 25-50 30 70 25-40 30 15" fill="none" stroke="#73d6ff" stroke-width="4"/>${hot(110,110,580,275,'audioLog()')}${lab('放送記録',400,400)}`);title='放送室・ミキサー';desc='校内放送の録音データが残っている。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="145" y="110" width="510" height="260" fill="#171d23" stroke="#77634f"/><path d="M180 155h440M180 195h440M180 235h440M180 275h440" stroke="#667784" stroke-width="3"/>${hot(135,100,530,280,'broadcastSchedule()')}${lab('放送当番表',400,395)}`);title='放送室・当番表';desc='放送委員の当番表。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="180" y="120" width="440" height="245" fill="#806a55" stroke="#77634f"/><circle cx="400" cy="240" r="65" fill="#17232c" stroke="#4b6274"/><path d="M385 210l65 30-65 30z" fill="#8edcff"/>${hot(170,110,460,265,'oldRecording()')}${lab('古い録音機',400,395)}`);title='放送室・録音棚';desc='古いICレコーダー。ラベルには「去年・文化祭前日」。'}else{svg=sceneSvgV7(`<rect x="295" y="120" width="210" height="250" fill="#806a55" stroke="#77634f"/>${hot(285,110,230,270,"go('hall')")}${lab('廊下',400,395)}`);title='放送室・出入口';desc='廊下へ戻れる。'}}else if(S.room==='old'){if(S.view===0){svg=sceneSvgV7(`<path d="M160 360L360 190H620L480 360Z" fill="#161d22" stroke="#3d4d58" stroke-width="5"/><path d="M210 320h330M245 285h320M280 250h300M320 215h260" stroke="#596873" stroke-width="5"/>${hot(140,170,500,210,'oldStairs()')}${lab('旧校舎階段',400,390)}`);title='旧校舎階段';desc='普段は立入禁止の階段。埃が薄く積もっている。'}else if(S.view===1){svg=sceneSvgV7(`<rect x="130" y="120" width="540" height="250" fill="#ddd5c3" stroke="#6c665d"/><text x="400" y="160" text-anchor="middle" fill="#4a4742" font-size="15">卒業制作・タイムカプセル</text><path d="M170 200h460M170 240h430M170 280h450" stroke="#81786c" stroke-width="4" opacity=".6"/>${hot(120,110,560,270,'timeCapsuleNote()')}${lab('古い掲示物',400,395)}`);title='旧校舎・踊り場';desc='色あせた掲示物。去年の文化祭に関係している。'}else if(S.view===2){svg=sceneSvgV7(`<rect x="270" y="120" width="260" height="250" fill="#806a55" stroke="#5f5042"/><circle cx="480" cy="240" r="8" fill="#c4a14f"/>${hot(260,110,280,270,'roofDoor()')}${lab('屋上前の扉',400,395)}`);title='旧校舎・最上階';desc='屋上前へ続く扉。'}else{svg=sceneSvgV7(`<rect x="145" y="130" width="510" height="220" fill="#161e24" stroke="#77634f"/><path d="M175 170h450M175 210h450M175 250h450M175 290h450" stroke="#34444f" stroke-width="4"/>${hot(135,120,530,240,'oldLocker()')}${lab('古いロッカー',400,375)}`);title='旧校舎・ロッカー';desc='使われなくなった部活用ロッカー。'}}else if(S.room==='rooftop'){if(S.view===0){svg=sceneSvgV7(`<rect x="250" y="95" width="300" height="285" fill="#806a55" stroke="#5f5042" stroke-width="5"/><text x="400" y="165" text-anchor="middle" fill="#c7d7e2" font-size="16">FINAL</text>${hot(240,85,320,305,'finalChoice()')}${lab('屋上扉',400,405)}`);title='屋上前';desc='最後の扉。ここまで集めた記録をどう扱うかを決める。'}else{svg=sceneSvgV7(`<rect x="130" y="120" width="540" height="240" fill="#111922" stroke="#5f5042"/><text x="400" y="165" text-anchor="middle" fill="#9db0bd" font-size="15">校内ネットワーク端末</text><text x="180" y="225" fill="#8fa5b4" font-size="13">外部送信：可能</text><text x="180" y="260" fill="#8fa5b4" font-size="13">校内記録削除：可能</text>${hot(120,110,560,260,'networkTerminal()')}${lab('ネットワーク端末',400,390)}`);title='屋上前・端末';desc='校内ネットワークに接続された管理端末。'}}document.getElementById('scene').innerHTML=svg;document.getElementById('title').textContent=title;document.getElementById('desc').textContent=desc;
+    const host=document.getElementById('scene');
+    const svgEl=host.querySelector('svg');
+    const diag=document.getElementById('svgDiagV7');
+    if(diag){
+      const fgCount=svgEl ? svgEl.querySelectorAll('.v7-fg > *').length : 0;
+      diag.textContent=svgEl ? ('SVG OK / FG '+fgCount) : 'SVG NG';
+      diag.className='svg-diag-v7 '+(svgEl?'ok':'ng');
+    }
+    updateObjective();
+}
+render=renderV7;
+document.addEventListener("DOMContentLoaded",()=>{
+  const brand=document.querySelector(".brand");
+  if(brand){
+    let t=document.getElementById("buildTag");
+    if(!t){t=document.createElement("small");t.id="buildTag";brand.appendChild(t)}
+    t.textContent="RICH v7";
+  }
+  const scene=document.querySelector(".scene");
+  if(scene && !document.getElementById("svgDiagV7")){
+    const d=document.createElement("div");
+    d.id="svgDiagV7";
+    d.className="svg-diag-v7";
+    d.textContent="SVG CHECK";
+    scene.appendChild(d);
+  }
+});
+</script>
+<style id="render-engine-v7-css">
+/* ONLY scene renderer is changed. Premium surrounding UI is untouched. */
+#scene{position:absolute!important;inset:0!important;z-index:4!important;width:100%!important;height:100%!important;display:block!important;overflow:hidden!important}
+#scene .scene-svg-v7{display:block!important;width:100%!important;height:100%!important;opacity:1!important;visibility:visible!important}
+#scene .v7-bg,#scene .v7-fg{display:inline!important;opacity:1!important;visibility:visible!important}
+#scene .v7-bg{pointer-events:none!important}
+#scene .v7-fg{pointer-events:auto!important}
+.scene{position:relative!important;isolation:isolate!important}
+.scene:before,.scene:after{z-index:1!important;pointer-events:none!important}
+.scene>.tag{z-index:12!important}
+.scene>.nav,.scene>.turn{z-index:20!important}
+.scene>.nav button,.scene>.turn button{
+  background:#fffaf0!important;background-image:linear-gradient(180deg,#fffaf0,#e7dbc8)!important;
+  color:#3b2d22!important;-webkit-text-fill-color:#3b2d22!important;border:2px solid #7d674f!important;
+  opacity:1!important;filter:none!important;text-shadow:none!important
+}
+.svg-diag-v7{
+ position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:30;
+ padding:4px 8px;border-radius:999px;background:#fffaf0e8;border:1px solid #7d674f;
+ color:#5d4a39;font-size:8px;font-weight:900;letter-spacing:.05em;pointer-events:none
+}
+.svg-diag-v7.ok{color:#315f42;border-color:#56775e}.svg-diag-v7.ng{color:#922f2a;border-color:#a44c44}
+</style>
 </body></html>
